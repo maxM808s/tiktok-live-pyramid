@@ -21,7 +21,7 @@ function Same-Key([string]$A, [string]$B) {
     return $difference -eq 0
 }
 function Validate-Settings($Value) {
-    if ($null -eq $Value -or $Value -isnot [pscustomobject]) { throw 'Invalid settings' }
+    if ($null -eq $Value -or $Value.GetType() -ne [System.Management.Automation.PSCustomObject]) { throw 'Invalid settings' }
     $result = @{}
     foreach ($name in @('automatic','camera','night')) {
         if ($null -ne $Value.PSObject.Properties[$name]) {
@@ -45,7 +45,7 @@ function Validate-Settings($Value) {
         }
     }
     if ($null -ne $Value.PSObject.Properties['gifts']) {
-        if ($null -eq $Value.gifts -or $Value.gifts -isnot [pscustomobject]) { throw 'Invalid gift rules' }
+        if ($null -eq $Value.gifts -or $Value.gifts.GetType() -ne [System.Management.Automation.PSCustomObject]) { throw 'Invalid gift rules' }
         $rules = @($Value.gifts.PSObject.Properties)
         if ($rules.Count -gt 100) { throw 'Too many gift rules' }
         $gifts = @{}

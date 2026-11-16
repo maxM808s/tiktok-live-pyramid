@@ -43,10 +43,10 @@ export class Engine{
  state(){return {lastGift:this.lastGift||null,placements:this.placements,quakeAt:this.quakeAt||0,building:this.building,built:this.built,target:this.roundTarget,round:this.round,phase:this.phase,countdown:this.countdown,paused:this.paused,queue:this.queue.reduce((s,j)=>s+j.remaining,0),builder:this.builder||'',gold:this.gold||false,leaderboard:[...this.people].sort((a,b)=>b[1]-a[1]).slice(0,8),roundLeaders:[...this.contributors].sort((a,b)=>b[1]-a[1]).slice(0,5),logs:this.logs,metrics:this.metrics,config:this.config,perf:this.perf||{},idle:Date.now()-this.lastEvent>30000};}
 }
 export function validateConfig(c){
- if(!c||typeof c!=='object')throw Error('Invalid settings');const out={};
+ if(!c||typeof c!=='object'||Array.isArray(c))throw Error('Invalid settings');const out={};
  for(const k of ['automatic','camera','night'])if(k in c){if(typeof c[k]!=='boolean')throw Error(k);out[k]=c[k];}
  for(const [k,lo,hi]of [['target',20,2000],['workers',1,32],['celebration',5,120],['likesPerWorker',1,1000],['commentBlocks',1,100],['followBlocks',1,1000],['shareBlocks',1,100]])if(k in c){if(!Number.isInteger(c[k])||c[k]<lo||c[k]>hi)throw Error(k);out[k]=c[k];}
  for(const [k,options]of [['language',['en','he']],['building',buildings],['quality',['low','high']],['mode',['simulator','live']],['skin',['mixed','worker','mummy','ninja','pharaoh']],['overlay',['full','minimal']]])if(k in c){if(!options.includes(c[k]))throw Error(k);out[k]=c[k];}
- if('gifts'in c){out.gifts=Object.create(null);if(Object.keys(c.gifts).length>100)throw Error('Too many gifts');for(const[n,r]of Object.entries(c.gifts)){if(!/^[\p{L}\p{N} _-]{1,64}$/u.test(n)||!['blocks','boost','quake'].includes(r.action)||!Number.isInteger(r.value)||r.value<1||r.value>1000)throw Error('Invalid gift rule');out.gifts[n.toLowerCase()]=r;}}
+ if('gifts'in c){if(!c.gifts||typeof c.gifts!=='object'||Array.isArray(c.gifts))throw Error('Invalid gift rules');out.gifts=Object.create(null);if(Object.keys(c.gifts).length>100)throw Error('Too many gifts');for(const[n,r]of Object.entries(c.gifts)){if(!/^[\p{L}\p{N} _-]{1,64}$/u.test(n)||!['blocks','boost','quake'].includes(r.action)||!Number.isInteger(r.value)||r.value<1||r.value>1000)throw Error('Invalid gift rule');out.gifts[n.toLowerCase()]=r;}}
  return out;
 }
