@@ -1,5 +1,7 @@
 # Executed verification and remaining acceptance checks
 
+**Latest default: version 0.3, Windows PowerShell + existing browser, with no Node or Godot install. The earlier Godot/0.2 sections below are historical; the latest browser results are recorded at the end.**
+
 Date: 2026-11-16. Development environment: Linux, Node 24.22.1, Godot 4.6.3, Chromium, Xorg dummy display, Mesa llvmpipe software OpenGL. The local development machine is not a Windows 11 gaming PC. Windows headless CI subsequently passed as recorded below. No real TikFinity installation or TikTok LIVE account was attached.
 
 ## Executed and passed
@@ -72,3 +74,24 @@ Earlier publishing attempts failed with HTTP 403 because this new repository was
 - Setup, Start, a repeated Start without duplicate game processes, simulated exited-game recovery, simulated newly pulled source-version detection/restart, backup creation, Hebrew-setting persistence, Stop and subsequent Start all passed from a Windows folder containing spaces.
 
 These are actual executed Windows headless checks. They do not certify interactive Windows 11 rendering, LIVE Studio capture, real Free-account TikFinity access, GPU 60 FPS, or the optional Update helper's authenticated Git pull on your PC. Documentation-only commits after this source revision do not change the tested application code.
+
+
+## Version 0.3 — no-install browser default
+
+The game now uses Windows built-ins and an existing Edge/Chrome browser. The temporary portable PowerShell used for Linux development validation is not distributed, installed, or required on the player's PC.
+
+### Executed and passed
+
+- [Windows no-install CI](https://github.com/maxM808s/tiktok-live-pyramid/actions/runs/43864664903): the normal launchers passed with Node removed from PATH, no Godot setup, and the runner's existing browser. Setup, repeated Start without duplicates, actual browser heartbeat, exited-game recovery, simulated source-update restart, settings backups/persistence, Stop and subsequent Start passed from a folder with spaces. Engine tests and PowerShell parsing passed on Windows; engine tests also passed on Linux.
+- Fifteen engine/source tests passed, including browser checkpoint recovery, retained event dedup IDs, six browser blueprint geometries and checksums of the bundled official Three.js source/license.
+- The actual PowerShell HTTP host and WebGL browser game completed all six buildings, with visible delivery scheduling, final landing, automatic rotation, exclusive owner/view-only duplicate-window behavior, simulated gift quantities/duplicate IDs and Hebrew HUD. No browser page errors were recorded.
+- The full dashboard regression passed against the PowerShell host with a real browser game owner: readiness, six previews, quick controls, preserved unsaved edits, gift editing/removal, settings backup/import, log filter, languages, LIVE test blocking and mobile overflow.
+- The browser's direct WebSocket adapter passed an explicit local mock test for all five documented event types, duplicate gift IDs and reconnection. This was not a real TikFinity/TikTok connection.
+- A 60-second active construction soak accepted 1,315 simulator events, kept its queue within bounds (maximum observed 2,439 units), stayed online and reached 200 units / celebration. The test explicitly resumed construction first. The approximately 249 MB reported host-process-plus-browser-JS-heap figure is not total browser/GPU memory. The software renderer reported 8 FPS at the end; this is not a 60 FPS hardware claim.
+- Origin, Host, session, JSON/configuration and file-allowlist security checks passed against the PowerShell host.
+
+An earlier Windows integrity test caught Git converting the bundled license's line endings. Vendor files now enforce LF and all Windows tests passed. An early dashboard test used fixed 500 ms timing for the asynchronous bridge; tests now wait for acknowledged state, and the regression passed. Control changes trigger a durable checkpoint before their acknowledgement is reported.
+
+### Still requires your PC / livestream
+
+Actual Windows 11 graphical capture in LIVE Studio, native GPU performance, real TikFinity Free availability/events, browser local-network permission prompts, multi-hour unattended use, the 90-second hung-window watchdog and the optional Update helper's authenticated Git pull remain acceptance checks. Do not treat mock events or headless CI as proof of a real livestream.
