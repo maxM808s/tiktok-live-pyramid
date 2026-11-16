@@ -33,7 +33,7 @@ The first timed soak attempt overlapped a browser test that intentionally switch
 - Real TikTok gifts/likes/comments/follows/shares and viewer votes.
 - Native Windows font fallback and visual inspection of Hebrew inside the captured Godot window. Browser Hebrew was executed and inspected; Windows game typography is not claimed verified.
 - Multi-hour unattended session, Windows sleep/power behavior and recovery from a hung renderer. The monitor restarts exited game processes; it does not automatically force-kill a renderer solely for missing telemetry.
-- GitHub Actions workflow execution and actual GitHub Desktop pull. Publishing must succeed before CI can run. No packaged Windows Release was produced.
+- GitHub Actions workflow execution and actual GitHub Desktop pull. CI runs are tracked in the repository Actions tab. No packaged Windows Release was produced.
 
 ## Visual / product scope
 
@@ -43,7 +43,7 @@ The dashboard supports quality, worker cap/outfits, camera and day/night toggles
 
 ## Publication status
 
-The selected remote is `https://github.com/maxM808s/tiktok-live-pyramid`. Local stage commits are present. Initial Git push returned HTTP 403; the connected GitHub API's create-tree request also returned “Resource not accessible by integration.” The repository connection must receive write access before these commits can be published. This is an access failure, not an automatic safety-review rejection. The existing battle repository was not modified.
+Published to `https://github.com/maxM808s/tiktok-live-pyramid` on `main`. Repository access was refreshed and the push succeeded, including the original five stages and version 0.2 improvements. Windows CI results are separate from the executed Linux/local checks above. The existing battle repository was not modified.
 
 ## Version 0.2 improvements — additional executed checks
 
@@ -53,9 +53,9 @@ The selected remote is `https://github.com/maxM808s/tiktok-live-pyramid`. Local 
 - API security checks and the local Git fast-forward/settings-preservation test passed again.
 - The translated building selector test initially caught implicit option values changing with translated labels. Explicit values fixed the issue, and the expanded browser test passed.
 
-The new Windows common lifecycle helpers, mutex, source-revision restart detection, backups, retained .cmd exit codes, GitHub Desktop Git detection, retry backoff and 90-second renderer watchdog are **implemented but not executed on Windows here**. The CI workflow now includes the actual headless launchers, repeated Start, simulated game crash, simulated source-version change, backups and settings retention from a folder with spaces. CI remains pending publication. This supersedes the earlier note that the monitor does not restart an unresponsive renderer.
+The new Windows common lifecycle helpers, mutex, source-revision restart detection, backups, retained .cmd exit codes, GitHub Desktop Git detection, retry backoff and 90-second renderer watchdog are **implemented but not executed on Windows here**. The CI workflow now includes the actual headless launchers, repeated Start, simulated game crash, simulated source-version change, backups and settings retention from a folder with spaces. Check GitHub Actions for current CI results; publication has succeeded. This supersedes the earlier note that the monitor does not restart an unresponsive renderer.
 
-GitHub access diagnosis: the connected installation uses selected repositories, and `tiktok-live-pyramid` is absent from that selection. Repository owner permission is separate from the app's selected-repository access. Add the pyramid repository at https://github.com/settings/installations/180978996 before retrying publication. No other repository was modified.
+Earlier publishing attempts failed with HTTP 403 because this new repository was missing from the app connection. Access was refreshed and publication succeeded. No other repository was modified.
 
 - Version 0.2 timed soak: 2,790 simulator events in 60 seconds; maximum queue 5,000; peak combined memory approximately 108 MB; game remained online. No Windows performance conclusion follows from these software-rendered results.
 - Final 0.2 automatic-round integration, blueprint assertions, expanded browser regression and service/session recovery checks passed after the updates.

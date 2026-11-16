@@ -141,7 +141,7 @@ Developers can run `npm test`, `node server/server.mjs`, and `godot --path game`
 
 [Reference audit](docs/REFERENCE-AUDIT.md) · [TikFinity research](docs/TIKFINITY.md) · [Test status](docs/TEST-STATUS.md)
 
-GitHub Actions source checks run Node tests on Linux and Windows, parse the PowerShell scripts, and check blueprints using an official pinned Godot 4.6.3 download with SHA-256 verification **inside the disposable GitHub runner only**. These checks do not install software on your PC and do not verify LIVE Studio capture or the interactive Windows launch flow. The workflow has not run until the repository accepts the commits.
+GitHub Actions source checks run Node tests on Linux and Windows, parse the PowerShell scripts, and check blueprints using an official pinned Godot 4.6.3 download with SHA-256 verification **inside the disposable GitHub runner only**. These checks do not install software on your PC and do not verify LIVE Studio capture or the interactive Windows launch flow. Check the repository Actions tab for the latest workflow status.
 
 
 ## Control room improvements in 0.2
@@ -155,4 +155,4 @@ GitHub Actions source checks run Node tests on Linux and Windows, parse the Powe
 - English/Hebrew dropdowns, RTL, keyboard focus, confirmation dialogs and responsive mobile layout.
 - Placed stones are batched with MultiMesh and shared primitive meshes. Workers and flying stones remain animated. Countdown now waits for stones to land; minimum overlay mode removes its background panel as well as its text.
 
-The improved Windows launcher uses a per-project mutex to serialize Start/Stop/Update and the process monitor. Error exit codes are retained, game logs go to `.local/game.log`, and repeated startup failures back off instead of opening an endless rapid sequence of game windows. Windows CI now includes headless launcher smoke tests from a folder with spaces; those CI tests cannot run until GitHub publishing access is enabled.
+The improved Windows launcher uses a per-project mutex to serialize Start/Stop/Update and the process monitor. Error exit codes are retained, game logs go to `.local/game.log`, and repeated startup failures back off instead of opening an endless rapid sequence of game windows. Windows CI now includes headless launcher smoke tests from a folder with spaces; check the repository Actions tab for their results.
