@@ -34,7 +34,7 @@ func material(color: Color) -> StandardMaterial3D:
  var m := StandardMaterial3D.new()
  m.albedo_color = color
  m.roughness = 0.78
- if color == Color.GOLD:
+ if color == Color("d7ad55"):
   m.metallic = 0.7
   m.roughness = 0.25
  material_cache[color] = m
@@ -77,7 +77,7 @@ func _ready() -> void:
  backdrop.size = Vector2(1010,330)
  backdrop.color = Color(0.025,0.07,0.12,0.91)
  overlay.add_child(backdrop)
- label_at("P Y R A M I D   /   L I V E",Vector2(60,55),Vector2(960,60),32,Color.GOLD)
+ label_at("P Y R A M I D   /   L I V E",Vector2(60,55),Vector2(960,60),32,Color("d7ad55"))
  title = label_at("EGYPTIAN PYRAMID",Vector2(50,120),Vector2(980,85),62)
  details = label_at("Waiting for local service",Vector2(50,210),Vector2(980,60),32)
  bar = ProgressBar.new()
@@ -86,7 +86,7 @@ func _ready() -> void:
  bar.show_percentage = false
  overlay.add_child(bar)
  status = label_at("CONNECTING",Vector2(70,345),Vector2(940,65),28,Color(0.5,0.9,0.8))
- notice = label_at("",Vector2(70,1120),Vector2(940,140),44,Color.GOLD)
+ notice = label_at("",Vector2(70,1120),Vector2(940,140),44,Color("d7ad55"))
  leaders = label_at("TOP BUILDERS",Vector2(50,1290),Vector2(980,230),34)
  instructions = label_at("5 likes → worker • Comment → stone\nFollow → 5 stones • Rose → 10 stones\nVote: comment the next building name",Vector2(50,1570),Vector2(980,180),32)
  label_at("BUILD SOMETHING THAT LASTS",Vector2(50,1800),Vector2(980,50),26,Color(0.8,0.7,0.5))
@@ -127,13 +127,22 @@ func _ready() -> void:
    box(self,Vector3(x,5.7,z),Vector3(.2,.18,7),Color("614936"))
  for i in range(10):
   box(self,Vector3(-7+(i%3),0.4+int(i/3)*.75,9),Vector3(.9,.7,.9),Color("d9b780"))
+ box(self,Vector3(9,4,-9),Vector3(.4,8,.4),Color("544936"))
+ box(self,Vector3(6,8,-9),Vector3(7,.3,.3),Color("544936"))
+ box(self,Vector3(3,5.7,-9),Vector3(.06,4.5,.06),Color("343c40"))
+ box(self,Vector3(3,3.4,-9),Vector3(1.2,.9,1.2),Color("b99e76"))
+ for p in [Vector3(-13,0,-12),Vector3(14,0,-16),Vector3(-15,0,3)]:
+  box(self,p+Vector3(0,2.5,0),Vector3(.4,5,.4),Color("685037"))
+  for a in range(6):
+   var leaf := box(self,p+Vector3(cos(a*TAU/6)*1.2,5,sin(a*TAU/6)*1.2),Vector3(3,.12,.6),Color("4a6650"))
+   leaf.rotation.y = -a*TAU/6
  camera = Camera3D.new()
  camera.fov = 49
  add_child(camera)
- camera.position = Vector3(23,22,32)
+ camera.position = Vector3(23,17,32)
  camera.look_at(Vector3(0,3.5,0))
  dust = particles(24,Color("e4c89b"),0.6,2)
- confetti = particles(160,Color.GOLD,3,10)
+ confetti = particles(160,Color("d7ad55"),3,10)
  request = HTTPRequest.new()
  request.timeout = 2
  add_child(request)
@@ -187,7 +196,7 @@ func make_worker(i: int) -> void:
  var root := Node3D.new()
  add_child(root)
  var skin := i%4
- var colors := [Color("29a0a8"),Color("eee0bf"),Color("26374d"),Color.GOLD]
+ var colors := [Color("29a0a8"),Color("eee0bf"),Color("26374d"),Color("d7ad55")]
  box(root,Vector3(0,1.1,0),Vector3(.48,.65,.3),colors[skin])
  box(root,Vector3(0,1.67,0),Vector3(.37,.38,.36),Color("bc865c"))
  box(root,Vector3(0,1.88,0),Vector3(.45,.14,.4),colors[skin])
@@ -197,15 +206,15 @@ func make_worker(i: int) -> void:
  if skin == 3:
   for side in [-1,1]:
    box(root,Vector3(side*.24,1.6,0),Vector3(.12,.6,.38),Color("1f6385"))
-  box(root,Vector3(0,1.98,0),Vector3(.16,.24,.16),Color.GOLD)
+  box(root,Vector3(0,1.98,0),Vector3(.16,.24,.16),Color("d7ad55"))
  var left := box(root,Vector3(-.15,.48,0),Vector3(.18,.65,.2),Color("514737"))
  var right := box(root,Vector3(.15,.48,0),Vector3(.18,.65,.2),Color("514737"))
  box(root,Vector3(-.34,1.18,.15),Vector3(.17,.52,.18),Color("bc865c"))
  box(root,Vector3(.34,1.18,.15),Vector3(.17,.52,.18),Color("bc865c"))
  var carry := box(root,Vector3(0,1.2,.5),Vector3(.7,.55,.55),Color("e4c18a"))
  var tag := Label3D.new()
- tag.font_size = 40
- tag.pixel_size = .012
+ tag.font_size = 30
+ tag.pixel_size = .009
  tag.billboard = BaseMaterial3D.BILLBOARD_ENABLED
  tag.position.y = 2.35
  root.add_child(tag)
@@ -288,10 +297,10 @@ func _process(delta: float) -> void:
   w.right.rotation.x = -w.left.rotation.x
   w.carry.visible = busy and t < .5
   var board: Array = state.leaderboard
-  w.tag.text = str(board[i%board.size()][0]) if not board.is_empty() else ""
+  w.tag.text = str(board[i%board.size()][0]) if not board.is_empty() and i<mini(4,board.size()) else ""
   if state.phase == "celebrating": w.node.position.y = abs(sin(clock*4+i))*.5
  if state.config.camera:
-  camera.position = Vector3(30*sin(.62+sin(clock*.06)*.12),22,33*cos(.62+sin(clock*.06)*.12))
+  camera.position = Vector3(30*sin(.62+sin(clock*.06)*.12),17,33*cos(.62+sin(clock*.06)*.12))
   camera.look_at(Vector3(0,4,0))
  if state.config.night:
   var day := .5+.5*sin(clock*.012)
@@ -308,14 +317,14 @@ func deliver_stone(index: int, worker_index: int) -> void:
  w.delivery = true
  var unit := mini(int(float(index)/slots.size()*float(state.target)),state.placements.size()-1)
  var owner_data: Dictionary = state.placements[unit] if unit >= 0 else {"user":state.builder,"gold":state.gold}
- w.tag.text = str(owner_data.user)
- w.tag.modulate = Color.GOLD if owner_data.gold else Color.WHITE
+ w.tag.text = str(owner_data.user) if worker_index<4 else ""
+ w.tag.modulate = Color("d7ad55") if owner_data.gold else Color.WHITE
  w.carry.visible = true
  w.node.position = Vector3(-6.0+worker_index%4,0,9.5+int(worker_index/4)*.5)
  var landing := Vector3(target.x,0,target.z+1.5)
  w.node.look_at(Vector3(landing.x,0.01,landing.z))
  b.visible = false
- if owner_data.gold: b.material_override = material(Color.GOLD)
+ if owner_data.gold: b.material_override = material(Color("d7ad55"))
  var tween := create_tween()
  tween.tween_property(w.node,"position",landing,.65)
  tween.tween_callback(func():
