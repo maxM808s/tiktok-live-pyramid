@@ -83,7 +83,7 @@ The game now uses Windows built-ins and an existing Edge/Chrome browser. The tem
 ### Executed and passed
 
 - [Windows no-install CI](https://github.com/maxM808s/tiktok-live-pyramid/actions/runs/43864664903): the normal launchers passed with Node removed from PATH, no Godot setup, and the runner's existing browser. Setup, repeated Start without duplicates, actual browser heartbeat, exited-game recovery, simulated source-update restart, settings backups/persistence, Stop and subsequent Start passed from a folder with spaces. Engine tests and PowerShell parsing passed on Windows; engine tests also passed on Linux.
-- Fifteen engine/source tests passed, including browser checkpoint recovery, retained event dedup IDs, six browser blueprint geometries and checksums of the bundled official Three.js source/license.
+- Sixteen engine/source tests passed, including browser checkpoint recovery, retained event dedup IDs, six browser blueprint geometries and checksums of the bundled official Three.js source/license.
 - The actual PowerShell HTTP host and WebGL browser game completed all six buildings, with visible delivery scheduling, final landing, automatic rotation, exclusive owner/view-only duplicate-window behavior, simulated gift quantities/duplicate IDs and Hebrew HUD. No browser page errors were recorded.
 - The full dashboard regression passed against the PowerShell host with a real browser game owner: readiness, six previews, quick controls, preserved unsaved edits, gift editing/removal, settings backup/import, log filter, languages, LIVE test blocking and mobile overflow.
 - The browser's direct WebSocket adapter passed an explicit local mock test for all five documented event types, duplicate gift IDs and reconnection. This was not a real TikFinity/TikTok connection.
@@ -95,3 +95,7 @@ An earlier Windows integrity test caught Git converting the bundled license's li
 ### Still requires your PC / livestream
 
 Actual Windows 11 graphical capture in LIVE Studio, native GPU performance, real TikFinity Free availability/events, browser local-network permission prompts, multi-hour unattended use, the 90-second hung-window watchdog and the optional Update helper's authenticated Git pull remain acceptance checks. Do not treat mock events or headless CI as proof of a real livestream.
+
+- Final browser dashboard regression explicitly placed a uniquely named simulator contributor at the top, confirmed it was absent in LIVE, and confirmed the simulator leaderboard returned when switching back. Simulator and LIVE checkpoint banks are separate in both editions. Primitive/array settings rejection was also executed against the PowerShell host.
+
+Final no-install source validation: [all jobs passed for 38f3bd4](https://github.com/maxM808s/tiktok-live-pyramid/actions/runs/43866834332), including sixteen engine tests on Windows/Linux and the Windows browser startup/recovery smoke test with Node removed from PATH. The separate-mode checkpoint browser regression also passed.

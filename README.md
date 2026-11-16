@@ -120,7 +120,7 @@ Services bind to loopback only. Incoming requests have Host/origin/session valid
 | 100% while workers still build | Contributions are complete; countdown waits for physical visual placement to finish. |
 | Low FPS | Select Low graphics, fewer workers and close other GPU-heavy apps. |
 | Update helper fails | Use GitHub Desktop Fetch/Pull. Local edits or authentication can block a safe fast-forward. Settings remain backed up. |
-| Need to clear all progress | Stop the game and rename `.local/checkpoint.json` as a backup. Settings remain separate. |
+| Need to clear all progress | Stop the game and rename `.local/checkpoint.json`, `.local/checkpoint-live.json` and `.local/checkpoint-simulator.json` as backups. Settings remain separate. |
 
 ## Optional Godot edition and development
 

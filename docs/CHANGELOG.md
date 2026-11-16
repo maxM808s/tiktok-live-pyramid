@@ -23,3 +23,5 @@
 - The browser uses the shared event/round engine and TikFinity adapter, with the same live/simulator separation. It reconnects to the local host and TikFinity where supported.
 - Godot remains available through the explicit optional Start-Godot.cmd launcher. The existing battle project was only read to understand its launcher; it was not modified or copied into this project.
 - Windows CI removes Node from PATH and uses the runner's existing browser to test the normal launchers.
+
+- Simulator and LIVE checkpoints are isolated. Test contributions do not carry into the live viewer session; switching back restores that mode's own progress.
