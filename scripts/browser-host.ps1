@@ -76,6 +76,17 @@ if (Test-Path -LiteralPath $settingsFile) {
 }
 $script:Checkpoint = $null
 try { $file=Join-Path $Local 'checkpoint.json'; if ((Get-Item $file).Length -le 6291456) { $script:Checkpoint=Get-Content -Raw -Encoding UTF8 -LiteralPath $file | ConvertFrom-Json } } catch {}
+$script:ModeCheckpoints=@{}
+foreach($mode in @('live','simulator')){
+    try{$file=Join-Path $Local ("checkpoint-"+$mode+".json");if((Get-Item $file).Length -le 6291456){$script:ModeCheckpoints[$mode]=Get-Content -Raw -Encoding UTF8 -LiteralPath $file | ConvertFrom-Json}}catch{}
+}
+if(!$script:ModeCheckpoints.ContainsKey($script:Config.mode) -and $script:Checkpoint -and (!$script:Checkpoint.mode -or $script:Checkpoint.mode -eq $script:Config.mode)){$script:ModeCheckpoints[$script:Config.mode]=$script:Checkpoint}
+function Store-Checkpoint($Value){
+    if($Value.mode -cnotin @('live','simulator') -or @($Value.seen).Count -gt 10000 -or @($Value.queue).Count -gt 5000 -or @($Value.people).Count -gt 5000){throw 'Invalid checkpoint'}
+    Atomic-Json ("checkpoint-"+$Value.mode+".json") $Value
+    Atomic-Json 'checkpoint.json' $Value
+    $script:ModeCheckpoints[$Value.mode]=$Value;$script:Checkpoint=$Value
+}
 $script:Token = New-Key
 $script:Owner = ''; $script:OwnerKey = ''; $script:OwnerAt = [datetime]::MinValue
 $script:Ack=0; $script:Sequence = 0; $script:Commands = New-Object 'Collections.Generic.List[object]'
@@ -134,7 +145,14 @@ function Handle($Stream) {
         if($body.clientId -isnot [string] -or $body.clientId -notmatch '^[a-zA-Z0-9-]{16,80}$'){throw 'Invalid client'}
         if($script:Owner -ne '' -and $script:Owner -ne $body.clientId -and ([datetime]::UtcNow-$script:OwnerAt).TotalSeconds -lt 6){Json-Reply $Stream 409 @{error='Another game window owns the session'};return}
         $script:Owner=$body.clientId;$script:OwnerKey=New-Key;$script:OwnerAt=[datetime]::UtcNow
-        Json-Reply $Stream 200 @{ownerToken=$script:OwnerKey;config=$script:Config;checkpoint=$script:Checkpoint;sequence=$script:Sequence};return
+        Json-Reply $Stream 200 @{ownerToken=$script:OwnerKey;config=$script:Config;checkpoint=$script:ModeCheckpoints[$script:Config.mode];sequence=$script:Sequence};return
+    }
+    if($path -eq '/api/archive'){
+        if($body.clientId -cne $script:Owner -or !(Same-Key ([string]$body.ownerToken) $script:OwnerKey)){Json-Reply $Stream 403 @{error='Game ownership expired'};return}
+        if($body.nextMode -cnotin @('live','simulator')){throw 'Invalid event source'}
+        Store-Checkpoint $body.checkpoint
+        $script:OwnerAt=[datetime]::UtcNow
+        Json-Reply $Stream 200 @{checkpoint=$script:ModeCheckpoints[$body.nextMode]};return
     }
     if($path -eq '/api/poll'){
         if($body.clientId -cne $script:Owner -or !(Same-Key ([string]$body.ownerToken) $script:OwnerKey)){Json-Reply $Stream 403 @{error='Game ownership expired'};return}
@@ -142,7 +160,7 @@ function Handle($Stream) {
         $script:State=$body.state;$script:OwnerAt=[datetime]::UtcNow
         if($null -ne $body.checkpoint){
             if(@($body.checkpoint.seen).Count -gt 10000 -or @($body.checkpoint.queue).Count -gt 5000 -or @($body.checkpoint.people).Count -gt 5000){throw 'Checkpoint too large'}
-            Atomic-Json 'checkpoint.json' $body.checkpoint;$script:Checkpoint=$body.checkpoint
+            Store-Checkpoint $body.checkpoint
         }
         $ack=[long]$body.ack
         if($ack -lt 0 -or $ack -gt $script:Sequence){throw 'Invalid command acknowledgement'}

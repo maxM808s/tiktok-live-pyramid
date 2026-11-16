@@ -2,7 +2,7 @@
 
 **Double-click Start-Game.cmd. No Node.js, Godot, Python, npm install, or separate game engine is needed for normal use.**
 
-Version 0.3 runs the 3D game in your existing Edge or Chrome browser. The local host uses Windows PowerShell and .NET, already included with Windows 11, like your battle game's launcher. The 3D library and all game files are included in this repository. Startup downloads nothing and uses no CDN.
+Version 0.3 runs the 3D game in your existing Edge or Chrome browser. The local host uses Windows PowerShell and .NET, already included with Windows 11, like your battle game's launcher. The 3D library and all game files are included in this repository. Startup does not download or install game dependencies and uses no CDN.
 
 ## Start it like your other games
 
@@ -102,7 +102,7 @@ All personal files stay in ignored **`.local`**: settings, previous valid settin
 
 Do not post `.local`, browser profiles, session tokens or raw viewer data publicly. Logs can include usernames. Checkpoints save approximately every four seconds and during a clean stop; abrupt crashes can lose the most recent interval. The browser owner can reconnect to a restarted host. Invalid checkpoints start a clean round instead of executing arbitrary data.
 
-Services bind to loopback only. Incoming requests have Host/origin/session validation, a static file allowlist, bounded bodies and queues, and an exclusive game-owner lease. The game loads only bundled scripts; TikFinity is its only live-event WebSocket destination. No passwords, secrets or large executable binaries are committed.
+Services bind to loopback only. Incoming requests have Host/origin/session validation, a static file allowlist, bounded bodies and queues, and an exclusive game-owner lease. Simulator and LIVE progress use separate checkpoints, so test contributions cannot appear in a real viewer session. Switching back restores that mode's own progress. The game loads only bundled scripts; TikFinity is its only live-event WebSocket destination. No passwords, secrets or large executable binaries are committed.
 
 ## Troubleshooting
 

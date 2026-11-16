@@ -4,6 +4,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {Engine,validateConfig} from './engine.mjs';
+import {checkpoint as engineCheckpoint,recover} from '../browser/checkpoint.js';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),local=path.join(root,'.local');fs.mkdirSync(local,{recursive:true});
 const version=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8')).version;
 let saved={},settingsWarning='';
@@ -12,7 +13,7 @@ catch(error){if(error.code!=='ENOENT'){
  settingsWarning='Settings file could not be read; loaded defaults. Restore a backup before saving changes.';
  try{saved=validateConfig(JSON.parse(fs.readFileSync(path.join(local,'settings.previous.json'),'utf8')));settingsWarning='Recovered previous settings after an unreadable settings file.';}catch{}
 }}
-const game=new Engine(saved),token=crypto.randomBytes(24).toString('hex');
+let game=new Engine(saved);const token=crypto.randomBytes(24).toString('hex');
 if(settingsWarning)game.log(settingsWarning);
 
 let connection={socket:false,lastEvent:0,error:'TikFinity not connected',attempts:0};let socket,retry;
@@ -39,7 +40,12 @@ const server=http.createServer(async(req,res)=>{
   if(fs.existsSync(path.join(local,'settings.json'))){
    try{validateConfig(JSON.parse(fs.readFileSync(path.join(local,'settings.json'),'utf8')));fs.copyFileSync(path.join(local,'settings.json'),path.join(local,'settings.previous.json'));}catch(error){if(error.code)throw error;}
   }
-  fs.renameSync(path.join(local,'settings.tmp'),path.join(local,'settings.json'));game.config=next;
+  fs.renameSync(path.join(local,'settings.tmp'),path.join(local,'settings.json'));
+  if(next.mode!==game.config.mode){
+   checkpoint();const priorRound=game.round;game=new Engine(next);
+   try{recover(game,JSON.parse(fs.readFileSync(path.join(local,`checkpoint-${next.mode}.json`),'utf8')));}catch{}
+   game.round=Math.max(priorRound,game.round)+1;
+  }else game.config=next;
  }
  else if(u.pathname==='/api/sim'){if(!game.ingest(b,'simulator'))return json(res,400,{error:game.logs[0]?.message||'Ignored'});}
  else if(u.pathname==='/api/control'){if(b.action==='pause')game.paused=!game.paused;else if(b.action==='restart')game.reset(game.config.building);else throw Error('Unknown control');}
@@ -52,11 +58,12 @@ const server=http.createServer(async(req,res)=>{
 });
 // Checkpoints contain only local game state; never committed.
 function checkpoint(){
- const data={paused:game.paused,roundTarget:game.roundTarget,building:game.building,built:game.built,round:game.round,phase:game.phase,countdown:game.countdown,queue:game.queue,placements:game.placements,people:[...game.people],contributors:[...game.contributors],seen:[...game.seen],likes:[...game.likes],votes:[...game.votes],logs:game.logs,metrics:game.metrics};
+ const data=engineCheckpoint(game);
  fs.writeFileSync(path.join(local,'checkpoint.tmp'),JSON.stringify(data));
  fs.renameSync(path.join(local,'checkpoint.tmp'),path.join(local,'checkpoint.json'));
+ fs.writeFileSync(path.join(local,`checkpoint-${game.config.mode}.tmp`),JSON.stringify(data));fs.renameSync(path.join(local,`checkpoint-${game.config.mode}.tmp`),path.join(local,`checkpoint-${game.config.mode}.json`));
 }
-try{const c=JSON.parse(fs.readFileSync(path.join(local,'checkpoint.json')));if(!['pyramid','temple','castle','lighthouse','obelisk','ziggurat'].includes(c.building)||!Number.isInteger(c.built)||c.built<0||c.built>2000||!Array.isArray(c.queue)||c.queue.length>5000||!Array.isArray(c.placements)||c.placements.length>2000)throw Error('Bad checkpoint');
+try{const bank=path.join(local,`checkpoint-${game.config.mode}.json`);const c=JSON.parse(fs.readFileSync(fs.existsSync(bank)?bank:path.join(local,'checkpoint.json')));if(c.mode&&c.mode!==game.config.mode)throw Error('Different event source');if(!['pyramid','temple','castle','lighthouse','obelisk','ziggurat'].includes(c.building)||!Number.isInteger(c.built)||c.built<0||c.built>2000||!Array.isArray(c.queue)||c.queue.length>5000||!Array.isArray(c.placements)||c.placements.length>2000)throw Error('Bad checkpoint');
  for(const k of ['people','contributors','seen','likes','votes'])if(!Array.isArray(c[k])||c[k].length>(k==='seen'?10000:5000))throw Error('Bad map');
  if(!['building','celebrating'].includes(c.phase)||!Number.isInteger(c.round)||c.round<1||!Number.isFinite(c.countdown)||!Array.isArray(c.logs)||c.logs.length>100||!c.metrics||!['accepted','duplicates','rejected','dropped'].every(k=>Number.isFinite(c.metrics[k])))throw Error('Bad checkpoint state');
  if(c.queue.some(j=>!j||typeof j.user!=='string'||!Number.isInteger(j.remaining)||j.remaining<1)||c.queue.reduce((a,j)=>a+j.remaining,0)>5000)throw Error('Bad queue');

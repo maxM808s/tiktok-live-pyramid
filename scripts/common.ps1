@@ -87,7 +87,7 @@ function Find-Git {
 function Backup-Settings {
     $folder = Join-Path $Local ('backups\' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff'))
     New-Item -ItemType Directory -Path $folder -Force | Out-Null
-    foreach ($name in @('settings.json', 'settings.previous.json', 'checkpoint.json')) {
+    foreach ($name in @('settings.json', 'settings.previous.json', 'checkpoint.json', 'checkpoint-live.json', 'checkpoint-simulator.json')) {
         $source = Join-Path $Local $name
         if (Test-Path -LiteralPath $source) { Copy-Item -LiteralPath $source -Destination $folder }
     }

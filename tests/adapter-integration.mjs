@@ -1,7 +1,7 @@
 // An explicit local mock, NOT a real TikFinity connection. Do not run with TikFinity open.
 import http from 'node:http';import crypto from 'node:crypto';import assert from 'node:assert/strict';
 const base='http://127.0.0.1:3210',token=(await(await fetch(base+'/api/session')).json()).token;
-const post=async(p,b)=>{const r=await fetch(base+p,{method:'POST',headers:{'X-Session':token,'Content-Type':'application/json'},body:JSON.stringify(b)});assert.equal(r.status,200);};
+const post=async(p,b)=>{const r=await fetch(base+p,{method:'POST',headers:{'X-Session':token,'Content-Type':'application/json'},body:JSON.stringify(b)});assert.equal(r.status,200);const result=await r.json();if(result.commandId){const end=Date.now()+10000;while(Date.now()<end){const s=await(await fetch(base+'/api/state')).json();if(s.commandAck>=result.commandId)break;await new Promise(r=>setTimeout(r,100));}}};
 const get=async()=>await(await fetch(base+'/api/state')).json();
 await post('/api/config',{mode:'live'});const before=(await get()).metrics.accepted;
 let connections=0;const sockets=new Set();

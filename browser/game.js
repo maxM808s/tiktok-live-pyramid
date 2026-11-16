@@ -33,9 +33,15 @@ async function claim(){
   document.body.classList.remove('spectator');$('#loading').hidden=true;message('');
  }catch(error){if(error.status!==409)throw error;owned=false;engine=null;disconnect();document.body.classList.add('spectator');$('#loading').hidden=true;}
 }
-function apply(commands){
+async function apply(commands){
  for(const command of commands){if(command.id<=ack)continue;
-  if(command.kind==='config')engine.config={...engine.config,...validateConfig(command.data)};
+  if(command.kind==='config'){
+   const next={...engine.config,...validateConfig(command.data)};
+   if(next.mode!==engine.config.mode){
+    const prior=engine,bank=await post('/api/archive',{clientId,ownerToken,checkpoint:checkpoint(prior),nextMode:next.mode});
+    engine=new Engine(next);recover(engine,bank.checkpoint);engine.round=Math.max(prior.round,engine.round)+1;disconnect();
+   }else engine.config=next;
+  }
   else if(command.kind==='sim')engine.ingest(command.data,'simulator');
   else if(command.kind==='control'){if(command.data.action==='pause')engine.paused=!engine.paused;if(command.data.action==='restart')engine.reset(engine.config.building);}
   ack=command.id;dirtyCheckpoint=true;
@@ -53,7 +59,7 @@ async function poll(){
   const payload={clientId,ownerToken,ack,state:publicState};if(save)payload.checkpoint=checkpoint(engine);
   const response=await post('/api/poll',payload);if(save){lastSave=now;dirtyCheckpoint=false;}
   online=true;lastPoll=now;message('');
-  apply(response.commands||[]);
+  await apply(response.commands||[]);
   if(engine.config.mode!=='live'&&(socket||retry))disconnect();
   if(response.stopping){stopping=true;disconnect();$('#status').textContent='GAME STOPPED';await post('/api/poll',{clientId,ownerToken,ack,state:{...engine.state(),connection,perf:engine.perf},checkpoint:checkpoint(engine)});owned=false;online=false;message('Game stopped. You can close this window.');return;}
   if(!socket&&!retry)connect();

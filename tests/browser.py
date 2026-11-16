@@ -43,9 +43,19 @@ try:
   page.locator('#simForm select[name=event]').select_option('gift');page.locator('#simForm button').click();page.wait_for_timeout(1300)
   assert 'Test Builder' in page.locator('#logs').inner_text()
   page.locator('#logSearch').fill('unlikely-no-match-123');assert page.locator('#logs').inner_text()=='No matching events.';page.locator('#logSearch').fill('')
+  # Put a unique simulator-only contributor on top so accidental carryover is observable.
+  mode_test_name='Simulator Only UI Check'
+  page.locator('#simForm [name=uniqueId]').fill(mode_test_name)
+  page.locator('#simForm [name=repeatCount]').fill('1000')
+  page.locator('#simForm button').click()
+  wait_state(lambda state:any(row[0]==mode_test_name for row in state['leaderboard']))
+  simulator_names=[row[0] for row in get()['leaderboard']]
   page.locator('#mode').select_option('live');page.wait_for_timeout(1300);assert page.locator('#simForm button').is_disabled()
+  if get().get('runtime')=='browser':
+   wait_state(lambda state:not any(row[0]==mode_test_name for row in state['leaderboard']))
   assert not page.locator('#connectionHelp').is_hidden()
   page.locator('#mode').select_option('simulator');page.wait_for_timeout(1300)
+  if get().get('runtime')=='browser':wait_state(lambda state:[row[0] for row in state['leaderboard']]==simulator_names)
   page.locator('#language').select_option('he');page.wait_for_timeout(1300);assert page.locator('html').get_attribute('dir')=='rtl'
   page.locator('[data-page=overview]').click();page.screenshot(path=str(out/'dashboard-he-v02.png'),full_page=True)
   page.reload();page.wait_for_timeout(1300);assert page.locator('html').get_attribute('dir')=='rtl'
@@ -53,6 +63,6 @@ try:
   page.set_viewport_size({'width':390,'height':844});page.screenshot(path=str(out/'dashboard-mobile-v02.png'),full_page=True)
   assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth')
   assert not errors,errors
-  print(json.dumps({'readiness':True,'six_previews':True,'quick_pause':True,'unsaved_edits_retained':True,'gift_create_edit_delete':True,'settings_export_import':True,'log_filter':True,'english_hebrew_rtl':True,'simulator_live_separation':True,'mobile_no_overflow':True,'browser_errors':errors}))
+  print(json.dumps({'readiness':True,'six_previews':True,'quick_pause':True,'unsaved_edits_retained':True,'gift_create_edit_delete':True,'settings_export_import':True,'log_filter':True,'english_hebrew_rtl':True,'simulator_live_separation':True,'mode_checkpoint_separation':get().get('runtime')=='browser','mobile_no_overflow':True,'browser_errors':errors}))
   browser.close()
 finally:post('/api/config',original)
