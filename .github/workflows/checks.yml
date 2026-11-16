@@ -25,10 +25,13 @@ jobs:
             [System.Management.Automation.Language.Parser]::ParseFile($file.FullName,[ref]$tokens,[ref]$errors) | Out-Null
             if ($errors.Count) { $errors | Format-List; throw "PowerShell parse failed: $file" }
           }
-  godot-blueprints:
+  windows-startup:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Download official pinned Godot into CI runner only
         shell: pwsh
         run: |
@@ -42,3 +45,13 @@ jobs:
         run: |
           & "$env:RUNNER_TEMP/godot/Godot_v4.6.3-stable_win64_console.exe" --headless --path game --script res://test_blueprints.gd
           if ($LASTEXITCODE) { throw 'Blueprint check failed' }
+      - name: Exercise Windows launchers from a folder with spaces
+        shell: pwsh
+        env:
+          PYRAMID_HEADLESS_TEST: '1'
+        run: |
+          $env:GODOT_EXE="$env:RUNNER_TEMP/godot/Godot_v4.6.3-stable_win64_console.exe"
+          $smokePath=Join-Path $env:RUNNER_TEMP 'Pyramid Live Smoke'
+          Copy-Item -LiteralPath $env:GITHUB_WORKSPACE -Destination $smokePath -Recurse
+          & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $smokePath 'tests/windows-smoke.ps1')
+          if ($LASTEXITCODE) { throw 'Windows startup smoke test failed' }
