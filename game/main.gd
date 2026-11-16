@@ -24,6 +24,8 @@ var round_id := -1
 var pending := false
 var building := "pyramid"
 var material_cache: Dictionary = {}
+var last_quake := 0
+var crown: Node3D
 var dust: CPUParticles3D
 var confetti: CPUParticles3D
 
@@ -65,6 +67,11 @@ func _ready() -> void:
  var overlay := CanvasLayer.new()
  overlay.name = "Overlay"
  add_child(overlay)
+ var lower := ColorRect.new()
+ lower.position = Vector2(35,1250)
+ lower.size = Vector2(1010,620)
+ lower.color = Color(0.025,0.07,0.12,0.94)
+ overlay.add_child(lower)
  var backdrop := ColorRect.new()
  backdrop.position = Vector2(35,40)
  backdrop.size = Vector2(1010,330)
@@ -89,17 +96,17 @@ func _ready() -> void:
  env.background_color = Color("142634")
  env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
  env.ambient_light_color = Color("a4cbd5")
- env.ambient_light_energy = 0.65
+ env.ambient_light_energy = 0.32
  env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
  world_env.environment = env
  add_child(world_env)
  sun = DirectionalLight3D.new()
  sun.rotation_degrees = Vector3(-48,-25,0)
  sun.light_color = Color("ffe0a4")
- sun.light_energy = 1.8
+ sun.light_energy = 0.8
  sun.shadow_enabled = true
  add_child(sun)
- box(self,Vector3(0,-0.45,0),Vector3(220,0.8,220),Color("bd915f"))
+ box(self,Vector3(0,-0.45,0),Vector3(220,0.8,220),Color("987d5e"))
  box(self,Vector3(0,-0.02,0),Vector3(17,0.12,17),Color("8e7055"))
  var rng := RandomNumberGenerator.new()
  rng.seed = 2026
@@ -109,7 +116,7 @@ func _ready() -> void:
   sphere.radius = rng.randf_range(3,10)
   sphere.height = sphere.radius*2
   mound.mesh = sphere
-  mound.material_override = material(Color("aa7c51"))
+  mound.material_override = material(Color("79664f"))
   mound.scale.y = 0.18
   mound.position = Vector3(rng.randf_range(-75,75),-0.4,rng.randf_range(-65,-20))
   add_child(mound)
@@ -119,7 +126,7 @@ func _ready() -> void:
    box(self,Vector3(x,3,z),Vector3(.2,.18,7),Color("614936"))
    box(self,Vector3(x,5.7,z),Vector3(.2,.18,7),Color("614936"))
  for i in range(10):
-  box(self,Vector3(-12+(i%3),0.4+(i/3)*.75,8),Vector3(.9,.7,.9),Color("d9b780"))
+  box(self,Vector3(-7+(i%3),0.4+int(i/3)*.75,9),Vector3(.9,.7,.9),Color("d9b780"))
  camera = Camera3D.new()
  camera.fov = 49
  add_child(camera)
@@ -160,6 +167,8 @@ func particles(count: int, color: Color, lifetime: float, velocity: float) -> CP
  return p
 
 func rebuild() -> void:
+ for tween in get_tree().get_processed_tweens(): tween.kill()
+ for w in workers: w.delivery = false
  for b in blocks: b.queue_free()
  blocks.clear()
  slots = Blueprints.make(building)
@@ -182,6 +191,13 @@ func make_worker(i: int) -> void:
  box(root,Vector3(0,1.1,0),Vector3(.48,.65,.3),colors[skin])
  box(root,Vector3(0,1.67,0),Vector3(.37,.38,.36),Color("bc865c"))
  box(root,Vector3(0,1.88,0),Vector3(.45,.14,.4),colors[skin])
+ if skin == 1:
+  for band in range(5): box(root,Vector3(0,.86+band*.13,.16),Vector3(.5,.035,.025),Color("a99b80"))
+ if skin == 2: box(root,Vector3(0,1.62,.19),Vector3(.39,.16,.05),Color("18222e"))
+ if skin == 3:
+  for side in [-1,1]:
+   box(root,Vector3(side*.24,1.6,0),Vector3(.12,.6,.38),Color("1f6385"))
+  box(root,Vector3(0,1.98,0),Vector3(.16,.24,.16),Color.GOLD)
  var left := box(root,Vector3(-.15,.48,0),Vector3(.18,.65,.2),Color("514737"))
  var right := box(root,Vector3(.15,.48,0),Vector3(.18,.65,.2),Color("514737"))
  box(root,Vector3(-.34,1.18,.15),Vector3(.17,.52,.18),Color("bc865c"))
@@ -193,7 +209,7 @@ func make_worker(i: int) -> void:
  tag.billboard = BaseMaterial3D.BILLBOARD_ENABLED
  tag.position.y = 2.35
  root.add_child(tag)
- workers.append({"node":root,"left":left,"right":right,"carry":carry,"tag":tag,"offset":float(i)/16.0})
+ workers.append({"node":root,"left":left,"right":right,"carry":carry,"tag":tag,"offset":float(i)/16.0,"delivery":false})
 
 func _response(_result: int, code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
  pending = false
@@ -204,6 +220,11 @@ func _response(_result: int, code: int, _headers: PackedStringArray, body: Packe
   token = parsed.token
   return
  state = parsed
+ if int(state.get("quakeAt",0)) != last_quake:
+  last_quake = int(state.get("quakeAt",0))
+  if last_quake > 0:
+   dust.position = Vector3(0,2,0)
+   dust.restart()
  if int(state.round) != round_id:
   round_id = int(state.round)
   building = state.building
@@ -232,7 +253,7 @@ func _process(delta: float) -> void:
   pending = true
   request.request("http://127.0.0.1:3210/api/state" if not token.is_empty() else "http://127.0.0.1:3210/api/session")
   if not token.is_empty() and telemetry.get_http_client_status() == HTTPClient.STATUS_DISCONNECTED:
-   telemetry.request("http://127.0.0.1:3210/api/perf",PackedStringArray(["Content-Type: application/json","X-Session: "+token]),HTTPClient.METHOD_POST,JSON.stringify({"fps":Engine.get_frames_per_second(),"workers":workers.size(),"memoryMB":Performance.get_monitor(Performance.MEMORY_STATIC)/1048576.0}))
+   telemetry.request("http://127.0.0.1:3210/api/perf",PackedStringArray(["Content-Type: application/json","X-Session: "+token]),HTTPClient.METHOD_POST,JSON.stringify({"fps":Engine.get_frames_per_second(),"workers":mini(workers.size(),int(state.get("config",{}).get("workers",16))),"round":round_id,"visualComplete":shown>=slots.size(),"memoryMB":Performance.get_monitor(Performance.MEMORY_STATIC)/1048576.0}))
  if state.is_empty(): return
  var running: bool = not state.paused
  var target_count := int(float(state.built)/float(state.target)*slots.size())
@@ -240,22 +261,25 @@ func _process(delta: float) -> void:
   for i in range(target_count,shown): blocks[i].visible = false
   shown = target_count
  if running and target_count > shown:
-  var n := mini(target_count,shown+4)
-  for i in range(shown,n):
-   var b := blocks[i]
-   b.visible = true
-   b.position = slots[i]+Vector3(0,1.3,0)
-   if state.gold: b.material_override = material(Color.GOLD)
-   create_tween().tween_property(b,"position",slots[i],0.38).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-  shown = n
-  dust.position = slots[maxi(0,shown-1)]
-  if state.config.quality == "high": dust.restart()
+  for i in range(shown,mini(target_count,shown+4)):
+   var available := -1
+   for j in range(workers.size()):
+    if workers[j].node.visible and not workers[j].delivery:
+     available = j
+     break
+   if available < 0: break
+   deliver_stone(i,available)
+   shown += 1
  var busy: bool = state.queue>0 and running and state.phase == "building"
  for i in range(workers.size()):
   var w: Dictionary = workers[i]
   if not w.node.visible: continue
+  if w.delivery:
+   w.left.rotation.x = sin(clock*10+i)*.55
+   w.right.rotation.x = -w.left.rotation.x
+   continue
   var t := fmod(clock*0.23+w.offset,1.0)
-  var source := Vector3(-11+float(i%3),0,8)
+  var source := Vector3(-7+float(i%3),0,9)
   var destination := Vector3(-5+float(i%7)*1.6,0,7)
   var travel := (t*2 if t<.5 else (1-t)*2) if busy else 0.0
   w.node.position = source.lerp(destination,travel)
@@ -271,8 +295,37 @@ func _process(delta: float) -> void:
   camera.look_at(Vector3(0,4,0))
  if state.config.night:
   var day := .5+.5*sin(clock*.012)
-  sun.light_energy = .35+day*1.5
+  sun.light_energy = .25+day*.65
   world_env.environment.background_color = Color("101d32").lerp(Color("618695"),day)
  if state.phase == "celebrating" and not confetti.emitting:
   confetti.position = Vector3(0,9,0)
   confetti.restart()
+
+func deliver_stone(index: int, worker_index: int) -> void:
+ var w: Dictionary = workers[worker_index]
+ var b := blocks[index]
+ var target := slots[index]
+ w.delivery = true
+ var unit := mini(int(float(index)/slots.size()*float(state.target)),state.placements.size()-1)
+ var owner_data: Dictionary = state.placements[unit] if unit >= 0 else {"user":state.builder,"gold":state.gold}
+ w.tag.text = str(owner_data.user)
+ w.tag.modulate = Color.GOLD if owner_data.gold else Color.WHITE
+ w.carry.visible = true
+ w.node.position = Vector3(-6.0+worker_index%4,0,9.5+int(worker_index/4)*.5)
+ var landing := Vector3(target.x,0,target.z+1.5)
+ w.node.look_at(Vector3(landing.x,0.01,landing.z))
+ b.visible = false
+ if owner_data.gold: b.material_override = material(Color.GOLD)
+ var tween := create_tween()
+ tween.tween_property(w.node,"position",landing,.65)
+ tween.tween_callback(func():
+  if is_instance_valid(b):
+   w.carry.visible = false
+   b.position = w.node.position+Vector3(0,1.6,0)
+   b.visible = true)
+ tween.tween_property(b,"position",target+Vector3(0,1.5,0),.25).set_trans(Tween.TRANS_SINE)
+ tween.tween_property(b,"position",target,.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+ tween.tween_callback(func():
+  w.delivery = false
+  dust.position = target
+  if state.config.quality == "high": dust.restart())

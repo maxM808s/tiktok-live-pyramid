@@ -3,7 +3,7 @@ export const buildings=['pyramid','temple','castle','lighthouse','obelisk','zigg
 export const defaults={language:'en',building:'pyramid',target:200,automatic:true,celebration:12,workers:16,quality:'high',camera:true,night:true,mode:'simulator',gifts:{rose:{action:'blocks',value:10},galaxy:{action:'boost',value:50},earthquake:{action:'quake',value:10}}};
 export class Engine{
  constructor(config={}){this.config={...defaults,...config,gifts:{...defaults.gifts,...config.gifts}};this.round=0;this.logs=[];this.seen=new Map();this.likes=new Map();this.people=new Map();this.votes=new Map();this.queue=[];this.paused=false;this.lastEvent=0;this.metrics={accepted:0,duplicates:0,rejected:0,dropped:0};this.reset(this.config.building);}
- reset(building,carry=false){this.building=building;this.built=0;this.placements=[];this.queue=carry?this.queue:[];this.contributors=new Map();this.phase='building';this.countdown=0;this.round++;}
+ reset(building,carry=false){this.building=building;this.built=0;this.placements=[];this.queue=carry?this.queue:[];this.contributors=new Map();this.credit=0;this.phase='building';this.countdown=0;this.round++;}
  log(message,source='system'){this.logs.unshift({at:Date.now(),message,source});this.logs.length=Math.min(this.logs.length,100);}
  ingest(packet,source='live'){
  try{
@@ -28,11 +28,12 @@ export class Engine{
  if(accepted>0){this.queue.push({user,remaining:accepted,gold:event==='gift'});this.people.set(user,(this.people.get(user)||0)+accepted);this.contributors.set(user,(this.contributors.get(user)||0)+accepted);}
  if(action==='boost')this.boostUntil=Date.now()+15000;
  }
+ while(this.contributors.size>5000)this.contributors.delete(this.contributors.keys().next().value);
  while(this.people.size>5000)this.people.delete(this.people.keys().next().value);
  this.lastEvent=Date.now();this.metrics.accepted++;this.log(`${user} · ${event} · ${amount}`,source);return true;
  }catch(e){this.metrics.rejected++;this.log(e.message,source);return false;}
  }
- tick(dt){if(this.paused)return;if(this.phase==='celebrating'){if(this.config.automatic){this.countdown-=dt;if(this.countdown<=0){const tally={};for(const b of this.votes.values())tally[b]=(tally[b]||0)+1;const winner=Object.keys(tally).sort((a,b)=>tally[b]-tally[a])[0];this.votes.clear();this.reset(winner||buildings[(buildings.indexOf(this.building)+1)%6],true);}}return;}
+ tick(dt){if(this.paused)return;if(this.phase==='celebrating'){if(this.config.automatic){if(this.perf?.round===this.round&&!this.perf.visualComplete)return;this.countdown-=dt;if(this.countdown<=0){const tally={};for(const b of this.votes.values())tally[b]=(tally[b]||0)+1;const winner=Object.keys(tally).sort((a,b)=>tally[b]-tally[a])[0];this.votes.clear();this.reset(winner||buildings[(buildings.indexOf(this.building)+1)%6],true);}}return;}
  this.credit=(this.credit||0)+dt*(Date.now()<this.boostUntil?16:4);
  if(Date.now()-(this.perf?.at||0)>3000){this.credit=0;return;}
  while(this.credit>=1&&this.queue.length&&this.built<this.config.target){this.credit--;const job=this.queue[0];this.builder=job.user;this.gold=job.gold;this.built++;this.placements.push({user:job.user,gold:job.gold});if(--job.remaining<=0)this.queue.shift();}
