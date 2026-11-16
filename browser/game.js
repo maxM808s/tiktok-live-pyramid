@@ -1,3 +1,4 @@
+import {DesktopConnection} from '../server/connection.mjs';
 import {Engine,validateConfig} from '../server/engine.mjs';
 import {checkpoint,recover} from './checkpoint.js';
 import {DesertView} from './renderer.js';
@@ -5,8 +6,10 @@ import {loadGiftCatalog,findGift,giftImage} from '/gift-library.js';
 let giftCatalog=[];loadGiftCatalog().then(data=>giftCatalog=data).catch(()=>{});
 const $=selector=>document.querySelector(selector);
 const clientId=crypto.randomUUID();
-let session='',ownerToken='',engine=null,view=null,snapshot=null,ack=0,owned=false,online=false,stopping=false,polling=false,lastSave=0,lastPoll=0,lastFrame=0,lastHUD=0,socket=null,retry=null,attempts=0;
-const connection={socket:false,lastEvent:0,error:'Waiting for TikFinity Desktop',attempts:0};
+let session='',ownerToken='',engine=null,view=null,snapshot=null,ack=0,owned=false,online=false,stopping=false,polling=false,lastSave=0,lastPoll=0,lastFrame=0,lastHUD=0;
+const displayOnly=new URLSearchParams(location.search).get('view')==='1';
+const transport=new DesktopConnection({onMessage:packet=>{if(['like','chat','follow','share','gift'].includes(packet.event))engine?.ingest(packet,'live');},onWarning:message=>engine?.log(message)});
+const connection=transport.status;
 const titles={en:{pyramid:'EGYPTIAN PYRAMID',temple:'ANCIENT TEMPLE',castle:'MEDIEVAL CASTLE',lighthouse:'LIGHTHOUSE',obelisk:'OBELISK',ziggurat:'ZIGGURAT'},he:{pyramid:'הפירמידה המצרית',temple:'המקדש העתיק',castle:'טירת ימי הביניים',lighthouse:'המגדלור',obelisk:'האובליסק',ziggurat:'הזיגוראת'}};
 let dirtyCheckpoint=true;
 let fps=0,frames=0,fpsAt=performance.now(),renderInfo={visualComplete:false,workers:0,renderHealthy:true};
@@ -15,17 +18,10 @@ async function post(path,body){
  const response=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','X-Session':session},body:JSON.stringify(body),signal:AbortSignal.timeout(4500)});
  const data=await response.json();if(!response.ok){const error=Error(data.error||'Local service unavailable');error.status=response.status;throw error;}return data;
 }
-function disconnect(){clearTimeout(retry);retry=null;if(socket){socket.onclose=null;socket.close();socket=null;}connection.socket=false;}
-function connect(){
- if(!owned||!online||stopping||socket||engine?.config.mode!=='live')return;
- attempts++;connection.attempts=attempts;
- socket=new WebSocket('ws://127.0.0.1:21213/');const current=socket,timeout=setTimeout(()=>current.close(),5000);
- current.onopen=()=>{clearTimeout(timeout);attempts=0;connection.attempts=0;connection.socket=true;connection.error='';};
- current.onmessage=event=>{if(typeof event.data!=='string'||event.data.length>65536)return;try{const packet=JSON.parse(event.data);connection.lastEvent=Date.now();if(['like','chat','follow','share','gift'].includes(packet.event))engine.ingest(packet,'live');}catch{engine.log('Malformed TikFinity JSON');}};
- current.onerror=()=>connection.error='Open TikFinity Desktop on this PC';
- current.onclose=()=>{clearTimeout(timeout);if(socket===current)socket=null;connection.socket=false;if(owned&&online&&!stopping)retry=setTimeout(connect,Math.min(30000,1000*2**Math.min(attempts,5)));};
-}
+function disconnect(){transport.disconnect();}
+function connect(){if(owned&&online&&!stopping&&engine?.config.mode==='live'&&engine.config.liveEnabled!==false&&!transport.active)transport.connect();}
 async function claim(){
+ if(displayOnly){owned=false;online=true;$('#loading').hidden=true;return;}
  const current=await(await fetch('/api/session',{signal:AbortSignal.timeout(4500)})).json();session=current.token;
  if(current.runtime!=='browser')throw Error('Close the optional Godot runtime before opening the browser game.');
  try{
@@ -45,7 +41,7 @@ async function apply(commands){
    }else engine.config=next;
   }
   else if(command.kind==='sim')engine.ingest(command.data,'simulator');
-  else if(command.kind==='control'){if(command.data.action==='pause')engine.paused=!engine.paused;if(command.data.action==='restart')engine.reset(engine.config.building);}
+  else if(command.kind==='control'){if(command.data.action==='pause')engine.paused=!engine.paused;if(command.data.action==='restart')engine.reset(engine.config.building);if(command.data.action==='reconnect'){disconnect();connect();}}
   ack=command.id;dirtyCheckpoint=true;
  }
 }
@@ -54,7 +50,7 @@ async function poll(){
  try{
   if(!owned){
    const response=await fetch('/api/state',{signal:AbortSignal.timeout(4500)});if(!response.ok)throw Error('Local service unavailable');snapshot=await response.json();online=true;
-   if(!snapshot.gameOnline&&!snapshot.stopping)await claim();return;
+   if(!displayOnly&&!snapshot.gameOnline&&!snapshot.stopping)await claim();return;
   }
   const now=performance.now(),save=dirtyCheckpoint||stopping||now-lastSave>4000;
   const publicState={...engine.state(),connection,perf:{...engine.perf,renderHealthy:view.healthy&&now-lastFrame<3000}};
@@ -62,9 +58,9 @@ async function poll(){
   const response=await post('/api/poll',payload);if(save){lastSave=now;dirtyCheckpoint=false;}
   online=true;lastPoll=now;message('');
   await apply(response.commands||[]);
-  if(engine.config.mode!=='live'&&(socket||retry))disconnect();
+  if(engine.config.mode!=='live'||engine.config.liveEnabled===false)disconnect();
   if(response.stopping){stopping=true;disconnect();$('#status').textContent='GAME STOPPED';await post('/api/poll',{clientId,ownerToken,ack,state:{...engine.state(),connection,perf:engine.perf},checkpoint:checkpoint(engine)});owned=false;online=false;message('Game stopped. You can close this window.');return;}
-  if(!socket&&!retry)connect();
+  connect();
  }catch(error){
   online=false;disconnect();
   if(!stopping){try{await claim();}catch{message('Local service reconnecting. Keep Start-Game.cmd running.');}}
@@ -74,7 +70,7 @@ function hud(state){
  const he=state.config.language==='he';document.documentElement.lang=he?'he':'en';document.documentElement.dir=he?'rtl':'ltr';
  $('#building').textContent=titles[he?'he':'en'][state.building];$('#round').textContent=(he?'סיבוב ':'ROUND ')+state.round;
  $('#progressText').textContent=`\u2066${state.built} / ${state.target}\u2069`;$('#progressFill').style.width=Math.min(100,state.built/state.target*100)+'%';
- $('#status').textContent=!online?(he?'מתחברים מחדש לשירות':'LOCAL SERVICE RECONNECTING'):!owned?(he?'חלון תצוגה — המשחק פועל בחלון אחר':'VIEW WINDOW · GAME RUNNING IN ANOTHER WINDOW'):state.paused?(he?'הבנייה מושהית':'CONSTRUCTION PAUSED'):state.config.mode==='simulator'?(he?'סימולטור · אירועי בדיקה בלבד':'SIMULATOR · TEST EVENTS ONLY'):connection.socket?(he?'TikFinity מחובר':'TIKFINITY API CONNECTED'):(he?'TikFinity מנותק — מנסים שוב':'TIKFINITY DISCONNECTED · RETRYING');
+ $('#status').textContent=!online?(he?'מתחברים מחדש לשירות':'LOCAL SERVICE RECONNECTING'):!owned?(state.gameOnline===false?(he?'תצוגה בלבד · פתחו את המשחק הראשי':'DISPLAY ONLY · OPEN THE PRIMARY GAME'):(he?'חלון תצוגה — המשחק פועל בחלון אחר':'VIEW WINDOW · GAME RUNNING IN ANOTHER WINDOW')):state.paused?(he?'הבנייה מושהית':'CONSTRUCTION PAUSED'):state.config.mode==='simulator'?(he?'סימולטור · אירועי בדיקה בלבד':'SIMULATOR · TEST EVENTS ONLY'):state.config.liveEnabled===false?(he?'TikFinity מנותק לפי בחירתכם':'TIKFINITY DISCONNECTED BY YOU'):connection.socket?(he?'TikFinity מחובר':'TIKFINITY API CONNECTED'):(he?'TikFinity מנותק — מנסים שוב':'TIKFINITY DISCONNECTED · RETRYING');
  const complete=state.phase==='celebrating'&&renderInfo.visualComplete;$('#celebration').hidden=!complete;
  $('#completeTitle').textContent=he?'הבנייה הושלמה!':'MONUMENT COMPLETE';$('#countdown').textContent=state.config.automatic?((he?'הסיבוב הבא בעוד ':'Next round in ')+Math.max(0,Math.ceil(state.countdown))+(he?' שניות':'s')):(he?'התחילו סיבוב חדש בלוח הבקרה':'Start the next round from the dashboard');
  $('#lower').hidden=state.config.overlay==='minimal';$('#objective').textContent=he?'בונים יחד משהו שיישאר':'BUILD SOMETHING THAT LASTS';

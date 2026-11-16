@@ -48,7 +48,7 @@ The game runs in a **separate browser window**. Minimize or close the dashboard 
 1. Open your **TikFinity Desktop app on the same PC**. Browser-only TikFinity does not provide its local socket.
 2. Complete TikFinity's official setup and connect it to your livestream. The game itself never asks for your TikTok password.
 3. In the dashboard choose **Live controls → Event source → LIVE — TikFinity Free**.
-4. The game connects to the documented local Event API at `ws://127.0.0.1:21213/`.
+4. The game connects to the documented local Event API at `ws://localhost:21213/`.
 5. Check the last-event time and ask a real viewer to comment. Test a small real gift streak before leaving the game unattended.
 
 A connected socket only proves the local API is reachable; it does not prove your TikTok stream is live. The browser may ask permission to reach a local device/service; allow the localhost connection for this local game if prompted. In SIMULATOR mode there are no TikFinity connection attempts and no invented live viewer activity.
@@ -126,8 +126,18 @@ Services bind to loopback only. Incoming requests have Host/origin/session valid
 
 The original Godot source remains in `game/`. **Start-Godot.cmd** explicitly selects the optional Godot edition and requires Node 22+ and Godot 4.3+ Standard. It is not used by normal Start, Setup, Stop or Update. Only one edition can own port 3210 at a time; launchers stop the other owned edition when switching.
 
-Developers can run `node --test tests/engine.test.mjs tests/gift-library.test.mjs`; Node is a development/optional-edition tool, not a player dependency. The default host is `scripts/browser-host.ps1`. The browser game imports the same event/round engine as the optional Godot bridge. Python/Playwright scripts are development tests only.
+Developers can run `node --test tests/engine.test.mjs tests/gift-library.test.mjs tests/connection.test.mjs`; Node is a development/optional-edition tool, not a player dependency. The default host is `scripts/browser-host.ps1`. The browser game imports the same event/round engine as the optional Godot bridge. Python/Playwright scripts are development tests only.
 
 The Windows CI no-install smoke test removes Node from PATH and launches the normal scripts with the runner's existing Edge browser. See [executed test status](docs/TEST-STATUS.md) for what actually passed, rather than treating a workflow definition as a completed test.
 
 [Reference audit](docs/REFERENCE-AUDIT.md) · [Changes](docs/CHANGELOG.md) · [Bundled library license](vendor/three/LICENSE)
+
+## Connection controls, game popup and LIVE Studio link
+
+Open **Live controls** and use **Connect**, **Reconnect** or **Disconnect**. This uses the same official TikFinity Desktop local WebSocket as your battle game: `ws://localhost:21213/`. Connect your TikTok LIVE inside TikFinity Desktop first, then press **Connect** here. A browser request for local-network access must be allowed for this connection. No TikTok password is entered here. Disconnect stops retries and remains saved after a restart; reconnect enables them again. Connect switches from the isolated simulator checkpoint to LIVE.
+
+Choose **עברית** in the Language selector for Hebrew controls, right-to-left layout, game HUD and setup instructions.
+
+Press **Game window & link** at the top of the dashboard. Choose a popup size and press **Open game popup**. Allow popups for the local site if blocked, or use **Open game in a tab**. In LIVE Studio, add a Window Capture source and select **Pyramid Live — Game Capture**. The normal Windows launcher still opens the dedicated game window automatically.
+
+Alternatively press **Copy link** and paste it into LIVE Studio's Link source. Set the source size to **1080 × 1920** where supported. The link is `http://127.0.0.1:3210/browser/game.html?view=1`. It works only on the same PC while the local game service is running; it is not a public hosted URL. Keep the primary game window running: the link only displays its state and never becomes a second scoring connection, even when the primary game closes. If your LIVE Studio version cannot load a localhost Link source, use Window Capture. No new installations are required.

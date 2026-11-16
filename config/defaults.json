@@ -9,6 +9,7 @@
   "camera": true,
   "night": true,
   "mode": "simulator",
+  "liveEnabled": true,
   "likesPerWorker": 5,
   "commentBlocks": 1,
   "followBlocks": 5,

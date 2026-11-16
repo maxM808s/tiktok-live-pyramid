@@ -774,3 +774,5 @@ footer {
 .gift-library-filters>div,.selected-gift>div{min-width:0}.gift-library-filters input,.gift-library-filters select{min-width:0}.selected-gift>div{overflow-wrap:anywhere}
 
 .gift-rule-id{font-size:10px;color:var(--muted);direction:ltr;white-space:nowrap}
+
+#gameSetupDialog{width:min(720px,94vw);max-height:90vh;overflow:auto;padding:0} .setup-dialog{padding:28px}.setup-dialog .section-heading{gap:16px;align-items:start}.setup-dialog h2{margin:0}.setup-dialog a{color:#e4c389;align-self:center}.setup-steps{padding-inline-start:24px;color:var(--muted);line-height:1.7}.setup-steps li{margin-block:12px}.desktop-connection{border-block:1px solid #2b3a48;margin-block:24px;padding-block:24px}.desktop-connection code{display:block;color:#e4c389;overflow-wrap:anywhere}.desktop-connection p{line-height:1.7}#desktopStatus,#popupFeedback{color:#e4c389}#captureLink{max-width:100%;min-width:0}.setup-dialog input,.setup-dialog select{width:100%}@media(max-width:600px){.setup-dialog{padding:20px}.setup-dialog .buttons{flex-wrap:wrap}}

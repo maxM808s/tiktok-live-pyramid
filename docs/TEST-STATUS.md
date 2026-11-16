@@ -111,3 +111,14 @@ Executed locally against the PowerShell host and real headless Chromium game:
 Testing caught a rapid-save race: choosing a second gift before the first save finished could lose the selection. Library choices are now disabled while saving. Browser tests passed after the fix. This validates simulated payloads, not real TikFinity Free events or current TikTok coin prices. Windows CI results for this revision are reported separately below after execution.
 
 [Windows/Linux CI passed for 71fe7c3](https://github.com/maxM808s/tiktok-live-pyramid/actions/runs/43870257662): both engine/library test jobs and PowerShell parsing succeeded. The Windows startup test succeeded with Node removed from PATH, no Godot installation, bundled catalog/image HTTP checks, and ID-mapping persistence across update/restart. Final browser rerun also passed; its language assertion now waits for the rendered RTL state rather than assuming a fixed 500 ms refresh.
+
+## Version 0.5 — Desktop controls and broadcast setup
+
+Executed locally with the PowerShell host and a real headless Chromium game:
+
+- New connection unit tests passed endpoint selection, malformed/oversized event handling, continued socket availability after bad packets, retry cancellation, stale callback rejection, manual reconnect, and boolean settings validation. All three engine/library/connection test files passed.
+- Setup browser test passed: display-only link cannot claim the game even with no owner; popup opens with the capture title; clipboard receives the local view-only URL; Connect/Disconnect/Reconnect work; explicit disconnect survives a dashboard reload; English and Hebrew popup content and mobile RTL layout render without horizontal overflow or page errors.
+- The explicit local WebSocket mock passed all five event types, duplicate rejection and reconnection through the new Desktop adapter. This was not TikFinity or TikTok.
+- Existing full dashboard regression passed, including settings transfer, gifts, language layouts, simulator/LIVE checkpoint isolation and mobile layout, with no page errors.
+
+Actual LIVE Studio capture/localhost Link source support, Windows popup permission behavior, and real TikFinity Free delivery remain checks on the streaming PC. Window Capture remains the fallback when the local Link source cannot load. No new player dependencies were added.

@@ -10,6 +10,7 @@ Object.assign(he,{
   sessionControls:'שליטה בסיבוב',connectionSetup:'הגדרת חיבור',backupSettings:'גיבוי הגדרות',gameWindow:'חלון המשחק',eventSource:'מקור אירועים',roundFlow:'רצף סיבובים',connectTitle:'ממתינים ל-TikFinity Desktop',connectHelp:'פתחו את TikFinity במחשב הזה וחברו אותו לשידור. המשחק מתחבר מחדש באופן אוטומטי. בדקו אירוע אמיתי לפני השארת המשחק ללא השגחה.',nextWonder:'הפלא הבא מתחיל כאן',blueprintPreview:'תצוגת תוכנית בנייה · אינה צילום של המשחק',difficulty:'רמת קושי',quickRound:'מהיר · 100',standardRound:'רגיל · 200',epicRound:'גדול · 500',manage:'ניהול',downloadLogs:'הורדת יומן',filterLogs:'סינון אירועים',restoreSettings:'שחזור הגדרות',restoreNote:'ייבוא קובץ הגדרות של המשחק. ההגדרות הנוכחיות נשמרות כעותק שחזור לפני שינוי.',chooseBackup:'בחירת גיבוי JSON',footer:'שליטה מקומית. יצירה משותפת.',cancel:'ביטול'
 });
 Object.assign(he,{giftLibrary:'ספריית מתנות',giftLibraryNote:'בחרו מתנה מהספרייה המשותפת, הגדירו פעולה ושמרו. התמונות כלולות מקומית.',searchGifts:'חיפוש מתנות לפי שם או מזהה',coinRange:'טווח מטבעות',allCoins:'כל ערכי המטבעות',giftStatus:'מצב',allGifts:'כל המתנות',assignedGifts:'משויכות',unassignedGifts:'ללא שיוך',sortGifts:'מיון',coinsLow:'מטבעות: מהנמוך לגבוה',coinsHigh:'מטבעות: מהגבוה לנמוך',giftNameSort:'שם',previous:'הקודם',next:'הבא',priceSnapshot:'ערכי המטבעות מיובאים מהספרייה ועשויים להשתנות ב-TikTok. רק כללים שנשמרו מפעילים פעולות.',configuredGifts:'פעולות מתנות שהוגדרו',customGift:'שימוש בשם מתנה מותאם',giftId:'מזהה מתנה',giftIdOptional:'מזהה מתנה (רשות)'});
+Object.assign(he,{windowSetup:'חלון המשחק וקישור',desktopApi:'אותו חיבור מקומי כמו במשחקים האחרים שלכם',desktopTitle:'TikFinity Desktop',desktopSteps:'פתחו את TikFinity Desktop וחברו שם את שידור ה-TikTok LIVE. לאחר מכן לחצו כאן על חיבור. אשרו גישה לרשת המקומית אם הדפדפן מבקש. אין צורך להזין סיסמת TikTok במשחק.',connectLive:'חיבור',reconnectLive:'חיבור מחדש',disconnectLive:'ניתוק',socketNote:'חיבור תקין מאשר רק שה-API המקומי זמין. בדקו אירוע אמיתי מצופה לפני השארת השידור ללא השגחה.',closeSetup:'סגירה',windowIntro:'פתחו חלון משחק אנכי נפרד לצילום ב-LIVE Studio. השאירו את חלון המשחק הראשי פועל בזמן השימוש בלוח הבקרה.',popupSize:'גודל חלון המשחק',openGamePopup:'פתיחת חלון משחק',directGameLink:'פתיחת המשחק בלשונית',studioLink:'מקור קישור ב-LIVE Studio',captureLink:'קישור מקומי לתצוגה בלבד',copyCaptureLink:'העתקת קישור',openCaptureLink:'תצוגה מקדימה של הקישור',captureStep1:'לצילום חלון בחרו ב-LIVE Studio את “⁦Pyramid Live — Game Capture⁩”.',captureStep2:'למקור קישור הדביקו את הקישור והגדירו גודל של ⁦1080 × 1920⁩ כאשר האפשרות זמינה.',captureStep3:'הקישור פועל במחשב הזה כל עוד ⁦Start-Game.cmd⁩ פועל. הוא אינו יוצר חיבור ניקוד נוסף. אם LIVE Studio אינו טוען קישור מקומי, השתמשו בצילום חלון.'});
 const english=new Map([...document.querySelectorAll('[data-i]')].map(el=>[el,el.textContent]));
 for(const form of document.querySelectorAll('form'))for(const field of form.elements){
   if(!field.name)continue;if(!field.id)field.id=(form.id||'dialog')+'-'+field.name;
@@ -63,6 +64,21 @@ function download(name,value){
 }
 function element(tag,content,className){const el=document.createElement(tag);if(content!==undefined)el.textContent=content;if(className)el.className=className;return el;}
 for(const button of document.querySelectorAll('[data-page]'))button.onclick=()=>navigate(button.dataset.page);
+$('#connectLive').onclick=guarded(()=>api('/api/config',{mode:'live',liveEnabled:true}),false);
+$('#disconnectLive').onclick=guarded(()=>api('/api/config',{liveEnabled:false}),false);
+$('#reconnectLive').onclick=guarded(async()=>{await api('/api/config',{mode:'live',liveEnabled:true});await api('/api/control',{action:'reconnect'});},false);
+const captureURL=new URL('/browser/game.html?view=1',location.origin).href;
+$('#captureLink').value=captureURL;$('#openCaptureLink').href=captureURL;
+$('#openGameSetup').onclick=()=>{$('#popupFeedback').textContent='';$('#gameSetupDialog').showModal();};
+$('#closeGameSetup').onclick=()=>$('#gameSetupDialog').close();
+let gamePopup;
+$('#openGamePopup').onclick=()=>{
+ const [w,h]=$('#popupSize').value.split(',').map(Number),height=Math.min(h,Math.max(360,screen.availHeight-80)),width=Math.min(w,Math.round(height*9/16));
+ gamePopup=window.open('/browser/game.html','pyramid-game-capture','popup=yes,width='+width+',height='+height+',menubar=no,toolbar=no');
+ $('#popupFeedback').textContent=gamePopup?text('Game window opened. Select Pyramid Live — Game Capture in LIVE Studio Window Capture.','חלון המשחק נפתח. בחרו Pyramid Live — Game Capture במקור צילום חלון ב-LIVE Studio.'):text('Popup blocked. Allow popups for this local site, or use Open game in a tab.','החלון נחסם. אשרו חלונות קופצים לאתר המקומי או פתחו את המשחק בלשונית.');
+ if(gamePopup)gamePopup.focus();
+};
+$('#copyCaptureLink').onclick=async()=>{try{await navigator.clipboard.writeText(captureURL);$('#popupFeedback').textContent=text('Link copied. Paste it into LIVE Studio on this PC.','הקישור הועתק. הדביקו אותו ב-LIVE Studio במחשב הזה.');}catch{$('#captureLink').focus();$('#captureLink').select();$('#popupFeedback').textContent=text('Press Ctrl+C to copy the selected link.','לחצו Ctrl+C להעתקת הקישור המסומן.');}};
 for(const id of ['openControls','helpControls'])$('#'+id).onclick=()=>navigate('controls');
 for(const form of document.querySelectorAll('form:not([method=dialog])'))form.addEventListener('input',()=>dirty.add(form.id));
 for(const id of ['gameForm','visualForm'])$('#'+id).onsubmit=guarded(async()=>{
@@ -140,7 +156,11 @@ async function refresh(){
     const response=await fetch('/api/state',{signal:AbortSignal.timeout(4000)});if(!response.ok)throw Error('Local service unavailable');state=await response.json();
     const s=state,percent=Math.min(100,Math.round(s.built/s.target*100)),lang=s.config.language;
     language(lang);$('#language').value=lang;
-    $('#connection').textContent=s.config.mode==='simulator'?text('SIMULATOR · TEST MODE','סימולטור · מצב בדיקה'):s.connection.socket?text('TikFinity API connected','API של TikFinity מחובר'):text('TikFinity disconnected','TikFinity מנותק');
+    const enabled=s.config.liveEnabled!==false,live=s.config.mode==='live',connected=s.connection.socket;
+    $('#desktopStatus').textContent=!live?text('Simulator — press Connect to switch to LIVE.','סימולטור — לחצו על חיבור למעבר לשידור חי.'):!enabled?text('Disconnected by you. Automatic reconnection is stopped.','מנותק לפי בחירתכם. החיבור האוטומטי הופסק.'):connected?text('Local API connected · waiting for viewer events','ה-API המקומי מחובר · ממתינים לאירועי צופים'):text('Connecting to TikFinity Desktop · automatic retries enabled','מתחברים ל-TikFinity Desktop · ניסיונות חוזרים אוטומטיים');
+    $('#disconnectLive').disabled=!enabled;$('#connectLive').disabled=live&&enabled;$('#reconnectLive').disabled=!s.gameOnline;
+
+    $('#connection').textContent=s.config.mode==='simulator'?text('SIMULATOR · TEST MODE','סימולטור · מצב בדיקה'):!enabled?text('TikFinity disconnected by you','TikFinity מנותק לפי בחירתכם'):s.connection.socket?text('TikFinity API connected','API של TikFinity מחובר'):text('TikFinity disconnected','TikFinity מנותק');
     $('#connection').classList.toggle('connected',s.config.mode==='live'&&s.connection.socket);
     $('#gameReady').textContent=s.gameOnline?text('Running','פועל'):text('Offline','מנותק');$('#gameDot').className='status-dot '+(s.gameOnline?'good':'off');
     $('#sourceReady').textContent=s.config.mode==='simulator'?text('Simulator','סימולטור'):s.connection.socket?text('API connected','API מחובר'):text('Disconnected','מנותק');$('#sourceDot').className='status-dot '+(s.config.mode==='live'?(s.connection.socket?'good':'off'):'');

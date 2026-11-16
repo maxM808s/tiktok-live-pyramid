@@ -1,7 +1,7 @@
 import {resolveGiftRule,normalizedGiftId} from './gift-rules.mjs';
 import {normalize} from './tikfinity.mjs';
 export const buildings=['pyramid','temple','castle','lighthouse','obelisk','ziggurat'];
-export const defaults={language:'en',building:'pyramid',target:200,automatic:true,celebration:12,workers:16,quality:'high',camera:true,night:true,mode:'simulator',likesPerWorker:5,commentBlocks:1,followBlocks:5,shareBlocks:1,skin:'mixed',overlay:'full',gifts:{rose:{action:'blocks',value:10},galaxy:{action:'boost',value:50},earthquake:{action:'quake',value:10}}};
+export const defaults={language:'en',building:'pyramid',target:200,automatic:true,celebration:12,workers:16,quality:'high',camera:true,night:true,mode:'simulator',liveEnabled:true,likesPerWorker:5,commentBlocks:1,followBlocks:5,shareBlocks:1,skin:'mixed',overlay:'full',gifts:{rose:{action:'blocks',value:10},galaxy:{action:'boost',value:50},earthquake:{action:'quake',value:10}}};
 export class Engine{
  constructor(config={}){this.config={...defaults,...config,gifts:{...(config.gifts??defaults.gifts)}};this.round=0;this.logs=[];this.seen=new Map();this.likes=new Map();this.people=new Map();this.votes=new Map();this.queue=[];this.paused=false;this.lastEvent=0;this.metrics={accepted:0,duplicates:0,rejected:0,dropped:0};this.reset(this.config.building);}
  reset(building,carry=false){this.building=building;this.roundTarget=this.config.target;this.built=0;this.placements=[];this.queue=carry?this.queue:[];this.contributors=new Map();this.credit=0;this.phase='building';this.countdown=0;this.round++;}
@@ -45,7 +45,7 @@ export class Engine{
 }
 export function validateConfig(c){
  if(!c||typeof c!=='object'||Array.isArray(c))throw Error('Invalid settings');const out={};
- for(const k of ['automatic','camera','night'])if(k in c){if(typeof c[k]!=='boolean')throw Error(k);out[k]=c[k];}
+ for(const k of ['automatic','camera','night','liveEnabled'])if(k in c){if(typeof c[k]!=='boolean')throw Error(k);out[k]=c[k];}
  for(const [k,lo,hi]of [['target',20,2000],['workers',1,32],['celebration',5,120],['likesPerWorker',1,1000],['commentBlocks',1,100],['followBlocks',1,1000],['shareBlocks',1,100]])if(k in c){if(!Number.isInteger(c[k])||c[k]<lo||c[k]>hi)throw Error(k);out[k]=c[k];}
  for(const [k,options]of [['language',['en','he']],['building',buildings],['quality',['low','high']],['mode',['simulator','live']],['skin',['mixed','worker','mummy','ninja','pharaoh']],['overlay',['full','minimal']]])if(k in c){if(!options.includes(c[k]))throw Error(k);out[k]=c[k];}
  if('gifts'in c){if(!c.gifts||typeof c.gifts!=='object'||Array.isArray(c.gifts))throw Error('Invalid gift rules');out.gifts=Object.create(null);if(Object.keys(c.gifts).length>100)throw Error('Too many gifts');for(const[n,r]of Object.entries(c.gifts)){if(!/^[\p{L}\p{N} _-]{1,64}$/u.test(n)||!['blocks','boost','quake'].includes(r.action)||!Number.isInteger(r.value)||r.value<1||r.value>1000)throw Error('Invalid gift rule');const rule={action:r.action,value:r.value};

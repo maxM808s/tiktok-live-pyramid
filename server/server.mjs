@@ -1,3 +1,4 @@
+import {DesktopConnection} from './connection.mjs';
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,13 +17,9 @@ catch(error){if(error.code!=='ENOENT'){
 let game=new Engine(saved);const token=crypto.randomBytes(24).toString('hex');
 if(settingsWarning)game.log(settingsWarning);
 
-let connection={socket:false,lastEvent:0,error:'TikFinity not connected',attempts:0};let socket,retry;
-function connect(){connection.attempts++;socket=new WebSocket('ws://127.0.0.1:21213/');const timeout=setTimeout(()=>socket.close(),5000);
- socket.onopen=()=>{clearTimeout(timeout);connection.attempts=0;connection.socket=true;connection.error='';};
- socket.onmessage=e=>{if(typeof e.data!=='string'||e.data.length>65536)return;try{const p=JSON.parse(e.data);connection.lastEvent=Date.now();game.ingest(p);}catch{game.log('Malformed TikFinity JSON');}};
- socket.onerror=()=>{connection.error='Open TikFinity Desktop and connect to your LIVE';};
- socket.onclose=()=>{clearTimeout(timeout);connection.socket=false;retry=setTimeout(connect,Math.min(30000,1000*2**Math.min(connection.attempts,5)));};}
-connect();
+const transport=new DesktopConnection({onMessage:p=>game.ingest(p),onWarning:m=>game.log(m)}),connection=transport.status;
+function syncConnection(){if(game.config.mode==='live'&&game.config.liveEnabled!==false){if(!transport.active)transport.connect();}else transport.disconnect();}
+syncConnection();
 function json(res,code,data){res.writeHead(code,{'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(data));}
 const server=http.createServer(async(req,res)=>{
  const host=req.headers.host;if(host!=='127.0.0.1:3210'&&host!=='localhost:3210')return json(res,403,{error:'Invalid host'});
@@ -45,10 +42,10 @@ const server=http.createServer(async(req,res)=>{
    checkpoint();const priorRound=game.round;game=new Engine(next);
    try{recover(game,JSON.parse(fs.readFileSync(path.join(local,`checkpoint-${next.mode}.json`),'utf8')));}catch{}
    game.round=Math.max(priorRound,game.round)+1;
-  }else game.config=next;
+  }else game.config=next;syncConnection();
  }
  else if(u.pathname==='/api/sim'){if(!game.ingest(b,'simulator'))return json(res,400,{error:game.logs[0]?.message||'Ignored'});}
- else if(u.pathname==='/api/control'){if(b.action==='pause')game.paused=!game.paused;else if(b.action==='restart')game.reset(game.config.building);else throw Error('Unknown control');}
+ else if(u.pathname==='/api/control'){if(b.action==='pause')game.paused=!game.paused;else if(b.action==='restart')game.reset(game.config.building);else if(b.action==='reconnect'){transport.disconnect();syncConnection();}else throw Error('Unknown control');}
  else if(u.pathname==='/api/perf'){game.perf={fps:Math.max(0,Math.min(1000,Number(b.fps)||0)),round:Number(b.round)||0,visualComplete:b.visualComplete===true,workers:Math.max(0,Math.min(32,Number(b.workers)||0)),memoryMB:Number(b.memoryMB)||0,at:Date.now()};}
  else if(u.pathname==='/api/shutdown'){json(res,200,{ok:true});shutdown();return;}
  else return json(res,404,{error:'Not found'});json(res,200,{ok:true});
@@ -78,6 +75,6 @@ try{const bank=path.join(local,`checkpoint-${game.config.mode}.json`);const c=JS
 const persistence=setInterval(()=>{try{checkpoint();}catch(e){console.error('Checkpoint failed:',e.message);}},5000);
 let lastTick=performance.now();
 const tick=setInterval(()=>{const now=performance.now();game.tick(Math.min(.25,(now-lastTick)/1000));lastTick=now;},100);
-function shutdown(){try{checkpoint();}catch{}clearInterval(persistence);clearInterval(tick);clearTimeout(retry);socket.onclose=null;socket.close();server.close(()=>process.exit(0));setTimeout(()=>process.exit(0),1000).unref();}
+function shutdown(){try{checkpoint();}catch{}clearInterval(persistence);clearInterval(tick);transport.disconnect();server.close(()=>process.exit(0));setTimeout(()=>process.exit(0),1000).unref();}
 process.on('SIGTERM',shutdown);process.on('SIGINT',shutdown);
 server.on('error',e=>{console.error(e.message);process.exit(1);});server.listen(3210,'127.0.0.1',()=>{fs.writeFileSync(path.join(local,'session.json'),JSON.stringify({token,pid:process.pid}));console.log('Pyramid Live dashboard: http://127.0.0.1:3210');});
