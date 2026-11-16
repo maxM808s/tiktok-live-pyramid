@@ -10,3 +10,4 @@
 *.html text eol=lf
 *.css text eol=lf
 *.md text eol=lf
+vendor/** text eol=lf

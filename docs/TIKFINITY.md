@@ -29,3 +29,9 @@ Socket connectivity and LIVE connectivity are distinct. A connected socket may b
 ## Local mock
 
 `node tests/adapter-integration.mjs` creates a clearly labeled mock endpoint at 127.0.0.1:21213, emits the five documented event types, repeats a gift ID, closes its socket and checks reconnection. Run it only during development with TikFinity stopped, never during a real broadcast. Mock API Viewer is test data, never evidence of a real TikTok viewer.
+
+## Browser default in 0.3
+
+The browser edition receives the same documented Event API directly through the existing browser's WebSocket client, as browser games/widgets are intended to do. The local host itself does not need Node or a WebSocket library. Only the current owner game window connects; a duplicate view window cannot award duplicate contributions. SIMULATOR mode does not open a TikFinity socket. The game closes its socket when stopped, and connection errors are visible without switching to a paid service.
+
+A browser prompt for access to local services may depend on your Edge/Chrome version and Windows policies. The destination is loopback port 21213, never a remote event gateway. Real TikFinity Free event delivery still requires your live acceptance check; browser/mock tests do not establish it.

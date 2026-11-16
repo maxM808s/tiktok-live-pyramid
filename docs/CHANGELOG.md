@@ -13,3 +13,13 @@
 - Placed stones use MultiMesh batching, primitive meshes are shared, distant dunes have fewer polygons, and the scene has distant pyramid landmarks and worker faces.
 - Round difficulty remains stable until a round reset. Celebration waits for stones to land. Minimal overlay also hides its panel background. Both languages reflect configured viewer-action values.
 - Expanded engine/browser tests and Windows CI smoke coverage. Actual Windows/live integration acceptance remains pending.
+
+## 0.3.0 — no-install default
+
+- Normal Start/Setup/Stop/Update use Windows PowerShell and an already installed Edge/Chrome browser. Node and Godot are not required or downloaded.
+- A bundled, pinned MIT-licensed Three.js renderer displays the same six projects, animated workers, golden stones, crowns and particles in a dedicated 9:16 game window.
+- The dashboard stays separate from the game. Only one browser window owns event processing; extra windows are view-only.
+- PowerShell provides the localhost API, settings validation/backups, a bounded acknowledged command queue, game-owner lease and persistent checkpoints.
+- The browser uses the shared event/round engine and TikFinity adapter, with the same live/simulator separation. It reconnects to the local host and TikFinity where supported.
+- Godot remains available through the explicit optional Start-Godot.cmd launcher. The existing battle project was only read to understand its launcher; it was not modified or copied into this project.
+- Windows CI removes Node from PATH and uses the runner's existing browser to test the normal launchers.
