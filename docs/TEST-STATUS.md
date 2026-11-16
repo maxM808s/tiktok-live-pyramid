@@ -1,6 +1,6 @@
 # Executed verification and remaining acceptance checks
 
-Date: 2026-11-16. Development environment: Linux, Node 24.22.1, Godot 4.6.3, Chromium, Xorg dummy display, Mesa llvmpipe software OpenGL. This is not a Windows 11 gaming PC. No real TikFinity installation or TikTok LIVE account was attached.
+Date: 2026-11-16. Development environment: Linux, Node 24.22.1, Godot 4.6.3, Chromium, Xorg dummy display, Mesa llvmpipe software OpenGL. The local development machine is not a Windows 11 gaming PC. Windows headless CI subsequently passed as recorded below. No real TikFinity installation or TikTok LIVE account was attached.
 
 ## Executed and passed
 
@@ -26,14 +26,14 @@ The first timed soak attempt overlapped a browser test that intentionally switch
 
 ## Implemented, pending Windows / live acceptance
 
-- Double-click Setup / Start / Stop / Update `.cmd` behavior on **Windows 11**, with your actual Node/Godot installation and paths.
-- PowerShell process monitor, crash recovery, stopped-process ownership protection and actual Windows permissions. Scripts were reviewed but no PowerShell runtime was installed in this Linux environment. `tests/windows-smoke.ps1` is provided for the Windows acceptance test.
+- Interactive double-click behavior on your **Windows 11** PC, actual graphics/capture and dependency installation. Setup/Start/Stop and source-change restart passed in Windows headless CI; the actual Update helper Git pull still needs Windows acceptance.
+- The 90-second hung-renderer watchdog and stale-PID protection edge cases need further Windows acceptance. Normal PowerShell lifecycle, exited-game recovery and backup/settings retention passed Windows headless CI.
 - Actual Godot GPU performance, 60 FPS, game-window minimization/coverage behavior and TikTok LIVE Studio capture.
 - Real TikFinity **Free-account** Event API availability, field variants, gift streak behavior and duplicate/reconnect behavior during a real livestream.
 - Real TikTok gifts/likes/comments/follows/shares and viewer votes.
 - Native Windows font fallback and visual inspection of Hebrew inside the captured Godot window. Browser Hebrew was executed and inspected; Windows game typography is not claimed verified.
 - Multi-hour unattended session, Windows sleep/power behavior and recovery from a hung renderer. The monitor restarts exited game processes; it does not automatically force-kill a renderer solely for missing telemetry.
-- GitHub Actions workflow execution and actual GitHub Desktop pull. CI runs are tracked in the repository Actions tab. No packaged Windows Release was produced.
+- Actual GitHub Desktop pull and interactive Windows update helper remain acceptance checks. GitHub Actions passed; no packaged Windows Release was produced.
 
 ## Visual / product scope
 
@@ -53,9 +53,22 @@ Published to `https://github.com/maxM808s/tiktok-live-pyramid` on `main`. Reposi
 - API security checks and the local Git fast-forward/settings-preservation test passed again.
 - The translated building selector test initially caught implicit option values changing with translated labels. Explicit values fixed the issue, and the expanded browser test passed.
 
-The new Windows common lifecycle helpers, mutex, source-revision restart detection, backups, retained .cmd exit codes, GitHub Desktop Git detection, retry backoff and 90-second renderer watchdog are **implemented but not executed on Windows here**. The CI workflow now includes the actual headless launchers, repeated Start, simulated game crash, simulated source-version change, backups and settings retention from a folder with spaces. Check GitHub Actions for current CI results; publication has succeeded. This supersedes the earlier note that the monitor does not restart an unresponsive renderer.
+The Windows common lifecycle helpers, mutex, source-revision restart detection, backups and retained .cmd exit codes were subsequently exercised by the successful Windows CI run below. The 90-second hung-renderer watchdog and Desktop-bundled Git fallback still require dedicated acceptance checks. The CI workflow now includes the actual headless launchers, repeated Start, simulated game crash, simulated source-version change, backups and settings retention from a folder with spaces. Check GitHub Actions for current CI results; publication has succeeded. This supersedes the earlier note that the monitor does not restart an unresponsive renderer.
 
 Earlier publishing attempts failed with HTTP 403 because this new repository was missing from the app connection. Access was refreshed and publication succeeded. No other repository was modified.
 
 - Version 0.2 timed soak: 2,790 simulator events in 60 seconds; maximum queue 5,000; peak combined memory approximately 108 MB; game remained online. No Windows performance conclusion follows from these software-rendered results.
 - Final 0.2 automatic-round integration, blueprint assertions, expanded browser regression and service/session recovery checks passed after the updates.
+
+
+## Windows CI passed after publication
+
+[Successful Source checks run](https://github.com/maxM808s/tiktok-live-pyramid/actions/runs/43860190013), source commit `f3a1f10d77d138c8abee4ec178cbf6b327ceb481`:
+
+- Engine tests and JS syntax checks passed on Ubuntu and Windows.
+- Windows PowerShell parsed all project/test scripts successfully.
+- The official pinned Godot 4.6.3 archive was downloaded inside the CI runner and its SHA-256 was verified.
+- All six Godot blueprint checks passed on Windows.
+- Setup, Start, a repeated Start without duplicate game processes, simulated exited-game recovery, simulated newly pulled source-version detection/restart, backup creation, Hebrew-setting persistence, Stop and subsequent Start all passed from a Windows folder containing spaces.
+
+These are actual executed Windows headless checks. They do not certify interactive Windows 11 rendering, LIVE Studio capture, real Free-account TikFinity access, GPU 60 FPS, or the optional Update helper's authenticated Git pull on your PC. Documentation-only commits after this source revision do not change the tested application code.

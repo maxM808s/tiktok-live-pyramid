@@ -2,7 +2,7 @@
 
 An original Godot 4 construction game with a local browser control room, designed for a vertical TikTok LIVE. Viewers send events through **TikFinity Desktop's local Event API**. No S2E, direct TikTok connector, paid action rules, passwords, npm packages, or automatic software downloads.
 
-**Version 0.2 — improved startup and broadcast controls.** Six monuments, visible worker delivery, golden stones, destruction, boosts, votes, automatic rounds, English / Hebrew, a 1080 × 1920 layout, and Windows launchers are implemented. This is stylized procedural art, not a reproduction of the reference project's concept illustration. Read [test status](docs/TEST-STATUS.md) before relying on unattended streaming. Windows 11 launchers and real TikFinity Free account access require testing on your PC.
+**Version 0.2 — improved startup and broadcast controls.** Six monuments, visible worker delivery, golden stones, destruction, boosts, votes, automatic rounds, English / Hebrew, a 1080 × 1920 layout, and Windows launchers are implemented. This is stylized procedural art, not a reproduction of the reference project's concept illustration. Read [test status](docs/TEST-STATUS.md) before relying on unattended streaming. Windows headless startup/recovery checks passed in CI. Interactive Windows 11 capture and real TikFinity Free account access still require testing on your PC.
 
 ## Your GitHub Desktop workflow
 
@@ -40,7 +40,7 @@ Start detects a changed source revision, saves current progress, stops only this
 
 Settings, gift rules, checkpoints, logs, and process records live in the ignored **`.local`** folder, so pulling code preserves them. Portable Godot stays in `tools`. Back up `.local` before changing PCs. Never upload that folder: it can include viewer names and a local session token.
 
-Recovery copies from updates are in `.local/backups` (latest five). The previous valid settings file is also kept as `.local/settings.previous.json`. GitHub Desktop remains the recommended update method. Actual Windows launch/update acceptance is still pending the Windows smoke test.
+Recovery copies from updates are in `.local/backups` (latest five). The previous valid settings file is also kept as `.local/settings.previous.json`. GitHub Desktop remains the recommended update method. Windows headless startup/recovery smoke tests passed; interactive launching and the authenticated Update helper still need checking on your PC.
 
 If creating a replacement repository: use GitHub's **New repository** page, name it, then clone it through Desktop and select it in Codex. Do not select the battle repository for pyramid development.
 
@@ -137,7 +137,7 @@ docs/                Research, license audit and actual verification status
 .local/              Ignored settings, state, logs and process records
 ```
 
-Developers can run `npm test`, `node server/server.mjs`, and `godot --path game`. Blueprint check: `godot --headless --path game --script res://test_blueprints.gd`. Start service and Godot before `node tests/integration.mjs` or `node tests/six-buildings.mjs`. The latter changes settings temporarily and sends clearly labeled simulator events. Do not run these on a real broadcast. Browser checks require Python Playwright and Chromium in the development environment only; Windows end users do not need Python. `tests/windows-smoke.ps1` exercises installation, launch, shutdown, telemetry and settings on Windows; it has not been executed on Windows here.
+Developers can run `npm test`, `node server/server.mjs`, and `godot --path game`. Blueprint check: `godot --headless --path game --script res://test_blueprints.gd`. Start service and Godot before `node tests/integration.mjs` or `node tests/six-buildings.mjs`. The latter changes settings temporarily and sends clearly labeled simulator events. Do not run these on a real broadcast. Browser checks require Python Playwright and Chromium in the development environment only; Windows end users do not need Python. `tests/windows-smoke.ps1` exercises installation, launch, shutdown, telemetry and settings on Windows; it passed on the Windows CI runner; repeat it on your PC only outside a real broadcast.
 
 [Reference audit](docs/REFERENCE-AUDIT.md) · [TikFinity research](docs/TIKFINITY.md) · [Test status](docs/TEST-STATUS.md)
 
@@ -156,3 +156,5 @@ GitHub Actions source checks run Node tests on Linux and Windows, parse the Powe
 - Placed stones are batched with MultiMesh and shared primitive meshes. Workers and flying stones remain animated. Countdown now waits for stones to land; minimum overlay mode removes its background panel as well as its text.
 
 The improved Windows launcher uses a per-project mutex to serialize Start/Stop/Update and the process monitor. Error exit codes are retained, game logs go to `.local/game.log`, and repeated startup failures back off instead of opening an endless rapid sequence of game windows. Windows CI now includes headless launcher smoke tests from a folder with spaces; check the repository Actions tab for their results.
+
+Windows headless CI passed: [view the verified startup and recovery run](https://github.com/maxM808s/tiktok-live-pyramid/actions/runs/43860190013).
