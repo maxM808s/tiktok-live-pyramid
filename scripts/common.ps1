@@ -101,7 +101,7 @@ function Get-SourceFingerprint {
         $revision = & $git rev-parse HEAD 2>$null
         if ($LASTEXITCODE -eq 0) { return $revision.Trim() }
     }
-    $files = @('package.json', 'server/server.mjs', 'server/engine.mjs', 'server/tikfinity.mjs', 'game/main.gd', 'game/blueprints.gd', 'game/project.godot', 'scripts/common.ps1', 'scripts/launcher.ps1', 'scripts/supervise.ps1')
+    $files = @('package.json', 'scripts/browser-host.ps1', 'scripts/browser-launcher.ps1', 'browser/game.js', 'browser/renderer.js', 'server/server.mjs', 'server/engine.mjs', 'server/tikfinity.mjs', 'game/main.gd', 'game/blueprints.gd', 'game/project.godot', 'scripts/common.ps1', 'scripts/launcher.ps1', 'scripts/supervise.ps1')
     $hashes = foreach ($file in $files) { (Get-FileHash -LiteralPath (Join-Path $Root $file) -Algorithm SHA256).Hash }
     return ($hashes -join '-')
 }

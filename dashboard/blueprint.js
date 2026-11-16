@@ -1,5 +1,5 @@
 const cache = new Map();
-function cellsFor(kind) {
+export function cellsFor(kind) {
   if (cache.has(kind)) return cache.get(kind);
   const cells = [];
   for (let y=0;y<15;y++) for (let z=-6;z<=6;z++) for (let x=-6;x<=6;x++) {

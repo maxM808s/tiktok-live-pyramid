@@ -55,7 +55,7 @@ try {
             $fingerprint = Get-SourceFingerprint
             $launch = Read-Record 'launch-version'
             $session = Get-ProjectSession
-            if ($session -and (!$launch -or $launch.fingerprint -ne $fingerprint)) {
+            if ($session -and ($session.runtime -eq 'browser' -or !$launch -or $launch.fingerprint -ne $fingerprint)) {
                 Write-Host 'New source version detected. Saving progress and restarting this game...'
                 Stop-Project
                 Backup-Settings | Out-Null

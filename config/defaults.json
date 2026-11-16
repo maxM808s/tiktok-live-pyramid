@@ -1,0 +1,32 @@
+{
+  "language": "en",
+  "building": "pyramid",
+  "target": 200,
+  "automatic": true,
+  "celebration": 12,
+  "workers": 16,
+  "quality": "high",
+  "camera": true,
+  "night": true,
+  "mode": "simulator",
+  "likesPerWorker": 5,
+  "commentBlocks": 1,
+  "followBlocks": 5,
+  "shareBlocks": 1,
+  "skin": "mixed",
+  "overlay": "full",
+  "gifts": {
+    "rose": {
+      "action": "blocks",
+      "value": 10
+    },
+    "galaxy": {
+      "action": "boost",
+      "value": 50
+    },
+    "earthquake": {
+      "action": "quake",
+      "value": 10
+    }
+  }
+}

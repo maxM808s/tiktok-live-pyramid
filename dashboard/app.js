@@ -33,7 +33,12 @@ async function api(route,data){
   const send=()=>fetch(route,{method:'POST',headers:{'Content-Type':'application/json','X-Session':token},body:JSON.stringify(data),signal:AbortSignal.timeout(5000)});
   let response=await send();
   if(response.status===403){token=(await(await fetch('/api/session')).json()).token;response=await send();}
-  const result=await response.json();if(!response.ok)throw Error(result.error);return result;
+  const result=await response.json();if(!response.ok)throw Error(result.error);
+  if(result.commandId){
+    const end=Date.now()+5000;
+    while(Date.now()<end){const current=await(await fetch('/api/state',{signal:AbortSignal.timeout(4000)})).json();if(current.commandAck>=result.commandId||!current.gameOnline)break;await new Promise(resolve=>setTimeout(resolve,100));}
+  }
+  return result;
 }
 function feedback(message,error=false){
   clearTimeout(toastTimer);$('#feedback').textContent=message;$('#feedback').classList.toggle('error',error);

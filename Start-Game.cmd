@@ -1,6 +1,6 @@
 @echo off
 setlocal
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\launcher.ps1" -Action Start
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\browser-launcher.ps1" -Action Start
 set "PYRAMID_EXIT=%ERRORLEVEL%"
 if not "%PYRAMID_EXIT%"=="0" (
   echo.

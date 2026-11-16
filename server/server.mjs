@@ -27,7 +27,7 @@ const server=http.createServer(async(req,res)=>{
  const host=req.headers.host;if(host!=='127.0.0.1:3210'&&host!=='localhost:3210')return json(res,403,{error:'Invalid host'});
  const u=new URL(req.url,'http://127.0.0.1:3210');
  if(req.method==='GET'&&u.pathname==='/api/state')return json(res,200,{...game.state(),appId:'tiktok-live-pyramid',version,uptimeSeconds:Math.floor(process.uptime()),settingsWarning,connection,memoryMB:Math.round(process.memoryUsage().rss/1048576),gameOnline:Date.now()-(game.perf?.at||0)<3000});
- if(req.method==='GET'&&u.pathname==='/api/session')return json(res,200,{token,projectRoot:root,appId:'tiktok-live-pyramid',version});
+ if(req.method==='GET'&&u.pathname==='/api/session')return json(res,200,{token,projectRoot:root,appId:'tiktok-live-pyramid',version,runtime:'godot'});
  if(req.method==='POST'){
  if(req.headers['x-session']!==token)return json(res,403,{error:'Invalid session'});
  if(req.headers.origin&&!['http://127.0.0.1:3210','http://localhost:3210'].includes(req.headers.origin))return json(res,403,{error:'Invalid origin'});

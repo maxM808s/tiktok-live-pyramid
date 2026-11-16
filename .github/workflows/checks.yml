@@ -29,29 +29,16 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - name: Download official pinned Godot into CI runner only
-        shell: pwsh
-        run: |
-          $url='https://github.com/godotengine/godot-builds/releases/download/4.6.3-stable/Godot_v4.6.3-stable_win64.exe.zip'
-          Invoke-WebRequest $url -OutFile "$env:RUNNER_TEMP/godot.zip"
-          $hash=(Get-FileHash "$env:RUNNER_TEMP/godot.zip" -Algorithm SHA256).Hash.ToLowerInvariant()
-          if ($hash -ne 'e39986a178d585ce7ac198fb8de6ea436366dc0cc00e594810c2e3e104c04b90') { throw 'Official Godot archive checksum mismatch' }
-          Expand-Archive "$env:RUNNER_TEMP/godot.zip" -DestinationPath "$env:RUNNER_TEMP/godot"
-      - name: Check six blueprints in Godot on Windows
-        shell: pwsh
-        run: |
-          & "$env:RUNNER_TEMP/godot/Godot_v4.6.3-stable_win64_console.exe" --headless --path game --script res://test_blueprints.gd
-          if ($LASTEXITCODE) { throw 'Blueprint check failed' }
-      - name: Exercise Windows launchers from a folder with spaces
-        shell: pwsh
+      - name: Test no-install Windows startup using only built-ins and the existing browser
+        shell: powershell
         env:
           PYRAMID_HEADLESS_TEST: '1'
         run: |
-          $env:GODOT_EXE="$env:RUNNER_TEMP/godot/Godot_v4.6.3-stable_win64_console.exe"
+          # Remove installed development runtimes from PATH to prove they are not used.
+          $env:PATH=($env:PATH.Split(';') | Where-Object { $_ -and !(Test-Path (Join-Path $_ 'node.exe')) -and !(Test-Path (Join-Path $_ 'godot.exe')) }) -join ';'
+          if (Get-Command node -ErrorAction SilentlyContinue) { throw 'Node is still on PATH; no-install test would be invalid' }
+          Remove-Item Env:GODOT_EXE -ErrorAction SilentlyContinue
           $smokePath=Join-Path $env:RUNNER_TEMP 'Pyramid Live Smoke'
           Copy-Item -LiteralPath $env:GITHUB_WORKSPACE -Destination $smokePath -Recurse
           & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $smokePath 'tests/windows-smoke.ps1')
-          if ($LASTEXITCODE) { throw 'Windows startup smoke test failed' }
+          if ($LASTEXITCODE) { throw 'No-install Windows startup failed' }
