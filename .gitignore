@@ -1,0 +1,7 @@
+.local/
+game/.godot/
+*.log
+node_modules/
+build/
+tools/*.exe
+tools/*.dll
