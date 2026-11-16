@@ -1,0 +1,1264 @@
+{
+  "sourceRepository": "maxM808s/tiktok-live-battle",
+  "sourceCommit": "afcecf2e94bc252b7b647ff00fb71d815c312d61",
+  "giftCount": 314,
+  "catalogSHA256": "f675e745e2c0287e81a3fd15e9006109de5e7ef0aa9a752af80452c982e33cdd",
+  "files": [
+    {
+      "path": "assets/gifts/5655.webp",
+      "sha256": "5ed2d90ea7b4d93ed6a45da28f9f18df0a92ca3fe58fdc63dc409d969e7ae8d8"
+    },
+    {
+      "path": "assets/gifts/6064.webp",
+      "sha256": "7a7958092c41f5e3b5f7de6ff38047432a2a2f86739b91e07d3005e6e97d04b5"
+    },
+    {
+      "path": "assets/gifts/5269.webp",
+      "sha256": "cd0d3446428e1a0fd966e1221dc62b8895f694bdaeafdd3cc8800b3aee9590ac"
+    },
+    {
+      "path": "assets/gifts/5487.webp",
+      "sha256": "4de7efeea48108a1651e984109df93d431c5b5b449658df0be35cc61c9437869"
+    },
+    {
+      "path": "assets/gifts/5658.webp",
+      "sha256": "35592f8f0bb80952bc3e12f34a8ce8e28fe208b94ad142a5fbbed0c18f9e12c3"
+    },
+    {
+      "path": "assets/gifts/5879.webp",
+      "sha256": "fce50b0b8dabb362f7f268cd8cd205f277112f17123cffce2e2574013577a1fb"
+    },
+    {
+      "path": "assets/gifts/6968.webp",
+      "sha256": "4d605543902a236ec1a088f7a8c9f32435b1156b003ac82db0242efedca7bc17"
+    },
+    {
+      "path": "assets/gifts/5660.webp",
+      "sha256": "3d83780371bb130b7a9c01aee73566cd9e723014d7a74abeebdbcfcbeea0796c"
+    },
+    {
+      "path": "assets/gifts/6671.webp",
+      "sha256": "fce8e409b555b9df4ff535ee95dc6adbe9bcc7fa4fbfa0993b110f8aee78ccea"
+    },
+    {
+      "path": "assets/gifts/5509.webp",
+      "sha256": "b72406ec7f9395901f69264f46283ebbbe1f1a807b1c8f1da553b9c798643298"
+    },
+    {
+      "path": "assets/gifts/11046.webp",
+      "sha256": "7990802c6f7170507cdda33c5c4a54af5662dd00ec8e17c46c84eb0c8f002486"
+    },
+    {
+      "path": "assets/gifts/6369.webp",
+      "sha256": "27ad53e1035d1b9925b620b62655470f50f9003f28d2512d5aa3b3d8ffbe3bf6"
+    },
+    {
+      "path": "assets/gifts/7934.webp",
+      "sha256": "658b7a0a55d894e71503eb1da14767db4b2748d8e2412e0aede1f437191d7c29"
+    },
+    {
+      "path": "assets/gifts/9101.webp",
+      "sha256": "c48d2b6a2dc9653c9ffe795688fdcf7e3fafd3276c2f554e73fcda34886b9599"
+    },
+    {
+      "path": "assets/gifts/9072.webp",
+      "sha256": "c48d2b6a2dc9653c9ffe795688fdcf7e3fafd3276c2f554e73fcda34886b9599"
+    },
+    {
+      "path": "assets/gifts/6926.webp",
+      "sha256": "b79a530af37198b306486cf8e3446b14db9251613adcc57acce49056b4fbbaad"
+    },
+    {
+      "path": "assets/gifts/7832.webp",
+      "sha256": "0da5b43ffdd129ce6ee06c833b10352dd83777e5026f428e6bf429c55f4f98ad"
+    },
+    {
+      "path": "assets/gifts/6784.webp",
+      "sha256": "2c8955046adb3b6030a46e0ddf1024c188cfc746b214d34726d48212b097776f"
+    },
+    {
+      "path": "assets/gifts/9383.webp",
+      "sha256": "453745fba859d690b9f7c2f7e449aa82e4dd90e5c2cead76b1d9ec0e089f177d"
+    },
+    {
+      "path": "assets/gifts/6277.webp",
+      "sha256": "930e093a5206e6ece61e40601a792ce6e9183e9f5fb18f88d4e87ddb24070cdb"
+    },
+    {
+      "path": "assets/gifts/9087.webp",
+      "sha256": "0fa075ad7067eb00a68d31ee108ebd72ff5af24f32f66c6bf3bf96ef8d6dc94d"
+    },
+    {
+      "path": "assets/gifts/1479743.webp",
+      "sha256": "65574ba2f1587ed1a4a223b9bbf9e6a4a5c18fdd58e0dd4e6f3926e0ef102b0a"
+    },
+    {
+      "path": "assets/gifts/6788.webp",
+      "sha256": "c5325ba62189bff10f7e24d20ea61da4ff49a02adf9e0a9a64c60cd0c01a0772"
+    },
+    {
+      "path": "assets/gifts/5827.webp",
+      "sha256": "b91006312b7d7f3c2f3c16cef9f83c123079d71ef6b5e6232fc3f514434c5522"
+    },
+    {
+      "path": "assets/gifts/8723.webp",
+      "sha256": "062900cd5532d8ce6c47f2e8884195729f2d134544ed04076f695c864ca00bd1"
+    },
+    {
+      "path": "assets/gifts/1479742.webp",
+      "sha256": "12c4271e6eff49b6c3c9b3e8b83b782cb622bbe05d15220ef1086b3c2df2fb96"
+    },
+    {
+      "path": "assets/gifts/15724.webp",
+      "sha256": "5acb019126e5b3420271ee15592dd2ce449fce8f2442aa62f9b16a141d27af19"
+    },
+    {
+      "path": "assets/gifts/19446.webp",
+      "sha256": "39522d5175b205e003ef87a3511fee7faae451fe2eb424128ee87ce671cea570"
+    },
+    {
+      "path": "assets/gifts/15232.webp",
+      "sha256": "6b4bfe903d8a7a6490bf014df90d6051bd2ddee0fa9c069a831183447de5210e"
+    },
+    {
+      "path": "assets/gifts/16709.webp",
+      "sha256": "27124e05f3ab31ac522befa2e98cc4461f0601df5e64affb29f3b000eb1abbfe"
+    },
+    {
+      "path": "assets/gifts/6416.webp",
+      "sha256": "1579ad035cd97f13cd6a131ad9f081c8724eaf32d1d3da856790b5cd1a9a2a23"
+    },
+    {
+      "path": "assets/gifts/7136.webp",
+      "sha256": "b7d0d49b0814e1ae0a07197098fddf77820538b8901368966b0fe39d18a4c9a5"
+    },
+    {
+      "path": "assets/gifts/14786.webp",
+      "sha256": "ed7e930a27bc59b697441013b130baddf90e65fea61c81629be73e8b613b6ae7"
+    },
+    {
+      "path": "assets/gifts/6544.webp",
+      "sha256": "6a87b6f58ac8538663d86bf3465d6ef89f2da47184dd2bf77a818adb1ffefe11"
+    },
+    {
+      "path": "assets/gifts/8913.webp",
+      "sha256": "0e2de0f3adcfe49aa710f214e4365272aaab6ba75b65524138445b5c2988a1da"
+    },
+    {
+      "path": "assets/gifts/6560.webp",
+      "sha256": "ae3833625491308134269b57d1c1fe492768ba2231896ff522c9916efbed0d8c"
+    },
+    {
+      "path": "assets/gifts/6777.webp",
+      "sha256": "1a9cdaff21db58c1af57e95184e81cea21187c0549b168397bbe447836fe450d"
+    },
+    {
+      "path": "assets/gifts/19443.webp",
+      "sha256": "1ef8ad8cddeab6505bb0806299f7afb502d2b3bd0c4102afc664e70382d59d92"
+    },
+    {
+      "path": "assets/gifts/17490.webp",
+      "sha256": "9e6c43656d986a3fd696684c288012a3ac763d801f66998c282f0fe9abd719fd"
+    },
+    {
+      "path": "assets/gifts/17826.webp",
+      "sha256": "e21242251bd8f862801176542eeaca72c8884c607bba8705a782af83e565761e"
+    },
+    {
+      "path": "assets/gifts/10300.webp",
+      "sha256": "8bd14ffd33bd96c6f45429e32324973ae32f59e913f29146f67182e19b5ebb8f"
+    },
+    {
+      "path": "assets/gifts/9575.webp",
+      "sha256": "b0e21dde898ac0c884a2a6d248fe341e2a4989a550ab9c6a6a4e774ae8d5d88e"
+    },
+    {
+      "path": "assets/gifts/56382.webp",
+      "sha256": "96fcc84291f9cbf4abea0c8313222c91a1dcb3a8f96d2f2d122283d40a898083"
+    },
+    {
+      "path": "assets/gifts/6104.webp",
+      "sha256": "292a4b5ffd23c5b11dba066758eb0ff086441d9d1805e90f01b11464fb3aa63f"
+    },
+    {
+      "path": "assets/gifts/7883.webp",
+      "sha256": "d3f79d79d2ef8d1fcf74ec2e76e9a66d136a9ca646798f477182e9264b25b1d0"
+    },
+    {
+      "path": "assets/gifts/6097.webp",
+      "sha256": "22567cb9cc482c8930b74601c100fc16084986e2342ab1a8162edd6f5401ebf6"
+    },
+    {
+      "path": "assets/gifts/5659.webp",
+      "sha256": "a9cd2f043fcb12198f37491b6c4f963597cb132b04a0e5ee31e803b58671b239"
+    },
+    {
+      "path": "assets/gifts/5585.webp",
+      "sha256": "0409f00adeb1017c51f8986303f93a989d2f68c213d0dc0423a7e0f21e690605"
+    },
+    {
+      "path": "assets/gifts/7015.webp",
+      "sha256": "e17e539ab3802d05282189785c6c3222724e423c2013a53d4ab33272ee315394"
+    },
+    {
+      "path": "assets/gifts/14555.webp",
+      "sha256": "6782794f2e851b50a4e91cfe3c914aa29de3aa89e8a7f1be1bdac2b6a5129e8f"
+    },
+    {
+      "path": "assets/gifts/5586.webp",
+      "sha256": "034a8bfabe98cf42077d4418c03f46c1c57c9d52ff109ac690428a8575585105"
+    },
+    {
+      "path": "assets/gifts/8268.webp",
+      "sha256": "e5879d81a4249e7ebfb4145d473276795180ac3503bfed6dd72bd0c6cf7b0aea"
+    },
+    {
+      "path": "assets/gifts/16637.webp",
+      "sha256": "59453fd08c349eb467e5c06512f1f69dae5e61aa94bcd48cdf5a29cad1f304ce"
+    },
+    {
+      "path": "assets/gifts/13072.webp",
+      "sha256": "943d28611b0e2cd18ad46d99909a24ab40e0d19d2ed5512dad0ee46d067f2d58"
+    },
+    {
+      "path": "assets/gifts/16071.webp",
+      "sha256": "d995e2b16c4d3587eab2224d88b0445ca7ca1d8695be52c125a6778aad65c1e3"
+    },
+    {
+      "path": "assets/gifts/19307.webp",
+      "sha256": "dc54c4dd61923566820adfaf6eb6b3c851d3efa7337e601dd61a6e43706bb0f5"
+    },
+    {
+      "path": "assets/gifts/7168.webp",
+      "sha256": "8818690442dd3a9b32a4620d4fe7ad6bd28f9260e6c6f0cca29084f278a8788c"
+    },
+    {
+      "path": "assets/gifts/18508.webp",
+      "sha256": "8dad5464ea53fdbe7a79858c0b2fab8467a7e6996b3da5aa74ea4a80d12b640f"
+    },
+    {
+      "path": "assets/gifts/5712.webp",
+      "sha256": "4e238be745e87d756701da9b4110ad73dce981f82d685f66beab0786654080a3"
+    },
+    {
+      "path": "assets/gifts/5897.webp",
+      "sha256": "89cc23bef70de396e40c18db9950a34fdc876b93287f6433d698b5a63958f808"
+    },
+    {
+      "path": "assets/gifts/14381.webp",
+      "sha256": "9472a409ef01b648d5d0385f9c29840ea1bf3feb8c9d28572b76c41b4b036a8d"
+    },
+    {
+      "path": "assets/gifts/5978.webp",
+      "sha256": "a2ff34a85b2f9b94dff000647830941be262de5f1062f91a5e7854c6eac92048"
+    },
+    {
+      "path": "assets/gifts/17804.webp",
+      "sha256": "15f111b40be7cfbbfcd2f25b5af465f8119a7dcd03b7756787660c3219fc07da"
+    },
+    {
+      "path": "assets/gifts/6233.webp",
+      "sha256": "a4fae82ce27671e9a11941252c26a772c3fa3b3452352ec25339e6fec2ffed76"
+    },
+    {
+      "path": "assets/gifts/5680.webp",
+      "sha256": "2aaec9c77445e6676740c2de25fd4c9a7783b0c75056f802c05d78c1d092b7df"
+    },
+    {
+      "path": "assets/gifts/7871.webp",
+      "sha256": "a9b5c302a9f1e0c5bb7b54a4185edd1111505522f1c0e52af7d2b5b92ecb3c2f"
+    },
+    {
+      "path": "assets/gifts/14397.webp",
+      "sha256": "903828da315e1e3108ff7df9557d995463eb1ee60cc233aa570dccaa562a62c8"
+    },
+    {
+      "path": "assets/gifts/6842.webp",
+      "sha256": "3faf756ae6db76cb518ab397ab7e13440d6b10edd0d41a96156d92e5ff8f3947"
+    },
+    {
+      "path": "assets/gifts/8972.webp",
+      "sha256": "276a96bb98d457224f19baf4b1d3c80a7c5ed6a44d64b2e71dc76a77e8dad02e"
+    },
+    {
+      "path": "assets/gifts/7963.webp",
+      "sha256": "1b83c13a29f582846bb4d591821026243361df4db30b6be50cfa3a23a66d245c"
+    },
+    {
+      "path": "assets/gifts/6090.webp",
+      "sha256": "1e304fd128e1b434508cb0e8ed5b9ab1f5ab2fb616d9a149460f29317294d6bc"
+    },
+    {
+      "path": "assets/gifts/8964.webp",
+      "sha256": "1beaacc436d8f0d7357e425cfeeef6242ba64684777572fd85b8e772596c8eb3"
+    },
+    {
+      "path": "assets/gifts/7367.webp",
+      "sha256": "4e006f3fed0df4ff83e282afc896ea9f0ca76507bdbcbac4385ea01763f2ef80"
+    },
+    {
+      "path": "assets/gifts/14210.webp",
+      "sha256": "aeb9befaa5ea8dff688135ff09ccc694cd0f42a05280909e5f6dc0613fb257bf"
+    },
+    {
+      "path": "assets/gifts/14744.webp",
+      "sha256": "35a12c9988f36174cf934c2738673374f353c555544c6260869fdb9afa0d7235"
+    },
+    {
+      "path": "assets/gifts/10382.webp",
+      "sha256": "4ef4f07ba69623a609c03b54a7a4a9588fb5e11d00a32f462a175086e39053d0"
+    },
+    {
+      "path": "assets/gifts/17805.webp",
+      "sha256": "5c4de4853e78dc23d8a7bec57a05fe6081c2992f7431787fbe920c4d39316d6a"
+    },
+    {
+      "path": "assets/gifts/12893.webp",
+      "sha256": "bbb1fab087966550fe08d45edb7d54b57023c7175c58fcdf04f798ff60b931ca"
+    },
+    {
+      "path": "assets/gifts/10101.webp",
+      "sha256": "360a6082f16a43fd153b13fafad3ca310107e977444dd7c23615110cc30cbb53"
+    },
+    {
+      "path": "assets/gifts/9803.webp",
+      "sha256": "71d177b96732ef609bbd2efae8af203eddb538455bc826c2e6fcd36297ec32e9"
+    },
+    {
+      "path": "assets/gifts/17213.webp",
+      "sha256": "61c906266032f3d29e63c43cac6d7fe4ff68dd4b4ac705faca618bbbc59f442a"
+    },
+    {
+      "path": "assets/gifts/10347.webp",
+      "sha256": "7aa0603c5c0088085897ae9180219935557214fbb99780db04c74c7730d586ca"
+    },
+    {
+      "path": "assets/gifts/1462843.webp",
+      "sha256": "429f59e52f304aa8991ad533e035dfcc0292d37753ef097bfed227b6882a1e80"
+    },
+    {
+      "path": "assets/gifts/1298065.webp",
+      "sha256": "c34098d85feb22d0335da1a043273d55cc9cab4c17a331766187e18f6b32ac1c"
+    },
+    {
+      "path": "assets/gifts/12160.webp",
+      "sha256": "7aa0603c5c0088085897ae9180219935557214fbb99780db04c74c7730d586ca"
+    },
+    {
+      "path": "assets/gifts/18232.webp",
+      "sha256": "fa90692fd67c49af582610c435aa5a10613d4a12c6fb91a21b956cab1f71e35d"
+    },
+    {
+      "path": "assets/gifts/11583.webp",
+      "sha256": "fda2985ef42ca57814edbd97fb8c5dd52f1315b133cd07146aa4689ff9306fed"
+    },
+    {
+      "path": "assets/gifts/1374223.webp",
+      "sha256": "34342981daa7b52d4bffaebfb93bb4f436317b3ecf230ae5eb429ecbfe981948"
+    },
+    {
+      "path": "assets/gifts/8892.webp",
+      "sha256": "248f19132244ef41fa53cec1e9e929f13ab5ee0d4dda7082a58ea16061e214b5"
+    },
+    {
+      "path": "assets/gifts/437689.webp",
+      "sha256": "86f0b1eac595188445128f38b98d6aff29d14bed8ee4f7497c4275edc1b3c9f0"
+    },
+    {
+      "path": "assets/gifts/139584.webp",
+      "sha256": "ea970894d0c5808d03ef0d8d58321b6e73da91d11ef568f370188ab0998d42ee"
+    },
+    {
+      "path": "assets/gifts/7122.webp",
+      "sha256": "2b0b82e2b3580f61f30b8397d9842015e2f946016e26089ad47c4c0c96803560"
+    },
+    {
+      "path": "assets/gifts/17738.webp",
+      "sha256": "3316e5dddd060d3a7eaff89cb350eb08061c64724ce49becf46b72b818bc56de"
+    },
+    {
+      "path": "assets/gifts/946648.webp",
+      "sha256": "e4576262c46dc2b230a9629eabb7f85d483520a6b7845de7905383206cd6f915"
+    },
+    {
+      "path": "assets/gifts/842710.webp",
+      "sha256": "1744885334d99c5246e0bae49d9df037b99b10eb82e981312ef6e03b368a500d"
+    },
+    {
+      "path": "assets/gifts/1354590.webp",
+      "sha256": "3c241cd4c86fb98ee3a473be7e385c3efe7a20ff7616ee9e6709bda87bfc1094"
+    },
+    {
+      "path": "assets/gifts/56596.webp",
+      "sha256": "07c93e827717ff8326dc36c3a46a575ce3c9cfcc4a466d1f554571d30dafd3ba"
+    },
+    {
+      "path": "assets/gifts/56597.webp",
+      "sha256": "82541138257034bf66541ee7c80d5fe3e8d04bc3ffbffbb45e3dca44ac89ea5d"
+    },
+    {
+      "path": "assets/gifts/56594.webp",
+      "sha256": "98b334d3b30a12a14ac94613df8a0899f62706b413bf47c8bb521903a07deab2"
+    },
+    {
+      "path": "assets/gifts/56595.webp",
+      "sha256": "d56aace4656dc38b5d1349dcb66a967d662e66a71ea1f58b63606e49ef6b4ec2"
+    },
+    {
+      "path": "assets/gifts/7985.webp",
+      "sha256": "a8c23da3531ce79c0dbfac4bfeb56cd186fd43621abff50461751092da5aa999"
+    },
+    {
+      "path": "assets/gifts/118928.webp",
+      "sha256": "39739f78112ba494c674416e9c84ba1b2e74b093d8e3728a7dcd865b7eb76da2"
+    },
+    {
+      "path": "assets/gifts/16897.webp",
+      "sha256": "3c670755b3e5767cd373454514251600ec38d2f0367f67f46eb7f2774bfa789f"
+    },
+    {
+      "path": "assets/gifts/11671.webp",
+      "sha256": "8a2b10d6d32bdc7154e65271bc236896cea85f93eaa63b6409491ec640f42133"
+    },
+    {
+      "path": "assets/gifts/131887.webp",
+      "sha256": "c0764860183a8a242b67cac8346cfc1c36bce7cc38fc473da681b782663a8507"
+    },
+    {
+      "path": "assets/gifts/1347189.webp",
+      "sha256": "4d04536ff5686e365dc4b43e98e5689f8cf0edaf297351cdab50a98f159bdeda"
+    },
+    {
+      "path": "assets/gifts/9623.webp",
+      "sha256": "8cc269a873eb4dd9ed871dc8b9220382fe0e273c6ed995e2791d203f6464e53e"
+    },
+    {
+      "path": "assets/gifts/1429011.webp",
+      "sha256": "3b071913261fd1fbe50b8a1210de8a93a41848acd689cf00efe74ded88ca0e7b"
+    },
+    {
+      "path": "assets/gifts/59320.webp",
+      "sha256": "4447fa625d09b1909ccf2b790b3fa6e4eaf6a285fcf2753213a3f1b2965ec0cc"
+    },
+    {
+      "path": "assets/gifts/638006.webp",
+      "sha256": "c4708af47807e25c93c88abe8d17f344727e575109532fe8afb949564e59aa66"
+    },
+    {
+      "path": "assets/gifts/56592.webp",
+      "sha256": "306cc4914d70b874be75ce52225d55c0d6f816aafab57b4a19db3e8b39e6d88f"
+    },
+    {
+      "path": "assets/gifts/56593.webp",
+      "sha256": "0294ef86fa5d41ca6d251f3b2c5fc8ca049c75a3719b5aa175a03875841ef289"
+    },
+    {
+      "path": "assets/gifts/56590.webp",
+      "sha256": "f6bd981c5bdb6e96c4ecf7b5d097df515741a476ba1e3b2a2cf6fe13d18dffda"
+    },
+    {
+      "path": "assets/gifts/56591.webp",
+      "sha256": "ad145ce0e233acc6f576f26d405dbb59406d8be5c810a14119d23cff665cc34b"
+    },
+    {
+      "path": "assets/gifts/17050.webp",
+      "sha256": "3c77e498feb749a98ba706b1e89dfbaedd27bc0c3f3ea434c6cc8abf1f02c461"
+    },
+    {
+      "path": "assets/gifts/18320.webp",
+      "sha256": "92f3774aa4c2de2f7858ebb914af40442ea4940352a8275b1132cd24fe36306a"
+    },
+    {
+      "path": "assets/gifts/15064.webp",
+      "sha256": "24aedaeb6ee04d57379abdd210748ab4e0eeb3aafef1d165b8324986e87f62b1"
+    },
+    {
+      "path": "assets/gifts/60553.webp",
+      "sha256": "10c72f8a5868bcada5892db86a0b066b4120d28bfed0134d8428afaf08ff9025"
+    },
+    {
+      "path": "assets/gifts/59882.webp",
+      "sha256": "d8fcf52315421b1c2cb7cd72c854b5f756ac4bf0a6bdb8392cdfbf8b9d253d8b"
+    },
+    {
+      "path": "assets/gifts/166581.webp",
+      "sha256": "36428330432a48d5eebcfada6be04ed948d0c9c41b194c49fbc747c2e712eacb"
+    },
+    {
+      "path": "assets/gifts/1462722.webp",
+      "sha256": "cd1ffac44faae6284df7bb978b9215a4196fdb4fe259b7c4b4b8f78a361ffc63"
+    },
+    {
+      "path": "assets/gifts/57011.webp",
+      "sha256": "225b17da0c3efc10bc42767f733ae00667f990b0cea0024339758adc0b90045f"
+    },
+    {
+      "path": "assets/gifts/10667.webp",
+      "sha256": "aaec819fc463857f24851da4618c24b7469c2861a20d0eb0095240c515927200"
+    },
+    {
+      "path": "assets/gifts/8648.webp",
+      "sha256": "03a17fedae507775fadab64cc67fd98f8563a314de98aa76464c8fa50269f7ba"
+    },
+    {
+      "path": "assets/gifts/14114.webp",
+      "sha256": "053bbe6b8a9ec04d59085bb80c7448dab85fb45d5650927c564592da86e8b5d2"
+    },
+    {
+      "path": "assets/gifts/14883.webp",
+      "sha256": "053bbe6b8a9ec04d59085bb80c7448dab85fb45d5650927c564592da86e8b5d2"
+    },
+    {
+      "path": "assets/gifts/16694.webp",
+      "sha256": "053bbe6b8a9ec04d59085bb80c7448dab85fb45d5650927c564592da86e8b5d2"
+    },
+    {
+      "path": "assets/gifts/9948.webp",
+      "sha256": "45b031f1f5a25ad8f9f946f24e831f90296ebb666e267c740c4bbbf4c4f99c81"
+    },
+    {
+      "path": "assets/gifts/17825.webp",
+      "sha256": "6c3184ee6710d07453b0a4c4575124854eae80c2377033182f9e5cb99a390ad8"
+    },
+    {
+      "path": "assets/gifts/9498.webp",
+      "sha256": "8ac3d8d8cea13fdcb61298d80b09a599d3422cc514c7197be5f83fb97300144c"
+    },
+    {
+      "path": "assets/gifts/56604.webp",
+      "sha256": "a9b340f25d61adc4f5b4d0ef16a814c34f278bffc6134f5a119c1ec9949114e7"
+    },
+    {
+      "path": "assets/gifts/56605.webp",
+      "sha256": "948395736f76695b1736206d75112226a6b5ced4c1c1f5f7a500df3321f7cc5e"
+    },
+    {
+      "path": "assets/gifts/56602.webp",
+      "sha256": "32181786ef9aa98d58038e495f90c593ed520ff615c1269555eb729f0a3b1544"
+    },
+    {
+      "path": "assets/gifts/56603.webp",
+      "sha256": "c3475c1ac6bc1a235c6d2aae51de5b9e5c2f2322d7ac843a966e4c54dbb54036"
+    },
+    {
+      "path": "assets/gifts/9521.webp",
+      "sha256": "f1388638c48f57bee1b3dfae326cf547cb5f456c0c3dc3aa9b7ba7643220a74b"
+    },
+    {
+      "path": "assets/gifts/7882.webp",
+      "sha256": "a9b5c302a9f1e0c5bb7b54a4185edd1111505522f1c0e52af7d2b5b92ecb3c2f"
+    },
+    {
+      "path": "assets/gifts/13171.webp",
+      "sha256": "be347d437e93293cd2c35260def36f498f50b426d55863861fd428b0f1459262"
+    },
+    {
+      "path": "assets/gifts/56600.webp",
+      "sha256": "bb4974ca0605a2c7b0a5d9d2795486e0ccddd7e6fa4db6e2a9e15267aea25ffb"
+    },
+    {
+      "path": "assets/gifts/56601.webp",
+      "sha256": "43002522728495b50b3195f4a865364a56a9bfe6ef470fa457cee481ce2b0313"
+    },
+    {
+      "path": "assets/gifts/56598.webp",
+      "sha256": "93b3b9c201c56f51d64033ab1d2bc8b4bb02745f8b5f0383e3cc977db98bac40"
+    },
+    {
+      "path": "assets/gifts/56599.webp",
+      "sha256": "9703f59e8610e3c03efbe62baa39acdb2bfdaaabb0fd2a9404a782e97a9ecc17"
+    },
+    {
+      "path": "assets/gifts/14399.webp",
+      "sha256": "7ea6a9bdda345f9a5abc061b0e68f409c28ee7da4e87434e65eb339df0efb934"
+    },
+    {
+      "path": "assets/gifts/11491.webp",
+      "sha256": "3faf756ae6db76cb518ab397ab7e13440d6b10edd0d41a96156d92e5ff8f3947"
+    },
+    {
+      "path": "assets/gifts/973086.webp",
+      "sha256": "e1f7eea0374e802a446a2e0d93e80e988c135e15a71502d92844cc6e86e61749"
+    },
+    {
+      "path": "assets/gifts/59321.webp",
+      "sha256": "b9b2cca5d5cbd526fc9b48cee8d583b723ec95aa9a039d6d6b6642fab2b7f4a2"
+    },
+    {
+      "path": "assets/gifts/15510.webp",
+      "sha256": "3bd2531e1c5e2c817770dd60992272023e7cb109f2ff515b0410be73c2414744"
+    },
+    {
+      "path": "assets/gifts/7123.webp",
+      "sha256": "d3c45b66f9e7810259c3e610b503fe99974c922ee83d825d3f7bf49aa6414bbf"
+    },
+    {
+      "path": "assets/gifts/12277.webp",
+      "sha256": "58d6798ad70a14b6e8a52ea1b8f49a6d6cdf4a52f8157f4d64096014315dd15c"
+    },
+    {
+      "path": "assets/gifts/13302.webp",
+      "sha256": "6cf0860c1ab77954bf6f1b48f5e11d739bf67d9b59b74dd953e375595d22307d"
+    },
+    {
+      "path": "assets/gifts/56608.webp",
+      "sha256": "d68f3fc50885f92854a228c4270838b6a74ec676dc8ef786cf26397edb7d2db4"
+    },
+    {
+      "path": "assets/gifts/56609.webp",
+      "sha256": "34050823d9e00df2f7ac0aec01448feb9d129657d529187b499a940117f4e109"
+    },
+    {
+      "path": "assets/gifts/56606.webp",
+      "sha256": "9279db5083b57445c94aef55e4fe2d5bcb44988844abe236a38c5d8d066d2c0c"
+    },
+    {
+      "path": "assets/gifts/56607.webp",
+      "sha256": "080cf2d5ff978846e8421314298e442955e9d37e64b6bf7f0a50ad46a4324706"
+    },
+    {
+      "path": "assets/gifts/1346458.webp",
+      "sha256": "90ade9c7c3a6977b187852512cf4d69ab93696982ddd305a08e4506b17059ded"
+    },
+    {
+      "path": "assets/gifts/15579.webp",
+      "sha256": "15bdb4ea721d3ee4fa013ff0197774f9dd9337b03ccf1ec5d4ce4e4b9ab857ce"
+    },
+    {
+      "path": "assets/gifts/17480.webp",
+      "sha256": "31e562706b7f6d3e5b3cde4dc1c937419f3d4914fb224f400724069e85682a65"
+    },
+    {
+      "path": "assets/gifts/16212.webp",
+      "sha256": "589e3fc74415ed2cab305485728298064d6e575610b0ced8a7cc30bb045061a1"
+    },
+    {
+      "path": "assets/gifts/17803.webp",
+      "sha256": "9673c66a1e48fbe0b925189464f84258fe0fa6856d67c2c760e18df4bffa8d79"
+    },
+    {
+      "path": "assets/gifts/16381.webp",
+      "sha256": "07e6a9eeeefc1fdd03b27d6f572dc727cc96a53b460738b26049dda1629e8f13"
+    },
+    {
+      "path": "assets/gifts/19441.webp",
+      "sha256": "306bf5123f6f72484a9d45b2dbda6bb3c4068c884020fd77a911212e502c27aa"
+    },
+    {
+      "path": "assets/gifts/5593.webp",
+      "sha256": "25fc8a1044375b343b6093fdd06a2a3825b9a0f5efbf2ff5c44f7caeda32deb8"
+    },
+    {
+      "path": "assets/gifts/6649.webp",
+      "sha256": "90ae1e16776d6045c2cc6b00cb41a6a5b2b6caf67c63542753847cb29b0c1587"
+    },
+    {
+      "path": "assets/gifts/15578.webp",
+      "sha256": "1dd08143d82b8b9706d4d7498753344797e643a4307487c2cf59b6051958d3ea"
+    },
+    {
+      "path": "assets/gifts/10448.webp",
+      "sha256": "86c6c70f8076b360abe99093236d6b2f112f01ab5d5a864f28df9c7001bc02fc"
+    },
+    {
+      "path": "assets/gifts/6652.webp",
+      "sha256": "52fbbb7c13c45481001ed20c9d39b205495e139b780f4ecda41d2e9d80da353e"
+    },
+    {
+      "path": "assets/gifts/15231.webp",
+      "sha256": "a91d2189f08107f4ea9a27eb452b6e5144331f28cd4f360deabdb6305865f367"
+    },
+    {
+      "path": "assets/gifts/16111.webp",
+      "sha256": "c317a1f7754f6c1a42088daddf59c48b7d9e5ee8993f9dcc08b3b6a72ddaeadb"
+    },
+    {
+      "path": "assets/gifts/1167779.webp",
+      "sha256": "022b04d7435f165ca61197994458c74a79e3e28a5c9d6032e9db40890c26f36e"
+    },
+    {
+      "path": "assets/gifts/1167769.webp",
+      "sha256": "3e75b50c48b2c5825f477bed94c0b9f6ae176b76a70ebdf404a004cd93d142d8"
+    },
+    {
+      "path": "assets/gifts/1479744.webp",
+      "sha256": "ce99f71c9174d8c6e49b59da42b08d87204222f321e253ac211f74afcff0197d"
+    },
+    {
+      "path": "assets/gifts/1347121.webp",
+      "sha256": "3ce20eef82390a41e97c7f4895c4905c8399c2a894e08a88b2ba8c9691d555bc"
+    },
+    {
+      "path": "assets/gifts/14785.webp",
+      "sha256": "85b6d52c8fa520b3896911607e8f377088965dc857aa092b4f197f1ad13339ae"
+    },
+    {
+      "path": "assets/gifts/19439.webp",
+      "sha256": "b18fa846217ace517c22c38b92cd73dcb63c32f853845b4f57571d4e27a9e254"
+    },
+    {
+      "path": "assets/gifts/165819.webp",
+      "sha256": "313d0ded4e75c85770a39230770c1af3272422a72568172e9da60ce69586d79d"
+    },
+    {
+      "path": "assets/gifts/19438.webp",
+      "sha256": "4538c327c2e198991267dace53385fb22a7c1b52c3a87e484bcb1cd799f71030"
+    },
+    {
+      "path": "assets/gifts/13282.webp",
+      "sha256": "114d7bb74976073fd2fdb5477cb221a892c38de833874fbfc0a9b93579fa6db3"
+    },
+    {
+      "path": "assets/gifts/973040.webp",
+      "sha256": "71a140b7a1862bf286970c4222ca95f7ac130af83c49223c0915a3d686ad76c6"
+    },
+    {
+      "path": "assets/gifts/16102.webp",
+      "sha256": "46946187d561e4f3197be1a901411b2c787cee78af7c44bae9cf3ae8b3be5df2"
+    },
+    {
+      "path": "assets/gifts/230831.webp",
+      "sha256": "1d7802a0eb49e3450c130bf7a90fd04d8b3fce35d82260b26e8fc05cd9215979"
+    },
+    {
+      "path": "assets/gifts/16379.webp",
+      "sha256": "8095c56c42d7da753055c0c469dc2b257f2d51246b2f820972a5dcf8a6208846"
+    },
+    {
+      "path": "assets/gifts/1480259.webp",
+      "sha256": "e391bd56c174aacd631cce741929bbb62f3ce334a214e32569fb105becb3f192"
+    },
+    {
+      "path": "assets/gifts/919346.webp",
+      "sha256": "f68d34093953c25103ecaecaad514f790db2e5f5642f47eb181354d27b86c5cc"
+    },
+    {
+      "path": "assets/gifts/10602.webp",
+      "sha256": "4dc24c03ee46e64eb4019fa47b2b9ca204d20ef2c0932408b47f23ad92de5d61"
+    },
+    {
+      "path": "assets/gifts/1137702.webp",
+      "sha256": "8758cc468f895ece436a089a344e45da90e14bd80f45787ebd17f4a35cab4fb6"
+    },
+    {
+      "path": "assets/gifts/7501.webp",
+      "sha256": "1347931e949a9a04d7e7903b254a87fd5b92d7f14e7d16d4ac5fbe4c6b323fe2"
+    },
+    {
+      "path": "assets/gifts/7707.webp",
+      "sha256": "af6ecb1ca4ec3e00903f77adeb478fe40dae61491fad5bb81eaf3a6915a745c2"
+    },
+    {
+      "path": "assets/gifts/919386.webp",
+      "sha256": "f330a0fb7cf270b09a351f9420ba2662e37d7dbd1ab6655d800cde7900041e8a"
+    },
+    {
+      "path": "assets/gifts/19445.webp",
+      "sha256": "e9ec21d8f7758d2e7ce6e3daded63207e73262c82640160e14cf0fd3cd0f01f6"
+    },
+    {
+      "path": "assets/gifts/19447.webp",
+      "sha256": "3665f49fa1423faacc48c9096d08c487ad32abee4ae02357af7160ce09ed20c9"
+    },
+    {
+      "path": "assets/gifts/1035742.webp",
+      "sha256": "2d31dffc80da4f75b660a9ed5935cd15aa96cc85135e165208955cddbd0fa8b9"
+    },
+    {
+      "path": "assets/gifts/105781.webp",
+      "sha256": "8548a2ff9cd8c54669543419f32f92aab12e5967ca53f5bcf13b3352a8faf97f"
+    },
+    {
+      "path": "assets/gifts/10604.webp",
+      "sha256": "dcdb7e3706f1b730df6c6b8d50e2e1f3b1163ca12f56ce12b0a67e2a17d83c8d"
+    },
+    {
+      "path": "assets/gifts/167001.webp",
+      "sha256": "27ca3abc820c414ee04f7edeb6e2fac401df7dfd8fff2ce4083e8d5654a087b3"
+    },
+    {
+      "path": "assets/gifts/118812.webp",
+      "sha256": "c5aed6734d9b67b65b9fc06f9a21379d393f3890b6f1d01791c9d44096f205df"
+    },
+    {
+      "path": "assets/gifts/1499231.webp",
+      "sha256": "9df61b184ef0a928b5464d27b3f1c0db6075b9259249b09fa4f2dfdeed8a9eac"
+    },
+    {
+      "path": "assets/gifts/9947.webp",
+      "sha256": "21a6dc0dcb72c1339b57efcf7e4320ba4192ce49dd042bfc0a97baeca61ff04d"
+    },
+    {
+      "path": "assets/gifts/5853.webp",
+      "sha256": "ae1c872c4699151022cd99a45002b93c4cee1648d58dd5c4d6736e2f8e07fa56"
+    },
+    {
+      "path": "assets/gifts/544253.webp",
+      "sha256": "2a3cf8e4c8d08d9da2cbc291832637978618d18a3c304d60af1c4420d715161a"
+    },
+    {
+      "path": "assets/gifts/166996.webp",
+      "sha256": "c7085ea785ac55fd533c431d5bf570b150f0dba0e5fee72c8b1a79125f5ccd9b"
+    },
+    {
+      "path": "assets/gifts/15063.webp",
+      "sha256": "a1412e3ca512f45af1a4b80e333a522dab665ef1ede52ef607945717c52db543"
+    },
+    {
+      "path": "assets/gifts/10990.webp",
+      "sha256": "5b4dc2737f8d9bc052e79eacd485fca6e18eebcc25b818a2bca400b20d6cfc35"
+    },
+    {
+      "path": "assets/gifts/19448.webp",
+      "sha256": "e1b47199fb093ede7d4abef99e0bdb643fc5c5863a81101665487756bc6f28ad"
+    },
+    {
+      "path": "assets/gifts/626056.webp",
+      "sha256": "dde9299fe26fc046323b214772ea45251a73d9e4c1e591452dc51bd8132b7faf"
+    },
+    {
+      "path": "assets/gifts/1329117.webp",
+      "sha256": "f672ca306a46bdb5633167bf24102721415e369d839952cce2ecf4ac8ff28e96"
+    },
+    {
+      "path": "assets/gifts/626064.webp",
+      "sha256": "e0aeddf5d649f3217a482262e8b1a1de9a212cb04e5df995bcd3549aa528110c"
+    },
+    {
+      "path": "assets/gifts/1473093.webp",
+      "sha256": "81417d34e3c2d7236b3d186f1053b3df1e0df781f882378ec34c33c0edebfeb2"
+    },
+    {
+      "path": "assets/gifts/1473098.webp",
+      "sha256": "e45b7a50ca00943b4066942cb38ecb7ca7985dbc1d3212bda1df239c901959b3"
+    },
+    {
+      "path": "assets/gifts/1473091.webp",
+      "sha256": "690eab711da93689da036f85e2dfe11c84b299380d06db5b84e0fc76faa27a16"
+    },
+    {
+      "path": "assets/gifts/1473095.webp",
+      "sha256": "03304620107605aee8fe35708a4923b042aa06a79de9f72c4f5c20e34de2b503"
+    },
+    {
+      "path": "assets/gifts/14115.webp",
+      "sha256": "0219da0daaa3b3d719f1dc1b02b3718cc3a661cf64f0fc37a359d006f387b2c2"
+    },
+    {
+      "path": "assets/gifts/15509.webp",
+      "sha256": "c5a935baf785fcbdd985b1f92b80cfb4a3bcb37ef6ded887215ca2ade3c9564b"
+    },
+    {
+      "path": "assets/gifts/1473096.webp",
+      "sha256": "f282ae22bf51ecf58c59043b86efc7ec2ec22b1d6bf7c8a8e66d619d9c4a1127"
+    },
+    {
+      "path": "assets/gifts/16791.webp",
+      "sha256": "9d6fc05e69c360e48f8e2ff7412f63a20931fea6627ac2dce8f24d72c9af7879"
+    },
+    {
+      "path": "assets/gifts/16737.webp",
+      "sha256": "39c1c6118539971cfef4ac851f339b299f1232f522458c0b0b817710311aea7b"
+    },
+    {
+      "path": "assets/gifts/16736.webp",
+      "sha256": "d0d3a265362eef64fff3bb7f2715168a0316a533003af77988bea21411ba13f5"
+    },
+    {
+      "path": "assets/gifts/8259.webp",
+      "sha256": "b137df87df73a9ad3dfcb2c5722d0d4ca79a52f103122f1af310fe3a6e9b63d6"
+    },
+    {
+      "path": "assets/gifts/1343004.webp",
+      "sha256": "d3c1335e8215e3fa062a5c48166d9553a360350c1cb0cd6ff3e2f064693db9f1"
+    },
+    {
+      "path": "assets/gifts/170507.webp",
+      "sha256": "376df9f664adf78a63fb3217b5df26df60c8822405c5cc879847c0de1305fa5a"
+    },
+    {
+      "path": "assets/gifts/14453.webp",
+      "sha256": "90a6dc0db69a372a338f553a315b5280508934f3cf06007f79996ffccc13155b"
+    },
+    {
+      "path": "assets/gifts/1167765.webp",
+      "sha256": "c0a5c132c231a6154558a6b5c2815e7039adccbf84aec8dc961600ef7ee60c81"
+    },
+    {
+      "path": "assets/gifts/13087.webp",
+      "sha256": "a65b706b83effcbb545256cc974db2d2f8dfa6388254184d03313d5295200467"
+    },
+    {
+      "path": "assets/gifts/985644.webp",
+      "sha256": "53d39c46f4198975d7ee57f194acf50ca31ddebb0ad855ca56143f7c8cafe91d"
+    },
+    {
+      "path": "assets/gifts/17922.webp",
+      "sha256": "d53392c2a80ade02e8eb2212b1497f7f8fab24b202677b135eb7e7b9ed00a2f5"
+    },
+    {
+      "path": "assets/gifts/842718.webp",
+      "sha256": "ba538712e6740e7039c293295fa3f945bdeb67ea33cfc08d44e425cb5b34dca0"
+    },
+    {
+      "path": "assets/gifts/282739.webp",
+      "sha256": "6c9e6922911c1473705ef8b0c68d856b9dad158f1babe5ba2f157e79ab520dbc"
+    },
+    {
+      "path": "assets/gifts/232593.webp",
+      "sha256": "c036f8443ce3c6fb304c70539d3e4179dd59668ed4689ed65ceee6375895d982"
+    },
+    {
+      "path": "assets/gifts/6427.webp",
+      "sha256": "412fa26257b451c3d7bd56ea3d0e5269734ab72bb36241193688cd09f2a0466f"
+    },
+    {
+      "path": "assets/gifts/1167772.webp",
+      "sha256": "1a718404e96532d27b102b72d9e6f66940ce676f52280a3b6324d84303d1e5f5"
+    },
+    {
+      "path": "assets/gifts/6661.webp",
+      "sha256": "987ed956b56a28a137f644fd6a02e4c4fceaf851aeeffd20aab1c63b8d78c928"
+    },
+    {
+      "path": "assets/gifts/8130.webp",
+      "sha256": "2a122bbd6e8fa077c392581861d19a306be84c8ec37feee7658ce7c16c9b812d"
+    },
+    {
+      "path": "assets/gifts/11180.webp",
+      "sha256": "1c7bccdebf82f1212b55e2b78fc1f28289006878ef9154090e18b44cfdafdf39"
+    },
+    {
+      "path": "assets/gifts/14109.webp",
+      "sha256": "5e2618b4a873d82c132365b5ab9a621c5e81dbdecca290618604f278cd2cfc87"
+    },
+    {
+      "path": "assets/gifts/1328548.webp",
+      "sha256": "ed457af6e0052e90d87e4ddd639a5809524557f02d0d7a5dbfa5bad1f86c6ab2"
+    },
+    {
+      "path": "assets/gifts/1329196.webp",
+      "sha256": "34fcdf94fceffea86b882111852967ddf3c6facdee07fc3f2dd0f5f9e0784928"
+    },
+    {
+      "path": "assets/gifts/437561.webp",
+      "sha256": "038665fe01cb4c8600f2829790b6421c64eb1f12b7ba982468ad4ca931df059f"
+    },
+    {
+      "path": "assets/gifts/1484295.webp",
+      "sha256": "9c33e9885dc8dd824d84563897db189d07fedf087ec6c9b74e5e229adc7fc488"
+    },
+    {
+      "path": "assets/gifts/170506.webp",
+      "sha256": "b7e554a6d46673467289f3e72dafb862dfd5fecdba5336772d6a7d7dc016ae69"
+    },
+    {
+      "path": "assets/gifts/17105.webp",
+      "sha256": "be964c8dfa5a95a33c30aba9ce3ddceca1d782f501e9cf4d5f48c9a58d68be61"
+    },
+    {
+      "path": "assets/gifts/544015.webp",
+      "sha256": "8e6244f2f46e366610abbe0e4a0d4ac36522dfb5a7edfacf7164fa93bd1afe49"
+    },
+    {
+      "path": "assets/gifts/7264.webp",
+      "sha256": "9b173f62acdf4bc9e932b5a6db28808d9570718e6fe60a8b166b2c25c54bb677"
+    },
+    {
+      "path": "assets/gifts/6502.webp",
+      "sha256": "d7aaf17e60ccce90fce9e6bfd8a8c0021efdf179619545dde0cc65881e773655"
+    },
+    {
+      "path": "assets/gifts/973050.webp",
+      "sha256": "55266842b27ea2ae03f64f70defa97675bb0a6726a08030ffaf41ac6829e37fc"
+    },
+    {
+      "path": "assets/gifts/16552.webp",
+      "sha256": "d89380cb026c3695b34ce8eefba7ce4e855dc9d5cfe2a546d1b5595216022729"
+    },
+    {
+      "path": "assets/gifts/15187.webp",
+      "sha256": "2dcc1b79e4e587aabd0a9728ebec54e12d50ec5d835068c4f3d002d833600f0b"
+    },
+    {
+      "path": "assets/gifts/14000.webp",
+      "sha256": "2e502586bdf036da1d0997f0f5dfbf04982a7093286ce13310feb2c313d987ea"
+    },
+    {
+      "path": "assets/gifts/17359.webp",
+      "sha256": "17d2b3c58f5646199396f48f5a78421184dd5ef4ae553b6db7deab8fe7b7e82a"
+    },
+    {
+      "path": "assets/gifts/17844.webp",
+      "sha256": "604e8db6dc4d9cb24b5d2c3ee661b33830cd912ce2f19e8598d48796cd04627f"
+    },
+    {
+      "path": "assets/gifts/15189.webp",
+      "sha256": "7cf1ddae1715d8d15ce6b6211cf9db73522fd52b88a09ccce7c71b66ade7ef51"
+    },
+    {
+      "path": "assets/gifts/48224.webp",
+      "sha256": "d650ef4d2c7c68c5ff26255cd62de423f5e2a356dc6b19dd937c5718e5c321b8"
+    },
+    {
+      "path": "assets/gifts/17100.webp",
+      "sha256": "db461f2a5ba10155642ec526120f2a7f06ca5ae99d604dbe8c1447df3d5e2a0e"
+    },
+    {
+      "path": "assets/gifts/101198.webp",
+      "sha256": "52b7691bedba2b1ee55b19085dfb340e6c8a536ae0b92df548cbe089ca362089"
+    },
+    {
+      "path": "assets/gifts/282718.webp",
+      "sha256": "701110a69f1ab1e5ca700da16f576501e517c41d85b6ee3135894c55ab1bc917"
+    },
+    {
+      "path": "assets/gifts/19168.webp",
+      "sha256": "27f2d88c12123020ad68e906d7d93ac43f055319097688f3577779a6200e9a9c"
+    },
+    {
+      "path": "assets/gifts/16479.webp",
+      "sha256": "b0a75834efdee926d78a6efa488f2738753b1b6c26704a548017c82d81dc9520"
+    },
+    {
+      "path": "assets/gifts/919332.webp",
+      "sha256": "b3d3c53b8a6a16c4d6fe2e6f063770acc89d0de124a8a594f1214dd3cdd2b1da"
+    },
+    {
+      "path": "assets/gifts/17986.webp",
+      "sha256": "922693161ebb86d2d90a502a65b5b5ed904445496433f9f9c41506f98e29a76d"
+    },
+    {
+      "path": "assets/gifts/18227.webp",
+      "sha256": "bc92dc2dd314ad326b90fc0a29c2a13aa2fe81ed0be479aced81011cd694f12b"
+    },
+    {
+      "path": "assets/gifts/1283006.webp",
+      "sha256": "29d472360788736b8e73501fa47366b7b1f4a9dc8d78be747cc7db21ff5a6b56"
+    },
+    {
+      "path": "assets/gifts/232592.webp",
+      "sha256": "a09975941ec9f78a7f774af57cea55935d282c6eed98b6558deb48a5f49bc2ae"
+    },
+    {
+      "path": "assets/gifts/15428.webp",
+      "sha256": "ac4694d39ff44aaa590cae11284ea2f3b1398b07c9af35f40ca56db3d64378d4"
+    },
+    {
+      "path": "assets/gifts/7364.webp",
+      "sha256": "9799bf894b78e530ea3429e4578777efa561379c2908df375bd2086d33983b7a"
+    },
+    {
+      "path": "assets/gifts/170498.webp",
+      "sha256": "4e04202435df5fcbbfec3896f5505bf94de153fe219d688e1ca89e068f79cde9"
+    },
+    {
+      "path": "assets/gifts/13075.webp",
+      "sha256": "4c3bbc5a91960c0f6c02c40535473861bfaa8f9f14aae327cda5d1c051cafe0d"
+    },
+    {
+      "path": "assets/gifts/17360.webp",
+      "sha256": "05565772bdace284fb3cf4771ab9726c509350a311a15b1e28d6ee2b60c7d246"
+    },
+    {
+      "path": "assets/gifts/17101.webp",
+      "sha256": "9b10a0de7058ec2bf02aa23a07b9531e5f6c64875cdd9838f9f3183a43c083ba"
+    },
+    {
+      "path": "assets/gifts/11177.webp",
+      "sha256": "e1143ef8b8e41ae18ed8d1bf4dff555d3fc2a6cf635089fa627ce7d741de3dfb"
+    },
+    {
+      "path": "assets/gifts/101384.webp",
+      "sha256": "659d7c51517bfb8fd8b6d218352917030b0d2dbe433ce96ae3e06b4a4c5fcacb"
+    },
+    {
+      "path": "assets/gifts/14382.webp",
+      "sha256": "fd7b8ac42abea667e9cef34f7839cf6b4d3f0b704b9783647b1b8a799f7594e6"
+    },
+    {
+      "path": "assets/gifts/6437.webp",
+      "sha256": "530d34d7132b680bb8e67148818e34ee28f0345e34f997d9e00de8d182e38e25"
+    },
+    {
+      "path": "assets/gifts/19309.webp",
+      "sha256": "970a7e5d241504a1819eea53dc17dcaa71fa10dd6a1396926400a949b0f77cfb"
+    },
+    {
+      "path": "assets/gifts/17923.webp",
+      "sha256": "679f3779a5fc6accccb0e28f5d6694c8d156c58f398a858a0c77d157f8539d97"
+    },
+    {
+      "path": "assets/gifts/16735.webp",
+      "sha256": "e1f3553fd93a958b1e445868ea38844f58a0b32c1b42c062d51752133664c376"
+    },
+    {
+      "path": "assets/gifts/1342573.webp",
+      "sha256": "9c9e4ecbb43f5b3300dc440669351cae2da0f707106ce97a3f4e471b1e980254"
+    },
+    {
+      "path": "assets/gifts/1298047.webp",
+      "sha256": "96e5a9bf9a182605845499bd72de1671aa36cf3a40280716f2683368bdb97259"
+    },
+    {
+      "path": "assets/gifts/1162910.webp",
+      "sha256": "b71929ebdd12efd682144b88a0aa4c140fe481712edb808229ab0cf8a6eec3d9"
+    },
+    {
+      "path": "assets/gifts/48225.webp",
+      "sha256": "6ce66b548168a31d2e43471143595f375186e41ee8f264c94daf6c5fed7b7daa"
+    },
+    {
+      "path": "assets/gifts/170508.webp",
+      "sha256": "31c5603b923ef6005bd8d4c96a0e8f847cdda64df5d3bbbc11196f74af918d97"
+    },
+    {
+      "path": "assets/gifts/16896.webp",
+      "sha256": "31b647de9bdb6d5c0f1d93ef14fb099ec2fd8e21e0176a99b6679cc21b125fa0"
+    },
+    {
+      "path": "assets/gifts/8600.webp",
+      "sha256": "8a1b2290b813a048bcb5fac345431ab21879822597fc0ff099f909ea2c39b1f5"
+    },
+    {
+      "path": "assets/gifts/19310.webp",
+      "sha256": "677058e5506bc834da635d24947d2e7a2253d2b66fb40e1921b9c0d9235669f4"
+    },
+    {
+      "path": "assets/gifts/16103.webp",
+      "sha256": "67265df8ec880c4ef8302a2459bf6014392ba834e5e150f0a2b9d41ca74ac61d"
+    },
+    {
+      "path": "assets/gifts/842726.webp",
+      "sha256": "8880432de85007ca873133dc6c3560b07d7cf942079c475268653ef782961394"
+    },
+    {
+      "path": "assets/gifts/919320.webp",
+      "sha256": "dd54fb4a87ec54b522a461ac29d4af1368fd03a39e5c3fc18773737cd99de00a"
+    },
+    {
+      "path": "assets/gifts/170277.webp",
+      "sha256": "44e97254381c07053e94da1c9e446dc8c341acaaac02885bba43470643d68d91"
+    },
+    {
+      "path": "assets/gifts/170193.webp",
+      "sha256": "a0fc9d0320cc05421448b446ad740a082c1e2a61794dd700c1e8740e74f77802"
+    },
+    {
+      "path": "assets/gifts/59775.webp",
+      "sha256": "98be661a3525ec149e8d503d009e250907a03d4f47f0a87c211a5b52f85b4f20"
+    },
+    {
+      "path": "assets/gifts/282675.webp",
+      "sha256": "8c3fd1e1285c3172c81c0a3f9a3fa048419d052255770fabe71373e586f0c571"
+    },
+    {
+      "path": "assets/gifts/15191.webp",
+      "sha256": "b05ce74398ca5d3b074d39ecac0dcf440c6c448b3a2655fe82c9ec9ed74698e6"
+    },
+    {
+      "path": "assets/gifts/15763.webp",
+      "sha256": "3bbc62e55ed202e6e0c6eef3f21e72a7cca128c9938e4326b65bf1f0b3e1f7d4"
+    },
+    {
+      "path": "assets/gifts/18605.webp",
+      "sha256": "14fa0988ba1ccbd42aed02c8fa043595564b3f832ab458149ea5829317cc03fd"
+    },
+    {
+      "path": "assets/gifts/17821.webp",
+      "sha256": "2982e7ee807540c226121ef42a08529dd9d341cd1eb017a2a73ee31c18fdfb18"
+    },
+    {
+      "path": "assets/gifts/1282707.webp",
+      "sha256": "49d49ded117161120165396cf6a38ff9869102518d7db83a18177eb969215d89"
+    },
+    {
+      "path": "assets/gifts/17104.webp",
+      "sha256": "e8064ce73f5b5ae98062adae51a9309fc328d1d72b99044651966bfb9712fcef"
+    },
+    {
+      "path": "assets/gifts/15199.webp",
+      "sha256": "559087acf49a5931a7abb7552f73c6abf352bb2024a90e0360c241c193c59de6"
+    },
+    {
+      "path": "assets/gifts/18124.webp",
+      "sha256": "50f586934ea3cef4bd4e30a90e5093b954b3905c4e8d7c0cd4f74f340738a7d8"
+    },
+    {
+      "path": "assets/gifts/15924.webp",
+      "sha256": "cdaf0d6ae39ee4e6254891fd7f8eda74a0c618dd67a8e34ee9d932638a933f10"
+    },
+    {
+      "path": "assets/gifts/16478.webp",
+      "sha256": "bcca96407b5b2e8ec35d400f48b5b04f249fcd03ea9b9f3ec912cc52d886a603"
+    },
+    {
+      "path": "assets/gifts/17102.webp",
+      "sha256": "504711ccd105d4b60ee03d39f2d4d553b9b69465f275dcee45b99960cc59aeb6"
+    },
+    {
+      "path": "assets/gifts/18506.webp",
+      "sha256": "2f0d6df12fd45e95fc7c00306658e60b50b0b1abaa67e2cb118be7807ff1b9ac"
+    },
+    {
+      "path": "assets/gifts/10547.webp",
+      "sha256": "c5214cc63daf3d4561ef4992025b71f2f1fb9009575d18c4c59570d7863166e6"
+    },
+    {
+      "path": "assets/gifts/118814.webp",
+      "sha256": "13f86a06cf56ded5aea82e8a176d3f53bb1afc3e1296bc296e32c3ea9a8907c9"
+    },
+    {
+      "path": "assets/gifts/166578.webp",
+      "sha256": "0839933d7d05193a516e86904058965d8f780c7f0507822f73ce79226835ad17"
+    },
+    {
+      "path": "assets/gifts/54566.webp",
+      "sha256": "23d86904d8d7433ffabc5ae35697642d02470057cece956ff0768c2422ec6706"
+    },
+    {
+      "path": "assets/gifts/15752.webp",
+      "sha256": "28e291722cb9df2de2468bb79ca780d112f617cc5f7936a0c5b52c1f8889f581"
+    },
+    {
+      "path": "assets/gifts/18196.webp",
+      "sha256": "10520d86141cb669825c91e76ad2142cc6a1d66818b14206b2d8b2c9b1c4ab66"
+    },
+    {
+      "path": "assets/gifts/19308.webp",
+      "sha256": "e28f7a5f904ddf0034b5d97960a6dc0d9c3c2a4dee8f3fe4d38c5c9cf8e60bc2"
+    },
+    {
+      "path": "assets/gifts/17985.webp",
+      "sha256": "ac65354510003f1727c1c62994e2d1258b600c915e6bb2331d08db2295fe8a95"
+    },
+    {
+      "path": "assets/gifts/1370390.webp",
+      "sha256": "ea43b9068ccfb79d59db7bca4e5236baf7fcc2a59f51ba9e107e8435ba2d9057"
+    },
+    {
+      "path": "assets/gifts/17934.webp",
+      "sha256": "d5f9259a24beb8e3fe38ae5aa9a044baf86d3a673e9e0f174b5b3a12963f4347"
+    },
+    {
+      "path": "assets/gifts/8269.webp",
+      "sha256": "8bb4550d5125e0075af5eb721eb9b62fe165cbd884fbb588d689de7d3e71ab93"
+    },
+    {
+      "path": "assets/gifts/1473066.webp",
+      "sha256": "05acdc0a70c1c2a98ef923af30a9cb7b87da4ecef9b12877a50697a21ca338f4"
+    },
+    {
+      "path": "assets/gifts/1501083.webp",
+      "sha256": "d4374c3ad3fa6bc89405178da100cd9e684314ef6b6710120eb7b99dc7a66006"
+    },
+    {
+      "path": "assets/gifts/8264.webp",
+      "sha256": "f90e917ce862beea06cc2254394e88e808c5472cb0a02e87df96582730105ab4"
+    },
+    {
+      "path": "assets/gifts/1501078.webp",
+      "sha256": "3b75b2aceb9501c564abe31c90daa8aa4465714036bcd5b47467b88c33da1ea8"
+    }
+  ]
+}

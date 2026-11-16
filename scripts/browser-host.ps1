@@ -52,7 +52,16 @@ function Validate-Settings($Value) {
         foreach ($rule in $rules) {
             $name = $rule.Name; $r = $rule.Value
             if ($name -cnotmatch '^[\p{L}\p{N} _-]{1,64}$' -or $r.action -cnotin @('blocks','boost','quake') -or ($r.value -isnot [int] -and $r.value -isnot [long] -and $r.value -isnot [double]) -or $r.value % 1 -ne 0 -or $r.value -lt 1 -or $r.value -gt 1000) { throw 'Invalid gift rule' }
-            $gifts[$name.ToLowerInvariant()] = @{ action=$r.action; value=[int]$r.value }
+            $mapped=@{action=$r.action;value=[int]$r.value}
+            if($null -ne $r.PSObject.Properties['giftId']){
+                if($r.giftId -isnot [string] -or $r.giftId -cnotmatch '^[1-9][0-9]{0,19}$' -or $name -cne ('gift_'+$r.giftId)){throw 'Invalid gift ID mapping'}
+                $mapped['giftId']=$r.giftId
+            }
+            if($null -ne $r.PSObject.Properties['name']){
+                if($r.name -isnot [string] -or !$r.name.Trim() -or $r.name.Length -gt 64 -or $r.name -match '[\x00-\x1f\x7f]'){throw 'Invalid gift name'}
+                $mapped['name']=$r.name
+            }
+            $gifts[$name.ToLowerInvariant()]=$mapped
         }
         $result['gifts'] = $gifts
     }
@@ -130,9 +139,13 @@ function Handle($Stream) {
         if($path -eq '/favicon.ico'){Reply $Stream 204 'image/x-icon' ([byte[]]@());return}
         if($path -eq '/api/state'){Json-Reply $Stream 200 (Current-State);return}
         if($path -eq '/api/session'){Json-Reply $Stream 200 @{token=$script:Token;appId='tiktok-live-pyramid';projectRoot=$Root;version=$script:Version;runtime='browser'};return}
-        $files=@{'/'='dashboard/index.html';'/app.js'='dashboard/app.js';'/style.css'='dashboard/style.css';'/blueprint.js'='dashboard/blueprint.js';'/browser/game.html'='browser/game.html';'/browser/game.js'='browser/game.js';'/browser/renderer.js'='browser/renderer.js';'/browser/checkpoint.js'='browser/checkpoint.js';'/browser/game.css'='browser/game.css';'/server/engine.mjs'='server/engine.mjs';'/server/tikfinity.mjs'='server/tikfinity.mjs';'/vendor/three/three.module.min.js'='vendor/three/three.module.min.js';'/vendor/three/three.core.min.js'='vendor/three/three.core.min.js'}
+        $files=@{'/'='dashboard/index.html';'/app.js'='dashboard/app.js';'/style.css'='dashboard/style.css';'/blueprint.js'='dashboard/blueprint.js';'/gift-library.js'='dashboard/gift-library.js';'/catalog.json'='catalog.json';'/browser/game.html'='browser/game.html';'/browser/game.js'='browser/game.js';'/browser/renderer.js'='browser/renderer.js';'/browser/checkpoint.js'='browser/checkpoint.js';'/browser/game.css'='browser/game.css';'/server/engine.mjs'='server/engine.mjs';'/server/tikfinity.mjs'='server/tikfinity.mjs';'/server/gift-rules.mjs'='server/gift-rules.mjs';'/vendor/three/three.module.min.js'='vendor/three/three.module.min.js';'/vendor/three/three.core.min.js'='vendor/three/three.core.min.js'}
+        if($path -cmatch '^/assets/gifts/[1-9][0-9]{0,19}\.webp$'){
+            $image=Join-Path $Root $path.TrimStart('/')
+            if([IO.File]::Exists($image)){Reply $Stream 200 'image/webp' ([IO.File]::ReadAllBytes($image));return}
+        }
         if(!$files.ContainsKey($path)){Json-Reply $Stream 404 @{error='Not found'};return}
-        $file=Join-Path $Root $files[$path];$ext=[IO.Path]::GetExtension($file);$types=@{'.html'='text/html; charset=utf-8';'.js'='text/javascript; charset=utf-8';'.mjs'='text/javascript; charset=utf-8';'.css'='text/css; charset=utf-8'}
+        $file=Join-Path $Root $files[$path];$ext=[IO.Path]::GetExtension($file);$types=@{'.html'='text/html; charset=utf-8';'.js'='text/javascript; charset=utf-8';'.mjs'='text/javascript; charset=utf-8';'.css'='text/css; charset=utf-8';'.json'='application/json; charset=utf-8'}
         Reply $Stream 200 $types[$ext] ([IO.File]::ReadAllBytes($file));return
     }
     if($method -ne 'POST'){Json-Reply $Stream 405 @{error='Method not allowed'};return}

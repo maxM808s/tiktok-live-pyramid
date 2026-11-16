@@ -1,3 +1,4 @@
+import {resolveGiftRule,normalizedGiftId} from './gift-rules.mjs';
 import {normalize} from './tikfinity.mjs';
 export const buildings=['pyramid','temple','castle','lighthouse','obelisk','ziggurat'];
 export const defaults={language:'en',building:'pyramid',target:200,automatic:true,celebration:12,workers:16,quality:'high',camera:true,night:true,mode:'simulator',likesPerWorker:5,commentBlocks:1,followBlocks:5,shareBlocks:1,skin:'mixed',overlay:'full',gifts:{rose:{action:'blocks',value:10},galaxy:{action:'boost',value:50},earthquake:{action:'quake',value:10}}};
@@ -20,7 +21,7 @@ export class Engine{
  if(event==='like'){const sum=(this.likes.get(user)||0)+positive(d.likeCount??d.count??1);amount=Math.floor(sum/this.config.likesPerWorker);this.likes.set(user,sum%this.config.likesPerWorker);}
  if(event==='chat'){amount=this.config.commentBlocks;const v=String(d.comment||'').trim().toLowerCase();if(buildings.includes(v))this.votes.set(user,v);}
  if(event==='follow')amount=this.config.followBlocks;if(event==='share')amount=this.config.shareBlocks;
- if(event==='gift'){const name=String(d.giftName||d.gift?.name||'').toLowerCase(),rule=Object.hasOwn(this.config.gifts,name)?this.config.gifts[name]:null;if(!rule){this.log('Unmapped gift: '+name,source);return false;}const count=positive(d.repeatCount??1,1000);amount=count*rule.value;action=rule.action;this.lastGift={user,name,count,at:Date.now()};}
+ if(event==='gift'){const match=resolveGiftRule(this.config.gifts,d);if(!match){this.log('Unmapped gift: '+String(d.giftName||d.giftId||'Unknown'),source);return false;}const {rule,id}=match;const name=String(d.giftName||rule.name||id||'Gift');const count=positive(d.repeatCount??1,1000);amount=count*rule.value;action=rule.action;this.lastGift={user,name,giftId:id,count,at:Date.now()};}
  if(id)this.seen.set(key,Date.now());while(this.seen.size>10000)this.seen.delete(this.seen.keys().next().value);
  while(this.likes.size>5000)this.likes.delete(this.likes.keys().next().value);while(this.votes.size>5000)this.votes.delete(this.votes.keys().next().value);
  if(action==='quake'){if(this.phase==='building'){this.built=Math.max(0,this.built-Math.min(100,amount));this.placements.length=this.built;this.quakeAt=Date.now();}}else{
@@ -47,6 +48,9 @@ export function validateConfig(c){
  for(const k of ['automatic','camera','night'])if(k in c){if(typeof c[k]!=='boolean')throw Error(k);out[k]=c[k];}
  for(const [k,lo,hi]of [['target',20,2000],['workers',1,32],['celebration',5,120],['likesPerWorker',1,1000],['commentBlocks',1,100],['followBlocks',1,1000],['shareBlocks',1,100]])if(k in c){if(!Number.isInteger(c[k])||c[k]<lo||c[k]>hi)throw Error(k);out[k]=c[k];}
  for(const [k,options]of [['language',['en','he']],['building',buildings],['quality',['low','high']],['mode',['simulator','live']],['skin',['mixed','worker','mummy','ninja','pharaoh']],['overlay',['full','minimal']]])if(k in c){if(!options.includes(c[k]))throw Error(k);out[k]=c[k];}
- if('gifts'in c){if(!c.gifts||typeof c.gifts!=='object'||Array.isArray(c.gifts))throw Error('Invalid gift rules');out.gifts=Object.create(null);if(Object.keys(c.gifts).length>100)throw Error('Too many gifts');for(const[n,r]of Object.entries(c.gifts)){if(!/^[\p{L}\p{N} _-]{1,64}$/u.test(n)||!['blocks','boost','quake'].includes(r.action)||!Number.isInteger(r.value)||r.value<1||r.value>1000)throw Error('Invalid gift rule');out.gifts[n.toLowerCase()]=r;}}
+ if('gifts'in c){if(!c.gifts||typeof c.gifts!=='object'||Array.isArray(c.gifts))throw Error('Invalid gift rules');out.gifts=Object.create(null);if(Object.keys(c.gifts).length>100)throw Error('Too many gifts');for(const[n,r]of Object.entries(c.gifts)){if(!/^[\p{L}\p{N} _-]{1,64}$/u.test(n)||!['blocks','boost','quake'].includes(r.action)||!Number.isInteger(r.value)||r.value<1||r.value>1000)throw Error('Invalid gift rule');const rule={action:r.action,value:r.value};
+ if('giftId'in r){if(typeof r.giftId!=='string'||!normalizedGiftId(r.giftId)||n!=='gift_'+r.giftId)throw Error('Invalid gift ID mapping');rule.giftId=r.giftId;}
+ if('name'in r){if(typeof r.name!=='string'||!r.name.trim()||r.name.length>64||/[\u0000-\u001f\u007f]/.test(r.name))throw Error('Invalid gift name');rule.name=r.name;}
+ out.gifts[n.toLowerCase()]=rule;}}
  return out;
 }

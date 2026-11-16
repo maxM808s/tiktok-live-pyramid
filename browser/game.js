@@ -1,6 +1,8 @@
 import {Engine,validateConfig} from '../server/engine.mjs';
 import {checkpoint,recover} from './checkpoint.js';
 import {DesertView} from './renderer.js';
+import {loadGiftCatalog,findGift,giftImage} from '/gift-library.js';
+let giftCatalog=[];loadGiftCatalog().then(data=>giftCatalog=data).catch(()=>{});
 const $=selector=>document.querySelector(selector);
 const clientId=crypto.randomUUID();
 let session='',ownerToken='',engine=null,view=null,snapshot=null,ack=0,owned=false,online=false,stopping=false,polling=false,lastSave=0,lastPoll=0,lastFrame=0,lastHUD=0,socket=null,retry=null,attempts=0;
@@ -81,7 +83,10 @@ function hud(state){
  if(!board.length){const empty=document.createElement('div');empty.className='instructions';empty.textContent=he?'המדבר מחכה לבונים הראשונים':'The desert awaits its first builders.';$('#leaderboard').append(empty);}
  $('#instructions').textContent=he?`${state.config.likesPerWorker} לייקים ← פועל • תגובה ← ${state.config.commentBlocks} אבנים\nמעקב ← ${state.config.followBlocks} אבנים • שיתוף ← ${state.config.shareBlocks} אבנים`:`${state.config.likesPerWorker} likes → worker · Comment → ${state.config.commentBlocks} stones\nFollow → ${state.config.followBlocks} stones · Share → ${state.config.shareBlocks} stones`;
  $('#gift').hidden=!state.lastGift||Date.now()-state.lastGift.at>20000;
- if(!$('#gift').hidden)$('#gift').textContent=`${state.lastGift.user} · ${state.lastGift.name} × ${state.lastGift.count}`;
+ if(!$('#gift').hidden){
+  const gift=state.lastGift,item=findGift(giftCatalog,gift.giftId,gift.name),key=gift.at+':'+(item?.id||'');
+  if($('#gift').dataset.key!==key){const label=document.createElement('span');label.textContent=`${gift.user} · ${gift.name} × ${gift.count}`;$('#gift').replaceChildren(...(item?[giftImage(item)]:[]),label);$('#gift').dataset.key=key;}
+ }
 }
 function frame(now){
  const delta=Math.min(.1,(now-(lastFrame||now))/1000);lastFrame=now;frames++;if(now-fpsAt>=1000){fps=Math.round(frames*1000/(now-fpsAt));frames=0;fpsAt=now;}

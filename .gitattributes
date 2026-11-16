@@ -11,3 +11,5 @@
 *.css text eol=lf
 *.md text eol=lf
 vendor/** text eol=lf
+/assets/gifts/*.webp -text
+/catalog.json text eol=lf

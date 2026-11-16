@@ -99,3 +99,13 @@ Actual Windows 11 graphical capture in LIVE Studio, native GPU performance, real
 - Final browser dashboard regression explicitly placed a uniquely named simulator contributor at the top, confirmed it was absent in LIVE, and confirmed the simulator leaderboard returned when switching back. Simulator and LIVE checkpoint banks are separate in both editions. Primitive/array settings rejection was also executed against the PowerShell host.
 
 Final no-install source validation: [all jobs passed for 38f3bd4](https://github.com/maxM808s/tiktok-live-pyramid/actions/runs/43866834332), including sixteen engine tests on Windows/Linux and the Windows browser startup/recovery smoke test with Node removed from PATH. The separate-mode checkpoint browser regression also passed.
+
+## Version 0.4 — shared gift library
+
+Executed locally against the PowerShell host and real headless Chromium game:
+
+- All 314 catalog entries and bundled WebP files passed checksum/integrity tests against the recorded source manifest. Engine/source and gift-library test files passed (21 individual cases).
+- Browser integration passed search, coin/status filters, sorting, local image loading, legacy Rose rule migration, ID rule saving, three-item quantity awarding 51 stones, separate same-name Universe IDs awarding 25 + 75 stones, the recent-gift HUD image, retained settings after dashboard reload, Hebrew RTL/mobile layout without horizontal overflow, and no browser page errors.
+- Existing dashboard regression passed readiness, six previews, quick controls, unsaved edits, custom gift creation/edit/removal, settings export/import, log filters, English/Hebrew, LIVE test blocking, separate mode checkpoints, and mobile layout, with no browser page errors.
+
+Testing caught a rapid-save race: choosing a second gift before the first save finished could lose the selection. Library choices are now disabled while saving. Browser tests passed after the fix. This validates simulated payloads, not real TikFinity Free events or current TikTok coin prices. Windows CI results for this revision are reported separately below after execution.

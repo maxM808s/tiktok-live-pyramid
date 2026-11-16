@@ -32,7 +32,7 @@ try:
   # Unsaved form edits must survive a state refresh.
   page.wait_for_timeout(1400);assert page.locator('#gameForm [name=target]').input_value()=='500'
   page.locator('[data-page=gifts]').click()
-  page.locator('#giftForm [name=name]').fill('Browser Test Gift');page.locator('#giftForm [name=value]').fill('17');page.locator('#giftForm button').click()
+  page.locator('#giftForm [name=name]').fill('Browser Test Gift');page.locator('#giftForm [name=value]').fill('17');page.locator('#giftForm button.primary').click()
   page.wait_for_timeout(1300);rule=page.locator('.gift-rule').filter(has_text='browser test gift');assert rule.count()==1
   rule.get_by_role('button',name='Edit',exact=True).click();assert page.locator('#giftForm [name=value]').input_value()=='17'
   rule.get_by_role('button',name='Remove',exact=True).click();page.locator('#confirmButton').click();page.wait_for_timeout(1300)

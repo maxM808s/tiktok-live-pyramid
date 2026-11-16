@@ -53,7 +53,11 @@ const server=http.createServer(async(req,res)=>{
  else if(u.pathname==='/api/shutdown'){json(res,200,{ok:true});shutdown();return;}
  else return json(res,404,{error:'Not found'});json(res,200,{ok:true});
  }catch(e){json(res,400,{error:e.message});}return;}
- const files={'/':'index.html','/app.js':'app.js','/blueprint.js':'blueprint.js','/style.css':'style.css'};const file=files[u.pathname];if(!file)return json(res,404,{error:'Not found'});
+ if(req.method==='GET'&&(u.pathname==='/catalog.json'||/^\/assets\/gifts\/[1-9][0-9]{0,19}\.webp$/.test(u.pathname))){
+  const file=path.join(root,u.pathname.slice(1));if(!fs.existsSync(file))return json(res,404,{error:'Not found'});
+  res.writeHead(200,{'Content-Type':u.pathname.endsWith('.webp')?'image/webp':'application/json; charset=utf-8','X-Content-Type-Options':'nosniff'});fs.createReadStream(file).pipe(res);return;
+ }
+ const files={'/':'index.html','/app.js':'app.js','/blueprint.js':'blueprint.js','/gift-library.js':'gift-library.js','/style.css':'style.css'};const file=files[u.pathname];if(!file)return json(res,404,{error:'Not found'});
  res.writeHead(200,{'Content-Type':file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html','Content-Security-Policy':"default-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; frame-ancestors 'none'",'X-Content-Type-Options':'nosniff'});fs.createReadStream(path.join(root,'dashboard',file)).pipe(res);
 });
 // Checkpoints contain only local game state; never committed.

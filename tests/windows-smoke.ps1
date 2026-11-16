@@ -1,4 +1,4 @@
-# Run after installing Node and Godot. CI uses PYRAMID_HEADLESS_TEST=1.
+# Uses Windows built-ins and Edge. CI uses PYRAMID_HEADLESS_TEST=1.
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 function Run-Launcher([string]$Action) {
@@ -27,7 +27,11 @@ try {
     $recoveredGame = Get-Content -Raw (Join-Path $root '.local/game-process.json') | ConvertFrom-Json
     if ($recoveredGame.id -eq $gameAfter.id -and $recoveredGame.started -eq $gameAfter.started) { throw 'Monitor did not recover a crashed game' }
     $session = Invoke-RestMethod http://127.0.0.1:3210/api/session
-    Invoke-RestMethod http://127.0.0.1:3210/api/config -Method Post -Headers @{ 'X-Session' = $session.token } -ContentType application/json -Body '{"language":"he"}' | Out-Null
+    Invoke-RestMethod http://127.0.0.1:3210/api/config -Method Post -Headers @{ 'X-Session' = $session.token } -ContentType application/json -Body '{"language":"he","gifts":{"gift_5655":{"action":"blocks","value":17,"giftId":"5655","name":"Rose"}}}' | Out-Null
+    $catalog = Invoke-RestMethod http://127.0.0.1:3210/catalog.json
+    if ($catalog.Count -ne 314) { throw 'Gift catalog is incomplete' }
+    $icon = Invoke-WebRequest http://127.0.0.1:3210/assets/gifts/5655.webp -UseBasicParsing
+    if ($icon.Headers['Content-Type'] -notmatch 'image/webp') { throw 'Gift image was not served' }
     # Simulate a newly pulled source revision without touching code or remote branches.
     @{ fingerprint = 'previous-version-for-smoke-test' } | ConvertTo-Json | Set-Content (Join-Path $root '.local/launch-version.json') -Encoding UTF8
     Run-Launcher 'Start'
@@ -42,5 +46,6 @@ try {
     Run-Launcher 'Start'
     $state = Wait-Game
     if ($state.config.language -ne 'he') { throw 'Settings did not persist' }
+    if ($state.config.gifts.gift_5655.giftId -ne '5655' -or $state.config.gifts.gift_5655.value -ne 17) { throw 'Gift ID mapping did not persist' }
     Write-Host 'PASS: setup, repeated start without duplicates, crash recovery, engine connection, new-version restart, backups, clean stop and persistent settings.'
 } finally { Run-Launcher 'Stop' }

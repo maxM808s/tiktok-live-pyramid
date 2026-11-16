@@ -36,7 +36,7 @@ The dashboard opens at **http://127.0.0.1:3210** and has:
 
 - Overview with construction progress, worker count, recent events, contributors, performance and connection readiness.
 - Six building previews/cards and difficulty presets. Building/difficulty edits apply to the next round or **Restart round**.
-- Gift manager with configurable values/actions, edit/remove and simulator-only previews.
+- Shared 314-gift library from your battle game, with bundled images, search, coin filters, configurable actions and simulator-only previews.
 - Camera, day/night, particle quality, worker outfits and overlay layout.
 - Pause/resume, restart, filtered/downloadable logs, settings backup/import, and simulator/live selection.
 - English and Hebrew with RTL layout and translated controls.
@@ -69,7 +69,7 @@ The official API documents gifts, likes, comments (`chat`), follows and shares. 
 | Galaxy | Fifty golden units and a 15-second boost |
 | `earthquake` | Remove ten units; replace this placeholder with a real gift name |
 
-Configure basic values in **Game settings** and exact gift names/values in **Gift manager**. Unknown gifts are logged without guessing their price. GiftType 1 streaks count once when the final boolean `repeatEnd` is true; `repeatCount` multiplies the configured value. Duplicate event IDs in the latest 10,000 IDs are suppressed. Missing IDs cannot guarantee duplicate protection.
+Configure basic values in **Game settings**. In **Gift manager**, search the shared library, choose a gift, set its action/value, and save. Library rules match the gift ID, so same-name gifts can have different actions. Existing custom-name rules remain supported. Only saved rules award stones; importing the library does not enable every gift. Images are bundled locally, with no new runtime dependencies. Coin values are imported snapshots, not current live prices. See [library source and artwork notes](assets/gifts/README.md). Unknown gifts are logged without guessing their price. GiftType 1 streaks count once when the final boolean `repeatEnd` is true; `repeatCount` multiplies the configured value. Duplicate event IDs in the latest 10,000 IDs are suppressed. Missing IDs cannot guarantee duplicate protection.
 
 The contribution queue caps at 5,000 units and records excess as dropped; a single gift also caps at 5,000 units. A separate bounded dashboard-command queue prevents unlimited pending controls when no game window is running.
 
@@ -126,7 +126,7 @@ Services bind to loopback only. Incoming requests have Host/origin/session valid
 
 The original Godot source remains in `game/`. **Start-Godot.cmd** explicitly selects the optional Godot edition and requires Node 22+ and Godot 4.3+ Standard. It is not used by normal Start, Setup, Stop or Update. Only one edition can own port 3210 at a time; launchers stop the other owned edition when switching.
 
-Developers can run `node --test tests/engine.test.mjs`; Node is a development/optional-edition tool, not a player dependency. The default host is `scripts/browser-host.ps1`. The browser game imports the same event/round engine as the optional Godot bridge. Python/Playwright scripts are development tests only.
+Developers can run `node --test tests/engine.test.mjs tests/gift-library.test.mjs`; Node is a development/optional-edition tool, not a player dependency. The default host is `scripts/browser-host.ps1`. The browser game imports the same event/round engine as the optional Godot bridge. Python/Playwright scripts are development tests only.
 
 The Windows CI no-install smoke test removes Node from PATH and launches the normal scripts with the runner's existing Edge browser. See [executed test status](docs/TEST-STATUS.md) for what actually passed, rather than treating a workflow definition as a completed test.
 

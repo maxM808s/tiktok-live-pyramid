@@ -1,17 +1,21 @@
 import {drawBlueprint} from './blueprint.js';
+import {loadGiftCatalog,findGift,configuredGift,filterGifts,giftImage} from './gift-library.js';
 const $ = selector => document.querySelector(selector);
 let token='', state, page='overview', editGift='', toastTimer;
 const dirty=new Set();
-const he={likesPerWorker:'לייקים לכל פועל / אבן',commentBlocks:'אבנים לכל תגובה',followBlocks:'אבנים לכל עוקב',shareBlocks:'אבנים לכל שיתוף',skin:'מראה הפועלים',overlay:'פריסת שכבת השידור',workspace:'סביבת עבודה',overview:'סקירה',game:'הגדרות משחק',gifts:'ניהול מתנות',visual:'הגדרות תצוגה',controls:'שליטה בשידור',language:'שפה',broadcast:'השידור שלך, בשליטה מלאה',hero:'קהילה אחת. אלפי אבנים.\nבונים יחד משהו שיישאר.',progress:'התקדמות הבנייה',workers:'פועלים פעילים',performance:'ביצועי המשחק',activity:'פעילות אחרונה',leaders:'התורמים המובילים',roundSettings:'מכינים את הסיבוב הבא',building:'מבנה',blocks:'מספר האבנים הנדרש (רמת קושי)',timing:'ספירה לאחור לחגיגה (שניות)',automatic:'התחלה אוטומטית של הסיבוב הבא',save:'שמירת הגדרות',apply:'בחירת המבנה ורמת הקושי יחולו בסיבוב הבא. להתחלה מיידית השתמשו בהתחלה מחדש. ההצבעות קובעות את המבנה הבא; ללא הצבעות המבנים מתחלפים לפי הסדר.',giftRules:'כל מתנה בונה',giftNote:'יש להתאים לשם המתנה שמתקבל ב-TikFinity. מתנות ללא כלל יירשמו בלבד.',giftName:'שם המתנה',action:'פעולה',value:'אבנים לכל מתנה',saveRule:'שמירת כלל',visualTitle:'יוצרים אווירה',quality:'איכות גרפית',maxWorkers:'מספר פועלים מרבי',camera:'מצלמה קולנועית',night:'מעברי יום ולילה',mode:'מקור אירועים',modeNote:'במצב שידור חי כל אירועי הבדיקה חסומים. חיבור מקומי תקין אינו מאשר שהשידור ב-TikTok פעיל.',pause:'השהיה / המשך',restart:'התחלת סיבוב מחדש',health:'תקינות החיבור',simulator:'סימולטור אירועים מקומי',username:'שם הצופה',event:'אירוע',quantity:'כמות מתנות',comment:'תגובה / הצבעה למבנה',test:'שליחת אירוע בדיקה',logs:'יומן אירועים'};
+let giftCatalog=[],catalogReady=false,catalogError='',giftPage=0,selectedGift=null,giftSaving=false;
+const giftsPerPage=24;
+const he={likesPerWorker:'לייקים לכל פועל / אבן',commentBlocks:'אבנים לכל תגובה',followBlocks:'אבנים לכל עוקב',shareBlocks:'אבנים לכל שיתוף',skin:'מראה הפועלים',overlay:'פריסת שכבת השידור',workspace:'סביבת עבודה',overview:'סקירה',game:'הגדרות משחק',gifts:'ניהול מתנות',visual:'הגדרות תצוגה',controls:'שליטה בשידור',language:'שפה',broadcast:'השידור שלך, בשליטה מלאה',hero:'קהילה אחת. אלפי אבנים.\nבונים יחד משהו שיישאר.',progress:'התקדמות הבנייה',workers:'פועלים פעילים',performance:'ביצועי המשחק',activity:'פעילות אחרונה',leaders:'התורמים המובילים',roundSettings:'מכינים את הסיבוב הבא',building:'מבנה',blocks:'מספר האבנים הנדרש (רמת קושי)',timing:'ספירה לאחור לחגיגה (שניות)',automatic:'התחלה אוטומטית של הסיבוב הבא',save:'שמירת הגדרות',apply:'בחירת המבנה ורמת הקושי יחולו בסיבוב הבא. להתחלה מיידית השתמשו בהתחלה מחדש. ההצבעות קובעות את המבנה הבא; ללא הצבעות המבנים מתחלפים לפי הסדר.',giftRules:'כל מתנה בונה',giftNote:'בחרו מהספרייה לשיוך לפי מזהה המתנה, או הגדירו שם מותאם. מתנות ללא כלל יירשמו בלבד.',giftName:'שם המתנה',action:'פעולה',value:'אבנים לכל מתנה',saveRule:'שמירת כלל',visualTitle:'יוצרים אווירה',quality:'איכות גרפית',maxWorkers:'מספר פועלים מרבי',camera:'מצלמה קולנועית',night:'מעברי יום ולילה',mode:'מקור אירועים',modeNote:'במצב שידור חי כל אירועי הבדיקה חסומים. חיבור מקומי תקין אינו מאשר שהשידור ב-TikTok פעיל.',pause:'השהיה / המשך',restart:'התחלת סיבוב מחדש',health:'תקינות החיבור',simulator:'סימולטור אירועים מקומי',username:'שם הצופה',event:'אירוע',quantity:'כמות מתנות',comment:'תגובה / הצבעה למבנה',test:'שליחת אירוע בדיקה',logs:'יומן אירועים'};
 Object.assign(he,{
   sessionControls:'שליטה בסיבוב',connectionSetup:'הגדרת חיבור',backupSettings:'גיבוי הגדרות',gameWindow:'חלון המשחק',eventSource:'מקור אירועים',roundFlow:'רצף סיבובים',connectTitle:'ממתינים ל-TikFinity Desktop',connectHelp:'פתחו את TikFinity במחשב הזה וחברו אותו לשידור. המשחק מתחבר מחדש באופן אוטומטי. בדקו אירוע אמיתי לפני השארת המשחק ללא השגחה.',nextWonder:'הפלא הבא מתחיל כאן',blueprintPreview:'תצוגת תוכנית בנייה · אינה צילום של המשחק',difficulty:'רמת קושי',quickRound:'מהיר · 100',standardRound:'רגיל · 200',epicRound:'גדול · 500',manage:'ניהול',downloadLogs:'הורדת יומן',filterLogs:'סינון אירועים',restoreSettings:'שחזור הגדרות',restoreNote:'ייבוא קובץ הגדרות של המשחק. ההגדרות הנוכחיות נשמרות כעותק שחזור לפני שינוי.',chooseBackup:'בחירת גיבוי JSON',footer:'שליטה מקומית. יצירה משותפת.',cancel:'ביטול'
 });
+Object.assign(he,{giftLibrary:'ספריית מתנות',giftLibraryNote:'בחרו מתנה מהספרייה המשותפת, הגדירו פעולה ושמרו. התמונות כלולות מקומית.',searchGifts:'חיפוש מתנות לפי שם או מזהה',coinRange:'טווח מטבעות',allCoins:'כל ערכי המטבעות',giftStatus:'מצב',allGifts:'כל המתנות',assignedGifts:'משויכות',unassignedGifts:'ללא שיוך',sortGifts:'מיון',coinsLow:'מטבעות: מהנמוך לגבוה',coinsHigh:'מטבעות: מהגבוה לנמוך',giftNameSort:'שם',previous:'הקודם',next:'הבא',priceSnapshot:'ערכי המטבעות מיובאים מהספרייה ועשויים להשתנות ב-TikTok. רק כללים שנשמרו מפעילים פעולות.',configuredGifts:'פעולות מתנות שהוגדרו',customGift:'שימוש בשם מתנה מותאם',giftId:'מזהה מתנה',giftIdOptional:'מזהה מתנה (רשות)'});
 const english=new Map([...document.querySelectorAll('[data-i]')].map(el=>[el,el.textContent]));
 for(const form of document.querySelectorAll('form'))for(const field of form.elements){
   if(!field.name)continue;if(!field.id)field.id=(form.id||'dialog')+'-'+field.name;
   const label=field.previousElementSibling;if(label?.tagName==='LABEL')label.htmlFor=field.id;
 }
-const englishOptions=new Map([...document.querySelectorAll('select:not(#language) option')].map(option=>{option.setAttribute('value',option.value);return [option,option.textContent];}));
+const englishOptions=new Map([...document.querySelectorAll('select:not(#language):not(#giftPrice):not(#giftAssigned):not(#giftSort) option')].map(option=>{option.setAttribute('value',option.value);return [option,option.textContent];}));
 const optionHebrew={high:'גבוהה · צללים ואבק',low:'נמוכה · ללא צללים ואבק',mixed:'תלבושות מעורבות',worker:'פועל',mummy:'מומיה',ninja:'נינג׳ה',pharaoh:'פרעה',full:'מלאה · הוראות ומובילים',minimal:'מצומצמת · סצנה והתקדמות',simulator:'סימולטור — בדיקות בלבד',live:'שידור חי — TikFinity Free',blocks:'אבנים מוזהבות',boost:'האצה ל-15 שניות ואבנים',quake:'רעידת אדמה — הסרת אבנים',like:'לייקים',chat:'תגובה / הצבעה',follow:'מעקב',share:'שיתוף',gift:'מתנה'};
 const titles={en:{pyramid:'Egyptian Pyramid',temple:'Ancient Temple',castle:'Medieval Castle',lighthouse:'Lighthouse',obelisk:'Obelisk',ziggurat:'Ziggurat'},he:{pyramid:'הפירמידה המצרית',temple:'המקדש העתיק',castle:'טירת ימי הביניים',lighthouse:'המגדלור',obelisk:'האובליסק',ziggurat:'הזיגוראת'}};
 const icons={pyramid:'△',temple:'Π',castle:'♜',lighthouse:'♟',obelisk:'▴',ziggurat:'▰'};
@@ -20,6 +24,7 @@ function language(lang){
   document.documentElement.lang=lang;document.documentElement.dir=lang==='he'?'rtl':'ltr';
   for(const[el,value]of english)el.textContent=lang==='he'?(he[el.dataset.i]||value):value;
   for(const[option,value]of englishOptions)option.textContent=lang==='he'?(titles.he[option.value]||optionHebrew[option.value]||value):(titles.en[option.value]||value);
+  $('#giftForm [name=giftId]').placeholder=text('Choose from the library','בחירה מהספרייה');
   $('#pageTitle').textContent=$(`[data-page="${page}"]`).textContent;
 }
 function navigate(next){
@@ -72,12 +77,18 @@ $('#restart').onclick=guarded(async()=>{
 },false);
 $('#giftForm').onsubmit=guarded(async()=>{
   const values=Object.fromEntries(new FormData($('#giftForm'))),gifts={...state.config.gifts};
-  if(editGift)delete gifts[editGift];gifts[values.name.trim().toLowerCase()]={action:values.action,value:Number(values.value)};
-  await api('/api/config',{gifts});editGift='';dirty.delete('giftForm');$('#giftForm').reset();
+  if(editGift)delete gifts[editGift];
+  const id=values.giftId.trim(),key=id?'gift_'+id:values.name.trim().toLowerCase();
+  gifts[key]={action:values.action,value:Number(values.value),...(id?{giftId:id,name:values.name.trim()}:{})};
+  giftSaving=true;renderGiftLibrary();$('#customGift').disabled=true;
+  try{await api('/api/config',{gifts});editGift='';selectedGift=null;dirty.delete('giftForm');$('#giftForm').reset();renderSelectedGift();await refresh();}
+  finally{giftSaving=false;$('#customGift').disabled=false;renderGiftLibrary();}
 });
 $('#simForm').onsubmit=guarded(async()=>{
   const values=Object.fromEntries(new FormData($('#simForm')));
-  await api('/api/sim',{event:values.event,data:{...values,likeCount:state.config.likesPerWorker,repeatCount:Number(values.repeatCount),giftType:1,repeatEnd:true,msgId:crypto.randomUUID()}});
+  const candidates=giftCatalog.filter(g=>g.name.toLowerCase()===values.giftName.toLowerCase());
+  const giftId=values.giftId||(candidates.length===1?candidates[0].id:'');
+  await api('/api/sim',{event:values.event,data:{...values,giftId,likeCount:state.config.likesPerWorker,repeatCount:Number(values.repeatCount),giftType:1,repeatEnd:true,msgId:crypto.randomUUID()}});
 },text('Test event sent to the game','אירוע בדיקה נשלח למשחק'));
 $('#exportSettings').onclick=()=>{if(state)download('pyramid-live-settings.json',{format:'pyramid-live-settings',version:1,settings:state.config});};
 $('#exportLogs').onclick=()=>{if(state)download('pyramid-live-event-log.json',state.logs);};
@@ -104,16 +115,18 @@ function renderPicker(){
   }));renderSelection();
 }
 function renderGiftRules(s){
-  const signature=JSON.stringify([s.config.gifts,s.config.mode,s.config.language]);
+  const signature=JSON.stringify([s.config.gifts,s.config.mode,s.config.language,giftCatalog.length]);
   if($('#giftRules').dataset.signature===signature)return;$('#giftRules').dataset.signature=signature;
   $('#giftRules').replaceChildren(...Object.entries(s.config.gifts).map(([name,rule])=>{
-    const row=element('div',undefined,'gift-rule'),title=element('div',undefined,'gift-name');title.append(element('span','◇','avatar-initial'),element('bdi',name));
+    const gift=findGift(giftCatalog,rule.giftId,rule.name||name);
+    const displayName=rule.name||gift?.name||name;
+    const row=element('div',undefined,'gift-rule'),title=element('div',undefined,'gift-name');title.append(gift?giftImage(gift):element('span','◇','avatar-initial'),element('bdi',displayName));if(rule.giftId)title.append(element('small','ID '+rule.giftId,'gift-rule-id'));
     const value=element('div',rule.value+' '+text('stones / gift','אבנים / מתנה'),'gift-action-value');
     value.append(element('small',({blocks:text('Golden construction','בנייה מוזהבת'),boost:text('15 second boost','האצה ל-15 שניות'),quake:text('Earthquake','רעידת אדמה')})[rule.action]));
     const actions=element('div',undefined,'gift-actions');
-    const preview=element('button',text('Preview','תצוגה'));preview.disabled=s.config.mode==='live';preview.onclick=guarded(()=>api('/api/sim',{event:'gift',data:{uniqueId:'Gift Preview',giftName:name,repeatCount:1,giftType:1,repeatEnd:true,msgId:crypto.randomUUID()}}),false);
-    const edit=element('button',text('Edit','עריכה'));edit.onclick=()=>{editGift=name;for(const[k,v]of Object.entries({name,action:rule.action,value:rule.value}))$('#giftForm [name='+k+']').value=v;dirty.add('giftForm');$('#giftForm input').focus();};
-    const remove=element('button',text('Remove','הסרה'),'remove-rule');remove.onclick=guarded(async()=>{if(await confirmAction(text('Remove gift rule?','להסיר כלל מתנה?'),name,text('Remove','הסרה'))){const gifts={...state.config.gifts};delete gifts[name];await api('/api/config',{gifts});}},false);
+    const preview=element('button',text('Preview','תצוגה'));preview.disabled=s.config.mode==='live';preview.onclick=guarded(()=>api('/api/sim',{event:'gift',data:{uniqueId:'Gift Preview',giftName:displayName,giftId:rule.giftId||gift?.id||'',repeatCount:1,giftType:1,repeatEnd:true,msgId:crypto.randomUUID()}}),false);
+    const edit=element('button',text('Edit','עריכה'));edit.onclick=()=>{editGift=name;selectedGift=gift||null;renderSelectedGift();for(const[k,v]of Object.entries({name:displayName,giftId:rule.giftId||'',action:rule.action,value:rule.value}))$('#giftForm [name='+k+']').value=v;dirty.add('giftForm');$('#giftForm input').focus();};
+    const remove=element('button',text('Remove','הסרה'),'remove-rule');remove.onclick=guarded(async()=>{if(await confirmAction(text('Remove gift rule?','להסיר כלל מתנה?'),displayName,text('Remove','הסרה'))){const gifts={...state.config.gifts};delete gifts[name];await api('/api/config',{gifts});}},false);
     actions.append(preview,edit,remove);row.append(title,value,actions);return row;
   }));
   if(!Object.keys(s.config.gifts).length)$('#giftRules').append(element('div',text('No gift rules yet. Create your first one below.','עדיין אין כללי מתנות. הוסיפו כלל ראשון למטה.'),'empty-state'));
@@ -149,8 +162,45 @@ async function refresh(){
     $('#mode').value=s.config.mode;$('#simForm button').disabled=s.config.mode==='live';
     for(const id of ['pause','quickPause']){$('#'+id).textContent=s.paused?text('Resume construction','המשך בנייה'):text('Pause construction','השהיית בנייה');$('#'+id).setAttribute('aria-pressed',String(s.paused));}
     for(const id of ['gameForm','visualForm'])if(!dirty.has(id))for(const field of $('#'+id).elements){if(!field.name)continue;if(field.type==='checkbox')field.checked=s.config[field.name];else field.value=s.config[field.name];}
-    renderPicker();renderGiftRules(s);renderLogs();
+    renderPicker();renderGiftRules(s);renderGiftLibrary();renderSelectedGift();renderLogs();
   }catch(error){$('#connection').textContent=text('LOCAL SERVICE OFFLINE','השירות המקומי מנותק');$('#connection').classList.remove('connected');$('#gameReady').textContent=text('Waiting for service','ממתינים לשירות');$('#gameDot').className='status-dot off';}
   finally{refreshing=false;}
 }
+function renderSelectedGift(){
+  const box=$('#selectedGift');box.hidden=!selectedGift;
+  if(!selectedGift){box.replaceChildren();return;}
+  const key=selectedGift.id+':'+document.documentElement.lang;if(box.dataset.key===key)return;box.dataset.key=key;
+  const info=element('div');info.append(element('strong',selectedGift.name),element('p',selectedGift.coins.toLocaleString()+' '+text('coins','מטבעות')+' · ID '+selectedGift.id));box.replaceChildren(giftImage(selectedGift),info);
+}
+function chooseGift(gift){
+  if(giftSaving)return;selectedGift=gift;const existing=configuredGift(gift,state.config.gifts);editGift=existing?.key||'';
+  for(const[k,v]of Object.entries({name:gift.name,giftId:gift.id,action:existing?.rule.action||'blocks',value:existing?.rule.value||10}))$('#giftForm [name='+k+']').value=v;
+  dirty.add('giftForm');$('#selectedGift').dataset.key='';renderSelectedGift();renderGiftLibrary();
+  $('#giftForm').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'});
+}
+$('#customGift').onclick=()=>{selectedGift=null;editGift='';$('#giftForm').reset();$('#selectedGift').dataset.key='';renderSelectedGift();renderGiftLibrary();$('#giftForm [name=name]').focus();};
+for(const id of ['giftSearch','giftPrice','giftAssigned','giftSort'])$('#'+id).addEventListener(id==='giftSearch'?'input':'change',()=>{giftPage=0;renderGiftLibrary();});
+$('#giftPrevious').onclick=()=>{giftPage=Math.max(0,giftPage-1);renderGiftLibrary();};
+$('#giftNext').onclick=()=>{giftPage++;renderGiftLibrary();};
+function renderGiftLibrary(){
+  if(!state)return;
+  const options={query:$('#giftSearch').value,price:$('#giftPrice').value,mapped:$('#giftAssigned').value,sort:$('#giftSort').value};
+  const matches=filterGifts(giftCatalog,options,state.config.gifts),pages=Math.max(1,Math.ceil(matches.length/giftsPerPage));giftPage=Math.min(giftPage,pages-1);
+  const key=JSON.stringify([options,giftPage,selectedGift?.id,giftSaving,state.config.gifts,state.config.language,catalogReady,catalogError]);
+  if($('#giftCatalogGrid').dataset.key===key)return;$('#giftCatalogGrid').dataset.key=key;
+  $('#giftCatalogCount').textContent=giftCatalog.length+' '+text('gifts','מתנות');
+  $('#giftPrevious').disabled=giftPage===0;$('#giftNext').disabled=giftPage>=pages-1;
+  $('#giftPageInfo').textContent=matches.length?`${giftPage*giftsPerPage+1}–${Math.min(matches.length,(giftPage+1)*giftsPerPage)} / ${matches.length}`:'0 / 0';
+  const cards=matches.slice(giftPage*giftsPerPage,(giftPage+1)*giftsPerPage).map(gift=>{
+    const button=element('button',undefined,'gift-card');button.type='button';button.disabled=giftSaving;button.dataset.giftId=gift.id;button.classList.toggle('selected',selectedGift?.id===gift.id);button.setAttribute('aria-label',gift.name+', '+gift.coins+' '+text('coins','מטבעות')+', ID '+gift.id);button.setAttribute('aria-pressed',String(selectedGift?.id===gift.id));
+    const assigned=!!configuredGift(gift,state.config.gifts);button.append(giftImage(gift),element('bdi',gift.name,'gift-card-name'),element('span',gift.coins.toLocaleString()+' '+text('coins','מטבעות'),'gift-card-price'),element('small','ID '+gift.id),element('span',assigned?text('Assigned','משויך'):text('Choose gift','בחירת מתנה'),'gift-card-status'+(assigned?' assigned':'')));button.onclick=()=>chooseGift(gift);return button;
+  });
+  $('#giftCatalogGrid').replaceChildren(...cards);
+  if(!cards.length)$('#giftCatalogGrid').append(element('div',catalogError?text('Library unavailable. Custom gift rules still work.','הספרייה לא זמינה. ניתן להגדיר מתנה ידנית.'):!catalogReady?text('Loading gift library…','טוענים את ספריית המתנות…'):text('No gifts match your search.','לא נמצאו מתנות מתאימות.'),'empty-state'));
+}
+loadGiftCatalog().then(data=>{
+  giftCatalog=data;catalogReady=true;
+  $('#giftNames').replaceChildren(...data.map(g=>{const option=document.createElement('option');option.value=g.name;option.label=`${g.coins} · ID ${g.id}`;return option;}));
+  renderGiftLibrary();if(state)renderGiftRules(state);
+}).catch(error=>{catalogError=error.message;catalogReady=true;renderGiftLibrary();});
 refresh();setInterval(refresh,1000);
