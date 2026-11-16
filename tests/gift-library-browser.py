@@ -56,7 +56,7 @@ with sync_playwright() as p:
   visible=page.locator('.gift-card').evaluate_all('(els)=>els.map(el=>el.dataset.giftId)');assert all(coins[i]>=1000 for i in visible)
   page.locator('#giftPrice').select_option('all');page.locator('#giftAssigned').select_option('yes');assert page.locator('.gift-card[data-gift-id="5655"]').count()==1
   page.screenshot(path=str(root/'.local/gift-library-en.png'),full_page=True)
-  page.locator('#language').select_option('he');wait(lambda s:s['config']['language']=='he');page.wait_for_timeout(500);assert page.locator('html').get_attribute('dir')=='rtl'
+  page.locator('#language').select_option('he');wait(lambda s:s['config']['language']=='he');page.locator('html[dir=rtl]').wait_for()
   page.set_viewport_size({'width':390,'height':844});page.screenshot(path=str(root/'.local/gift-library-he-mobile.png'),full_page=True)
   assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth')
   page.reload();page.wait_for_timeout(800);assert get()['config']['gifts']['gift_5655']['value']==17
