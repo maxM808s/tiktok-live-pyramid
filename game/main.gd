@@ -26,6 +26,12 @@ var round_id := -1
 var pending := false
 var building := "pyramid"
 var material_cache: Dictionary = {}
+var mesh_cache: Dictionary = {}
+var placed_mesh: MultiMeshInstance3D
+var landed := 0
+var last_service_response := 0.0
+var bottom_panel: ColorRect
+var footer_note: Label
 var last_quake := 0
 var current_skin := "mixed"
 var crown: Node3D
@@ -45,9 +51,11 @@ func material(color: Color) -> StandardMaterial3D:
 
 func box(parent: Node3D, pos: Vector3, size: Vector3, color: Color) -> MeshInstance3D:
  var mesh := MeshInstance3D.new()
- var shape := BoxMesh.new()
- shape.size = size
- mesh.mesh = shape
+ if not mesh_cache.has(size):
+  var shape := BoxMesh.new()
+  shape.size = size
+  mesh_cache[size] = shape
+ mesh.mesh = mesh_cache[size]
  mesh.material_override = material(color)
  parent.add_child(mesh)
  mesh.position = pos
@@ -78,6 +86,7 @@ func _ready() -> void:
  overlay.name = "Overlay"
  add_child(overlay)
  var lower := ColorRect.new()
+ bottom_panel = lower
  lower.position = Vector2(35,1250)
  lower.size = Vector2(1010,620)
  lower.color = Color(0.025,0.07,0.12,0.94)
@@ -107,7 +116,7 @@ func _ready() -> void:
  notice = label_at("",Vector2(70,1120),Vector2(940,140),44,Color("d7ad55"))
  leaders = label_at("TOP BUILDERS",Vector2(50,1290),Vector2(980,230),34)
  instructions = label_at("5 likes → worker • Comment → stone\nFollow → 5 stones • Rose → 10 stones\nVote: comment the next building name",Vector2(50,1570),Vector2(980,180),32)
- label_at("BUILD SOMETHING THAT LASTS",Vector2(50,1800),Vector2(980,50),26,Color(0.8,0.7,0.5))
+ footer_note = label_at("BUILD SOMETHING THAT LASTS",Vector2(50,1800),Vector2(980,50),26,Color(0.8,0.7,0.5))
  world_env = WorldEnvironment.new()
  var env := Environment.new()
  env.background_mode = Environment.BG_COLOR
@@ -131,6 +140,8 @@ func _ready() -> void:
  for i in range(55):
   var mound := MeshInstance3D.new()
   var sphere := SphereMesh.new()
+  sphere.radial_segments = 24
+  sphere.rings = 6
   sphere.radius = rng.randf_range(3,10)
   sphere.height = sphere.radius*2
   mound.mesh = sphere
@@ -138,6 +149,19 @@ func _ready() -> void:
   mound.scale.y = 0.18
   mound.position = Vector3(rng.randf_range(-75,75),-0.4,rng.randf_range(-65,-20))
   add_child(mound)
+ # Completed distant landmarks are scenery, never contribution progress.
+ for landmark in [Vector3(-19,0,-27),Vector3(17,0,-36)]:
+  var monument := MeshInstance3D.new()
+  var silhouette := CylinderMesh.new()
+  silhouette.top_radius = 0
+  silhouette.bottom_radius = 10
+  silhouette.height = 11
+  silhouette.radial_segments = 4
+  monument.mesh = silhouette
+  monument.material_override = material(Color("8d795b"))
+  monument.position = landmark+Vector3(0,5.5,0)
+  monument.rotation.y = PI/4
+  add_child(monument)
  for x in [-9.0,9.0]:
   for z in [-7.0,0.0,7.0]:
    box(self,Vector3(x,3,z),Vector3(.15,6,.15),Color("614936"))
@@ -199,6 +223,7 @@ func rebuild() -> void:
  for tween in get_tree().get_processed_tweens(): tween.kill()
  for w in workers: w.delivery = false
  if is_instance_valid(crown): crown.queue_free()
+ if is_instance_valid(placed_mesh): placed_mesh.queue_free()
  for b in blocks: b.queue_free()
  blocks.clear()
  slots = Blueprints.make(building)
@@ -213,6 +238,22 @@ func rebuild() -> void:
   b.set_meta("base_material",b.material_override)
   blocks.append(b)
  shown = 0
+ landed = 0
+ placed_mesh = MultiMeshInstance3D.new()
+ var instances := MultiMesh.new()
+ instances.transform_format = MultiMesh.TRANSFORM_3D
+ instances.use_colors = true
+ instances.instance_count = slots.size()
+ var shared_mesh := BoxMesh.new()
+ shared_mesh.size = Vector3(.96,.91,.96)
+ var shared_material := StandardMaterial3D.new()
+ shared_material.vertex_color_use_as_albedo = true
+ shared_material.roughness = .65
+ shared_mesh.material = shared_material
+ instances.mesh = shared_mesh
+ placed_mesh.multimesh = instances
+ add_child(placed_mesh)
+ for i in range(slots.size()): set_placed(i,false)
  crown = Node3D.new()
  add_child(crown)
  var highest := Vector3.ZERO
@@ -252,6 +293,7 @@ func make_worker(i: int) -> void:
  box(root,Vector3(0,1.1,0),Vector3(.48,.65,.3),colors[skin])
  box(root,Vector3(0,1.67,0),Vector3(.37,.38,.36),Color("bc865c"))
  box(root,Vector3(0,1.88,0),Vector3(.45,.14,.4),colors[skin])
+ for eye in [-.09,.09]: box(root,Vector3(eye,1.71,.185),Vector3(.055,.055,.02),Color("282c32"))
  if skin == 1:
   for band in range(5): box(root,Vector3(0,.86+band*.13,.16),Vector3(.5,.035,.025),Color("a99b80"))
  if skin == 2: box(root,Vector3(0,1.62,.19),Vector3(.39,.16,.05),Color("18222e"))
@@ -290,6 +332,7 @@ func _response(_result: int, code: int, _headers: PackedStringArray, body: Packe
   token = parsed.token
   return
  state = parsed
+ last_service_response = Time.get_ticks_msec()/1000.0
  for tween in get_tree().get_processed_tweens(): tween.set_speed_scale(0.0 if state.paused else 1.0)
  if int(state.get("quakeAt",0)) != last_quake:
   last_quake = int(state.get("quakeAt",0))
@@ -315,22 +358,25 @@ func _response(_result: int, code: int, _headers: PackedStringArray, body: Packe
  var top: Array = state.roundLeaders if state.phase == "celebrating" else state.leaderboard
  for i in range(mini(4,top.size())): leaders.text += "%d.  %s   ·   %d\n" % [i+1,top[i][0],top[i][1]]
  notice.text = (("הבנייה הושלמה! הסיבוב הבא בעוד %d" if he else "MONUMENT COMPLETE\nNext round in %ds") % maxi(0,int(state.countdown))) if state.phase == "celebrating" else (("ממתינים לבונים" if he else "THE DESERT AWAITS ITS BUILDERS") if state.idle else ("תודה " if he else "Building with ")+str(state.builder))
- instructions.text = "5 לייקים ← פועל • תגובה ← אבן\nמעקב ← 5 אבנים • ורד ← 10 אבנים\nלהצבעה: כתבו את שם המבנה באנגלית" if he else "5 likes → worker • Comment → stone\nFollow → 5 stones • Rose → 10 stones\nVote: pyramid / temple / castle / lighthouse / obelisk / ziggurat"
- if not he:
-  instructions.text = "%d likes → worker • Comment → %d stones\nFollow → %d stones • Share → %d stones\nVote: pyramid / temple / castle / lighthouse / obelisk / ziggurat" % [state.config.get("likesPerWorker",5),state.config.get("commentBlocks",1),state.config.get("followBlocks",5),state.config.get("shareBlocks",1)]
+ var action_values := [state.config.get("likesPerWorker",5),state.config.get("commentBlocks",1),state.config.get("followBlocks",5),state.config.get("shareBlocks",1)]
+ instructions.text = ("%d לייקים ← פועל • תגובה ← %d אבנים\nמעקב ← %d אבנים • שיתוף ← %d אבנים\nלהצבעה: כתבו את שם המבנה באנגלית" if he else "%d likes → worker • Comment → %d stones\nFollow → %d stones • Share → %d stones\nVote: pyramid / temple / castle / lighthouse / obelisk / ziggurat") % action_values
  var count := int(state.config.workers)
  while workers.size() < count: make_worker(workers.size())
  for i in range(workers.size()): workers[i].node.visible = i<count
  sun.shadow_enabled = state.config.quality == "high"
  leaders.visible = state.config.get("overlay","full") == "full"
  instructions.visible = leaders.visible
+ bottom_panel.visible = leaders.visible
+ footer_note.visible = leaders.visible
  if state.config.get("skin","mixed") != current_skin:
   current_skin = state.config.skin
   for tween in get_tree().get_processed_tweens(): tween.kill()
   for w in workers: w.node.queue_free()
   workers.clear()
-  shown = 0
-  for b in blocks: b.visible = false
+  for i in range(shown):
+   blocks[i].visible = false
+   set_placed(i,true)
+  landed = shown
   for i in range(count): make_worker(i)
 
 func _process(delta: float) -> void:
@@ -341,22 +387,32 @@ func _process(delta: float) -> void:
   pending = true
   request.request("http://127.0.0.1:3210/api/state" if not token.is_empty() else "http://127.0.0.1:3210/api/session")
   if not token.is_empty() and telemetry.get_http_client_status() == HTTPClient.STATUS_DISCONNECTED:
-   telemetry.request("http://127.0.0.1:3210/api/perf",PackedStringArray(["Content-Type: application/json","X-Session: "+token]),HTTPClient.METHOD_POST,JSON.stringify({"fps":Engine.get_frames_per_second(),"workers":mini(workers.size(),int(state.get("config",{}).get("workers",16))),"round":round_id,"visualComplete":shown>=slots.size(),"memoryMB":Performance.get_monitor(Performance.MEMORY_STATIC)/1048576.0}))
+   telemetry.request("http://127.0.0.1:3210/api/perf",PackedStringArray(["Content-Type: application/json","X-Session: "+token]),HTTPClient.METHOD_POST,JSON.stringify({"fps":Engine.get_frames_per_second(),"workers":mini(workers.size(),int(state.get("config",{}).get("workers",16))),"round":round_id,"visualComplete":landed>=slots.size(),"memoryMB":Performance.get_monitor(Performance.MEMORY_STATIC)/1048576.0}))
  if state.is_empty(): return
  var running: bool = not state.paused
- var target_count := int(float(state.built)/float(state.target)*slots.size())
+ var target_count := clampi(int(float(state.built)/float(state.target)*slots.size()),0,slots.size())
+ if Time.get_ticks_msec()/1000.0-last_service_response > 4.0:
+  status.text = "LOCAL SERVICE RECONNECTING" if state.config.language == "en" else "מתחברים מחדש לשירות המקומי"
+  status.add_theme_color_override("font_color",Color("e7b978"))
+ else:
+  status.add_theme_color_override("font_color",Color("8bd3bb"))
  if target_count < shown:
   for tween in get_tree().get_processed_tweens(): tween.kill()
   for w in workers: w.delivery = false
   for i in range(target_count):
    blocks[i].position = slots[i]
-   blocks[i].visible = true
+   blocks[i].visible = false
+   set_placed(i,true)
   for i in range(target_count,shown):
    var fallen := blocks[i]
+   set_placed(i,false)
+   fallen.position = slots[i]
+   fallen.visible = true
    var shake := create_tween()
    shake.tween_property(fallen,"position",fallen.position+Vector3(randf_range(-3,3),-3,randf_range(-3,3)),.7)
    shake.tween_callback(func(): fallen.visible = false)
   shown = target_count
+  landed = target_count
  if running and target_count > shown:
   for i in range(shown,mini(target_count,shown+4)):
    var available := -1
@@ -394,7 +450,7 @@ func _process(delta: float) -> void:
   var day := .5+.5*sin(clock*.012)
   sun.light_energy = .25+day*.65
   world_env.environment.background_color = Color("101d32").lerp(Color("618695"),day)
- crown.visible = state.phase == "celebrating" and shown >= slots.size()
+ crown.visible = state.phase == "celebrating" and landed >= slots.size()
  if crown.visible and not confetti.emitting:
   confetti.position = Vector3(0,9,0)
   confetti.restart()
@@ -425,5 +481,14 @@ func deliver_stone(index: int, worker_index: int) -> void:
  tween.tween_property(b,"position",target,.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
  tween.tween_callback(func():
   w.delivery = false
+  b.visible = false
+  set_placed(index,true)
+  landed += 1
   dust.position = target
   if state.config.quality == "high": dust.restart())
+
+func set_placed(index: int, visible_stone: bool) -> void:
+ var basis := Basis.IDENTITY if visible_stone else Basis.from_scale(Vector3.ZERO)
+ placed_mesh.multimesh.set_instance_transform(index,Transform3D(basis,slots[index]))
+ var mat: StandardMaterial3D = blocks[index].material_override
+ placed_mesh.multimesh.set_instance_color(index,mat.albedo_color)

@@ -44,3 +44,18 @@ The dashboard supports quality, worker cap/outfits, camera and day/night toggles
 ## Publication status
 
 The selected remote is `https://github.com/maxM808s/tiktok-live-pyramid`. Local stage commits are present. Initial Git push returned HTTP 403; the connected GitHub API's create-tree request also returned “Resource not accessible by integration.” The repository connection must receive write access before these commits can be published. This is an access failure, not an automatic safety-review rejection. The existing battle repository was not modified.
+
+## Version 0.2 improvements — additional executed checks
+
+- Twelve engine cases pass, including deletion of default gift rules across settings reloads and keeping current-round difficulty fixed while next-round settings change.
+- Expanded Chromium checks passed: readiness display, all six building picker/preview entries, quick pause/resume, unsaved form retention during polling, gift creation/edit/removal, settings export/import, log filter, simulator blocking in LIVE, English/Hebrew RTL and a 390px layout with no horizontal overflow. No browser JavaScript errors were recorded. English and mobile screenshots were visually inspected.
+- Optimized rendered-game test completed all six projects in 90 seconds, minimum reported FPS 10, combined memory peak approximately 99 MB on software OpenGL. Countdown now waits for landing callbacks. This does not establish a hardware FPS improvement or a Windows 60 FPS result.
+- API security checks and the local Git fast-forward/settings-preservation test passed again.
+- The translated building selector test initially caught implicit option values changing with translated labels. Explicit values fixed the issue, and the expanded browser test passed.
+
+The new Windows common lifecycle helpers, mutex, source-revision restart detection, backups, retained .cmd exit codes, GitHub Desktop Git detection, retry backoff and 90-second renderer watchdog are **implemented but not executed on Windows here**. The CI workflow now includes the actual headless launchers, repeated Start, simulated game crash, simulated source-version change, backups and settings retention from a folder with spaces. CI remains pending publication. This supersedes the earlier note that the monitor does not restart an unresponsive renderer.
+
+GitHub access diagnosis: the connected installation uses selected repositories, and `tiktok-live-pyramid` is absent from that selection. Repository owner permission is separate from the app's selected-repository access. Add the pyramid repository at https://github.com/settings/installations/180978996 before retrying publication. No other repository was modified.
+
+- Version 0.2 timed soak: 2,790 simulator events in 60 seconds; maximum queue 5,000; peak combined memory approximately 108 MB; game remained online. No Windows performance conclusion follows from these software-rendered results.
+- Final 0.2 automatic-round integration, blueprint assertions, expanded browser regression and service/session recovery checks passed after the updates.

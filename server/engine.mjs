@@ -2,8 +2,8 @@ import {normalize} from './tikfinity.mjs';
 export const buildings=['pyramid','temple','castle','lighthouse','obelisk','ziggurat'];
 export const defaults={language:'en',building:'pyramid',target:200,automatic:true,celebration:12,workers:16,quality:'high',camera:true,night:true,mode:'simulator',likesPerWorker:5,commentBlocks:1,followBlocks:5,shareBlocks:1,skin:'mixed',overlay:'full',gifts:{rose:{action:'blocks',value:10},galaxy:{action:'boost',value:50},earthquake:{action:'quake',value:10}}};
 export class Engine{
- constructor(config={}){this.config={...defaults,...config,gifts:{...defaults.gifts,...config.gifts}};this.round=0;this.logs=[];this.seen=new Map();this.likes=new Map();this.people=new Map();this.votes=new Map();this.queue=[];this.paused=false;this.lastEvent=0;this.metrics={accepted:0,duplicates:0,rejected:0,dropped:0};this.reset(this.config.building);}
- reset(building,carry=false){this.building=building;this.built=0;this.placements=[];this.queue=carry?this.queue:[];this.contributors=new Map();this.credit=0;this.phase='building';this.countdown=0;this.round++;}
+ constructor(config={}){this.config={...defaults,...config,gifts:{...(config.gifts??defaults.gifts)}};this.round=0;this.logs=[];this.seen=new Map();this.likes=new Map();this.people=new Map();this.votes=new Map();this.queue=[];this.paused=false;this.lastEvent=0;this.metrics={accepted:0,duplicates:0,rejected:0,dropped:0};this.reset(this.config.building);}
+ reset(building,carry=false){this.building=building;this.roundTarget=this.config.target;this.built=0;this.placements=[];this.queue=carry?this.queue:[];this.contributors=new Map();this.credit=0;this.phase='building';this.countdown=0;this.round++;}
  log(message,source='system'){this.logs.unshift({at:Date.now(),message,source});this.logs.length=Math.min(this.logs.length,100);}
  ingest(packet,source='live'){
  try{
@@ -36,11 +36,11 @@ export class Engine{
  tick(dt){if(this.paused)return;if(this.phase==='celebrating'){if(this.config.automatic){if(this.perf?.round===this.round&&!this.perf.visualComplete)return;this.countdown-=dt;if(this.countdown<=0){const tally={};for(const b of this.votes.values())tally[b]=(tally[b]||0)+1;const winner=Object.keys(tally).sort((a,b)=>tally[b]-tally[a])[0];this.votes.clear();this.reset(winner||buildings[(buildings.indexOf(this.building)+1)%6],true);}}return;}
  this.credit=(this.credit||0)+dt*(Date.now()<this.boostUntil?16:4);
  if(Date.now()-(this.perf?.at||0)>3000){this.credit=0;return;}
- while(this.credit>=1&&this.queue.length&&this.built<this.config.target){this.credit--;const job=this.queue[0];this.builder=job.user;this.gold=job.gold;this.built++;this.placements.push({user:job.user,gold:job.gold});if(--job.remaining<=0)this.queue.shift();}
+ while(this.credit>=1&&this.queue.length&&this.built<this.roundTarget){this.credit--;const job=this.queue[0];this.builder=job.user;this.gold=job.gold;this.built++;this.placements.push({user:job.user,gold:job.gold});if(--job.remaining<=0)this.queue.shift();}
  this.credit=Math.min(this.credit,1);
- if(this.built>=this.config.target){this.phase='celebrating';this.countdown=this.config.celebration;this.log('Round complete');}
+ if(this.built>=this.roundTarget){this.phase='celebrating';this.countdown=this.config.celebration;this.log('Round complete');}
  }
- state(){return {lastGift:this.lastGift||null,placements:this.placements,quakeAt:this.quakeAt||0,building:this.building,built:this.built,target:this.config.target,round:this.round,phase:this.phase,countdown:this.countdown,paused:this.paused,queue:this.queue.reduce((s,j)=>s+j.remaining,0),builder:this.builder||'',gold:this.gold||false,leaderboard:[...this.people].sort((a,b)=>b[1]-a[1]).slice(0,8),roundLeaders:[...this.contributors].sort((a,b)=>b[1]-a[1]).slice(0,5),logs:this.logs,metrics:this.metrics,config:this.config,perf:this.perf||{},idle:Date.now()-this.lastEvent>30000};}
+ state(){return {lastGift:this.lastGift||null,placements:this.placements,quakeAt:this.quakeAt||0,building:this.building,built:this.built,target:this.roundTarget,round:this.round,phase:this.phase,countdown:this.countdown,paused:this.paused,queue:this.queue.reduce((s,j)=>s+j.remaining,0),builder:this.builder||'',gold:this.gold||false,leaderboard:[...this.people].sort((a,b)=>b[1]-a[1]).slice(0,8),roundLeaders:[...this.contributors].sort((a,b)=>b[1]-a[1]).slice(0,5),logs:this.logs,metrics:this.metrics,config:this.config,perf:this.perf||{},idle:Date.now()-this.lastEvent>30000};}
 }
 export function validateConfig(c){
  if(!c||typeof c!=='object')throw Error('Invalid settings');const out={};

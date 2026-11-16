@@ -2,7 +2,7 @@
 
 An original Godot 4 construction game with a local browser control room, designed for a vertical TikTok LIVE. Viewers send events through **TikFinity Desktop's local Event API**. No S2E, direct TikTok connector, paid action rules, passwords, npm packages, or automatic software downloads.
 
-**Version 0.1 — functioning procedural edition.** Six monuments, visible worker delivery, golden stones, destruction, boosts, votes, automatic rounds, English / Hebrew, a 1080 × 1920 layout, and Windows launchers are implemented. This is stylized procedural art, not a reproduction of the reference project's concept illustration. Read [test status](docs/TEST-STATUS.md) before relying on unattended streaming. Windows 11 launchers and real TikFinity Free account access require testing on your PC.
+**Version 0.2 — improved startup and broadcast controls.** Six monuments, visible worker delivery, golden stones, destruction, boosts, votes, automatic rounds, English / Hebrew, a 1080 × 1920 layout, and Windows launchers are implemented. This is stylized procedural art, not a reproduction of the reference project's concept illustration. Read [test status](docs/TEST-STATUS.md) before relying on unattended streaming. Windows 11 launchers and real TikFinity Free account access require testing on your PC.
 
 ## Your GitHub Desktop workflow
 
@@ -28,16 +28,19 @@ Double-click **Start-Game.cmd**. Repeated launches reuse the running service and
 
 The `.cmd` files run the repository's own PowerShell scripts using a process-local execution policy. They do not change your system execution policy. Review scripts in `scripts/` before your first launch.
 
-### Future updates
+### Future updates — the same Desktop workflow
 
-1. Double-click **Stop-Game.cmd**.
-2. Open GitHub Desktop and select **tiktok-live-pyramid**.
-3. Click **Fetch origin → Pull origin**.
-4. Double-click **Start-Game.cmd**.
+1. Open GitHub Desktop and select **tiktok-live-pyramid**.
+2. Click **Fetch origin → Pull origin**.
+3. Double-click **Start-Game.cmd**.
+
+Start detects a changed source revision, saves current progress, stops only this project's processes, backs up settings and launches the new code. If the same version is already running, Start reuses it instead of spawning duplicate windows. Stopping before pulling is still a good option during a quiet moment in the stream.
+
+**Update-Game.cmd** is an alternative one-click update: it checks for local edits and the correct repository, stops the game, saves up to five local recovery backups, pulls with fast-forward only, then starts the newly pulled launcher. If the pull fails, it preserves your files and tells you to review the error in Desktop. It detects Git on PATH or bundled inside GitHub Desktop. No reset, clean, forced overwrite or dependency download occurs.
 
 Settings, gift rules, checkpoints, logs, and process records live in the ignored **`.local`** folder, so pulling code preserves them. Portable Godot stays in `tools`. Back up `.local` before changing PCs. Never upload that folder: it can include viewer names and a local session token.
 
-**Update-Game.cmd** is an optional helper if Git is installed on PATH. It refuses local changes and only performs a fast-forward pull; it never resets or cleans your files. GitHub Desktop is the recommended update method.
+Recovery copies from updates are in `.local/backups` (latest five). The previous valid settings file is also kept as `.local/settings.previous.json`. GitHub Desktop remains the recommended update method. Actual Windows launch/update acceptance is still pending the Windows smoke test.
 
 If creating a replacement repository: use GitHub's **New repository** page, name it, then clone it through Desktop and select it in Codex. Do not select the battle repository for pyramid development.
 
@@ -71,7 +74,7 @@ Streak gifts are credited once, when `repeatEnd` is the boolean `true`; the fina
 
 ## Play and run automatically
 
-Each round builds one recognizable monument: **Egyptian Pyramid, Ancient Temple, Medieval Castle, Lighthouse, Obelisk, Ziggurat**. Difficulty controls required contribution units, while the blueprint determines the number of visible blocks. For example, 200 contribution units progressively reveal all 455 pyramid blocks through worker deliveries; one contribution can correspond to several visual stones.
+Each round builds one recognizable monument: **Egyptian Pyramid, Ancient Temple, Medieval Castle, Lighthouse, Obelisk, Ziggurat**. Difficulty edits apply at the next round or after Restart round, preserving the current round's progress. Difficulty controls required contribution units, while the blueprint determines the number of visible blocks. For example, 200 contribution units progressively reveal all 455 pyramid blocks through worker deliveries; one contribution can correspond to several visual stones.
 
 Workers use a fixed pool of 1–32 characters. They carry stones from the quarry, walk to the site, and throw/place them into the structure. Outfits include worker, mummy, ninja, and pharaoh. A few floating names and contributor rings keep the scene readable. Workers are reused rather than allocating a permanent expensive character to every viewer. The leaderboard ranks accepted contribution units across the session; the completion board shows the round's contributors.
 
@@ -85,7 +88,7 @@ For unattended use:
 
 Completion waits for the game to schedule the full visible geometry, plays the crown / celebration effects, shows the top builders, counts down, and rotates. A viewer can vote by commenting one of `pyramid`, `temple`, `castle`, `lighthouse`, `obelisk`, or `ziggurat`. The latest vote per viewer counts; highest vote total wins, otherwise buildings rotate in that order. No artificial viewer activity or free idle construction is generated. With no events, the desert, camera, and day/night scene remain active.
 
-The service retries a lost TikFinity socket with a capped backoff. Godot retries its local polling connection. The Windows monitor restarts a crashed owned game/service process and attempts to recover an unresponsive owned service. Checkpoints save approximately every five seconds and on normal shutdown; a hard crash may lose the last five seconds. A frozen but still-running renderer is detected through stale telemetry, and construction pauses; the current monitor does not force-kill a renderer merely because telemetry is late. Restart it manually if frozen. TikTok LIVE Studio and TikFinity are never automatically restarted.
+The service retries a lost TikFinity socket with a capped backoff. Godot retries its local polling connection. The Windows monitor restarts a crashed owned game/service process and attempts to recover an unresponsive owned service. Checkpoints save approximately every five seconds and on normal shutdown; a hard crash may lose the last five seconds. Construction pauses when renderer telemetry goes stale. The Windows monitor waits 90 seconds before restarting its own unresponsive game process, allowing normal startup and transient stalls. This watchdog is implemented but still requires Windows acceptance testing. TikTok LIVE Studio and TikFinity are never automatically restarted.
 
 **Restart round** deliberately clears that round's progress and queue. Contributions beyond a completed round carry to the next automatic round. Stream leaderboard totals persist across normal restarts; to clear all progress, stop the game and rename `.local/checkpoint.json` as a backup.
 
@@ -139,3 +142,17 @@ Developers can run `npm test`, `node server/server.mjs`, and `godot --path game`
 [Reference audit](docs/REFERENCE-AUDIT.md) · [TikFinity research](docs/TIKFINITY.md) · [Test status](docs/TEST-STATUS.md)
 
 GitHub Actions source checks run Node tests on Linux and Windows, parse the PowerShell scripts, and check blueprints using an official pinned Godot 4.6.3 download with SHA-256 verification **inside the disposable GitHub runner only**. These checks do not install software on your PC and do not verify LIVE Studio capture or the interactive Windows launch flow. The workflow has not run until the repository accepts the commits.
+
+
+## Control room improvements in 0.2
+
+- Broadcast readiness strip distinguishes the game window, local TikFinity socket, simulator and automatic round state.
+- Blueprint illustrations match each of the six buildings; these are labeled previews, not a claim of live game capture.
+- Quick pause/resume, guided connection status, six building cards and difficulty presets.
+- Gift rules can be created, edited, previewed in simulator mode and removed. Removed default rules stay removed after restarting.
+- **Back up settings** downloads a JSON file containing settings only, without session tokens. In **Live controls → Restore settings**, choose that backup and confirm the import. Backend validation and a previous-settings recovery copy protect the change.
+- Event logs can be filtered and downloaded. Logs may contain viewer names; review them before sharing.
+- English/Hebrew dropdowns, RTL, keyboard focus, confirmation dialogs and responsive mobile layout.
+- Placed stones are batched with MultiMesh and shared primitive meshes. Workers and flying stones remain animated. Countdown now waits for stones to land; minimum overlay mode removes its background panel as well as its text.
+
+The improved Windows launcher uses a per-project mutex to serialize Start/Stop/Update and the process monitor. Error exit codes are retained, game logs go to `.local/game.log`, and repeated startup failures back off instead of opening an endless rapid sequence of game windows. Windows CI now includes headless launcher smoke tests from a folder with spaces; those CI tests cannot run until GitHub publishing access is enabled.
