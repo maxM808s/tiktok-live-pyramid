@@ -22,3 +22,7 @@ No LICENSE, COPYING, third-party notice or asset-license file appeared in the co
 **No reference code, image, audio or model is included in this project.** The new implementation uses independently written code, generated primitive geometry, locally generated particles and installed system fonts. The shared gameplay idea and building subjects are the inspiration. No third-party asset pack was installed. Godot and Node are separately installed software, governed by their upstream licenses, not bundled here.
 
 The new service has no third-party npm dependencies, so no npm install hooks or downloaded runtime packages execute. This reduces the dependency surface; it does not constitute an audit of Godot, Node, Windows, GitHub Desktop, TikFinity or LIVE Studio themselves.
+
+## 0.3 browser edition
+
+The battle game's launcher was read to confirm its Windows PowerShell/browser workflow; its repository was not modified. The new browser host is independently written. No battle-game source was copied into it. The browser renderer uses the official Three.js r180 modules under their MIT license, included in `vendor/three/LICENSE` with pinned integrity hashes. This supersedes the earlier no-third-party-library description for the browser edition; the optional Node bridge still has no npm dependencies. Startup does not fetch those modules or install anything.

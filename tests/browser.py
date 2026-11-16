@@ -1,6 +1,6 @@
 from playwright.sync_api import sync_playwright
 from pathlib import Path
-import json,urllib.request
+import json,urllib.request,time
 root=Path(__file__).resolve().parents[1];out=root/'.local';out.mkdir(exist_ok=True)
 base='http://127.0.0.1:3210'
 def get():
@@ -9,6 +9,13 @@ def post(route,data):
  with urllib.request.urlopen(base+'/api/session') as r:token=json.load(r)['token']
  req=urllib.request.Request(base+route,json.dumps(data).encode(),{'Content-Type':'application/json','X-Session':token},method='POST')
  with urllib.request.urlopen(req) as r:return json.load(r)
+def wait_state(predicate):
+ end=time.time()+12
+ while time.time()<end:
+  state=get()
+  if predicate(state):return state
+  time.sleep(.1)
+ raise AssertionError('Game state did not update')
 original=get()['config'];post('/api/config',{'language':'en','mode':'simulator'})
 try:
  with sync_playwright() as p:
@@ -17,8 +24,8 @@ try:
   page.goto(base);page.wait_for_function("document.querySelector('#connection').textContent.includes('SIMULATOR')")
   page.screenshot(path=str(out/'dashboard-en-v02.png'),full_page=True)
   assert page.locator('#blueprint').get_attribute('data-frame')
-  paused=get()['paused'];page.locator('#quickPause').click();page.wait_for_timeout(500);assert get()['paused']!=paused
-  page.locator('#quickPause').click();page.wait_for_timeout(500);assert get()['paused']==paused
+  paused=get()['paused'];page.locator('#quickPause').click();wait_state(lambda s:s['paused']!=paused)
+  page.locator('#quickPause').click();wait_state(lambda s:s['paused']==paused)
   page.locator('[data-page=game]').click();assert page.locator('.building-card').count()==6
   page.locator('.building-card[data-building=castle]').click();assert page.locator('#gameForm [name=building]').input_value()=='castle'
   page.locator('[data-target="500"]').click();assert page.locator('#gameForm [name=target]').input_value()=='500'

@@ -21,7 +21,7 @@ function Same-Key([string]$A, [string]$B) {
     return $difference -eq 0
 }
 function Validate-Settings($Value) {
-    if ($null -eq $Value -or $Value -is [array] -or $Value -is [string]) { throw 'Invalid settings' }
+    if ($null -eq $Value -or $Value -isnot [pscustomobject]) { throw 'Invalid settings' }
     $result = @{}
     foreach ($name in @('automatic','camera','night')) {
         if ($null -ne $Value.PSObject.Properties[$name]) {
@@ -45,7 +45,7 @@ function Validate-Settings($Value) {
         }
     }
     if ($null -ne $Value.PSObject.Properties['gifts']) {
-        if ($null -eq $Value.gifts -or $Value.gifts -is [array] -or $Value.gifts -is [string]) { throw 'Invalid gift rules' }
+        if ($null -eq $Value.gifts -or $Value.gifts -isnot [pscustomobject]) { throw 'Invalid gift rules' }
         $rules = @($Value.gifts.PSObject.Properties)
         if ($rules.Count -gt 100) { throw 'Too many gift rules' }
         $gifts = @{}
@@ -86,7 +86,7 @@ function Current-State {
     foreach ($property in $script:State.PSObject.Properties) { $result[$property.Name] = $property.Value }
     $result['config']=$script:Config; $result['appId']='tiktok-live-pyramid'; $result['runtime']='browser'; $result['version']=$script:Version
     $result['memoryMB']=[math]::Round([Diagnostics.Process]::GetCurrentProcess().WorkingSet64 / 1MB)
-    $result['gameOnline']=($script:Owner -ne '' -and ([datetime]::UtcNow-$script:OwnerAt).TotalSeconds -lt 6 -and !$script:Stopping -and $script:State.perf.renderHealthy -ne $false)
+    $result['gameOnline']=($script:Owner -ne '' -and ([datetime]::UtcNow-$script:OwnerAt).TotalSeconds -lt 6 -and !$script:Stopping -and $script:State.perf.renderHealthy -eq $true)
     $result['commandAck']=$script:Ack; $result['settingsWarning']=$script:Warning; $result['stopping']=$script:Stopping
     return $result
 }

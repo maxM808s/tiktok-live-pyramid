@@ -6,6 +6,7 @@ const clientId=crypto.randomUUID();
 let session='',ownerToken='',engine=null,view=null,snapshot=null,ack=0,owned=false,online=false,stopping=false,polling=false,lastSave=0,lastPoll=0,lastFrame=0,lastHUD=0,socket=null,retry=null,attempts=0;
 const connection={socket:false,lastEvent:0,error:'Waiting for TikFinity Desktop',attempts:0};
 const titles={en:{pyramid:'EGYPTIAN PYRAMID',temple:'ANCIENT TEMPLE',castle:'MEDIEVAL CASTLE',lighthouse:'LIGHTHOUSE',obelisk:'OBELISK',ziggurat:'ZIGGURAT'},he:{pyramid:'הפירמידה המצרית',temple:'המקדש העתיק',castle:'טירת ימי הביניים',lighthouse:'המגדלור',obelisk:'האובליסק',ziggurat:'הזיגוראת'}};
+let dirtyCheckpoint=true;
 let fps=0,frames=0,fpsAt=performance.now(),renderInfo={visualComplete:false,workers:0,renderHealthy:true};
 function message(text){$('#error').textContent=text;$('#error').hidden=!text;}
 async function post(path,body){
@@ -37,7 +38,7 @@ function apply(commands){
   if(command.kind==='config')engine.config={...engine.config,...validateConfig(command.data)};
   else if(command.kind==='sim')engine.ingest(command.data,'simulator');
   else if(command.kind==='control'){if(command.data.action==='pause')engine.paused=!engine.paused;if(command.data.action==='restart')engine.reset(engine.config.building);}
-  ack=command.id;
+  ack=command.id;dirtyCheckpoint=true;
  }
 }
 async function poll(){
@@ -47,10 +48,10 @@ async function poll(){
    const response=await fetch('/api/state',{signal:AbortSignal.timeout(4500)});if(!response.ok)throw Error('Local service unavailable');snapshot=await response.json();online=true;
    if(!snapshot.gameOnline&&!snapshot.stopping)await claim();return;
   }
-  const now=performance.now(),save=stopping||now-lastSave>4000;
+  const now=performance.now(),save=dirtyCheckpoint||stopping||now-lastSave>4000;
   const publicState={...engine.state(),connection,perf:{...engine.perf,renderHealthy:view.healthy&&now-lastFrame<3000}};
   const payload={clientId,ownerToken,ack,state:publicState};if(save)payload.checkpoint=checkpoint(engine);
-  const response=await post('/api/poll',payload);if(save)lastSave=now;
+  const response=await post('/api/poll',payload);if(save){lastSave=now;dirtyCheckpoint=false;}
   online=true;lastPoll=now;message('');
   apply(response.commands||[]);
   if(engine.config.mode!=='live'&&(socket||retry))disconnect();
