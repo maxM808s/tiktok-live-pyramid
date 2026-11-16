@@ -20,7 +20,7 @@ const server=http.createServer(async(req,res)=>{
  const host=req.headers.host;if(host!=='127.0.0.1:3210'&&host!=='localhost:3210')return json(res,403,{error:'Invalid host'});
  const u=new URL(req.url,'http://127.0.0.1:3210');
  if(req.method==='GET'&&u.pathname==='/api/state')return json(res,200,{...game.state(),connection,memoryMB:Math.round(process.memoryUsage().rss/1048576),gameOnline:Date.now()-(game.perf?.at||0)<3000});
- if(req.method==='GET'&&u.pathname==='/api/session')return json(res,200,{token});
+ if(req.method==='GET'&&u.pathname==='/api/session')return json(res,200,{token,projectRoot:root});
  if(req.method==='POST'){
  if(req.headers['x-session']!==token)return json(res,403,{error:'Invalid session'});
  if(req.headers.origin&&!['http://127.0.0.1:3210','http://localhost:3210'].includes(req.headers.origin))return json(res,403,{error:'Invalid origin'});
@@ -37,12 +37,15 @@ const server=http.createServer(async(req,res)=>{
 });
 // Checkpoints contain only local game state; never committed.
 function checkpoint(){
- const data={building:game.building,built:game.built,round:game.round,phase:game.phase,countdown:game.countdown,queue:game.queue,placements:game.placements,people:[...game.people],contributors:[...game.contributors],seen:[...game.seen],likes:[...game.likes],votes:[...game.votes],logs:game.logs,metrics:game.metrics};
+ const data={paused:game.paused,building:game.building,built:game.built,round:game.round,phase:game.phase,countdown:game.countdown,queue:game.queue,placements:game.placements,people:[...game.people],contributors:[...game.contributors],seen:[...game.seen],likes:[...game.likes],votes:[...game.votes],logs:game.logs,metrics:game.metrics};
  fs.writeFileSync(path.join(local,'checkpoint.tmp'),JSON.stringify(data));
  fs.renameSync(path.join(local,'checkpoint.tmp'),path.join(local,'checkpoint.json'));
 }
 try{const c=JSON.parse(fs.readFileSync(path.join(local,'checkpoint.json')));if(!['pyramid','temple','castle','lighthouse','obelisk','ziggurat'].includes(c.building)||!Number.isInteger(c.built)||c.built<0||c.built>2000||!Array.isArray(c.queue)||c.queue.length>5000||!Array.isArray(c.placements)||c.placements.length>2000)throw Error('Bad checkpoint');
- for(const k of ['building','built','round','phase','countdown','queue','placements','logs','metrics'])game[k]=c[k];
+ for(const k of ['people','contributors','seen','likes','votes'])if(!Array.isArray(c[k])||c[k].length>(k==='seen'?10000:5000))throw Error('Bad map');
+ if(!['building','celebrating'].includes(c.phase)||!Number.isInteger(c.round)||c.round<1||!Number.isFinite(c.countdown)||!Array.isArray(c.logs)||c.logs.length>100||!c.metrics||!['accepted','duplicates','rejected','dropped'].every(k=>Number.isFinite(c.metrics[k])))throw Error('Bad checkpoint state');
+ if(c.queue.some(j=>!j||typeof j.user!=='string'||!Number.isInteger(j.remaining)||j.remaining<1)||c.queue.reduce((a,j)=>a+j.remaining,0)>5000)throw Error('Bad queue');
+ for(const k of ['building','built','round','phase','countdown','queue','placements','logs','metrics'])game[k]=c[k];game.paused=c.paused===true;
  for(const k of ['people','contributors','seen','likes','votes'])game[k]=new Map(c[k]);
  game.log('Recovered local checkpoint');
 }catch{}

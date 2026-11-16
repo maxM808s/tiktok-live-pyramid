@@ -17,7 +17,11 @@ function Session { $f=Join-Path $Local 'session.json'; if(Test-Path $f){return G
 function Stop-Owned {
  Remove-Item -LiteralPath (Join-Path $Local "running.txt") -ErrorAction SilentlyContinue
  $s=Session
- if($s){try{Invoke-RestMethod 'http://127.0.0.1:3210/api/shutdown' -Method Post -Headers @{'X-Session'=$s.token} -ContentType 'application/json' -Body '{}' | Out-Null}catch{Write-Host 'Service already stopped or session changed.'}}
+ if($s){try{Invoke-RestMethod 'http://127.0.0.1:3210/api/shutdown' -Method Post -Headers @{'X-Session'=$s.token} -ContentType 'application/json' -Body '{}' | Out-Null}catch{
+  Write-Host 'Service not responding. Checking this project process record.'
+  $record=Join-Path $Local 'service-process.json'
+  if(Test-Path $record){$owned=Get-Content -Raw $record|ConvertFrom-Json;$p=Get-Process -Id $owned.id -ErrorAction SilentlyContinue;if($p -and $p.StartTime.ToUniversalTime().Ticks.ToString() -eq $owned.started){$p.Kill()}}
+ }}
  $f=Join-Path $Local 'game-process.json'
  if(Test-Path $f){$saved=Get-Content -Raw $f | ConvertFrom-Json;$p=Get-Process -Id $saved.id -ErrorAction SilentlyContinue;if($p -and $p.StartTime.ToUniversalTime().Ticks.ToString() -eq $saved.started){$p.CloseMainWindow() | Out-Null;Start-Sleep -Milliseconds 700;if(!$p.HasExited){$p.Kill()}};Remove-Item $f}
 }
@@ -41,6 +45,7 @@ try {
  if($gv -notmatch '^4\.(\d+)' -or [int]$Matches[1] -lt 3){throw 'Godot 4.3 or newer Standard is required.'}
  if($Action -eq 'Setup'){Write-Host "Ready: Node $v, Godot $gv. Double-click Start-Game.cmd.";exit 0}
  try{$existing=Invoke-RestMethod 'http://127.0.0.1:3210/api/state' -TimeoutSec 1}catch{$existing=$null}
+ if($existing){$sessionInfo=Invoke-RestMethod 'http://127.0.0.1:3210/api/session' -TimeoutSec 2;if($sessionInfo.projectRoot -ne $Root){throw 'Port 3210 belongs to another instance. Stop that instance first.'}}
  if(!$existing){$service=Start-Process -FilePath (Get-Command node).Source -ArgumentList 'server/server.mjs' -WorkingDirectory $Root -RedirectStandardOutput (Join-Path $Local 'service.log') -RedirectStandardError (Join-Path $Local 'service-error.log') -WindowStyle Hidden -PassThru;@{id=$service.Id;started=$service.StartTime.ToUniversalTime().Ticks.ToString()} | ConvertTo-Json | Set-Content (Join-Path $Local 'service-process.json')}
  $ready=$false
  for($i=0;$i -lt 30;$i++){try{Invoke-RestMethod 'http://127.0.0.1:3210/api/state' -TimeoutSec 1 | Out-Null;$ready=$true;break}catch{Start-Sleep -Milliseconds 300}}
@@ -50,6 +55,7 @@ try {
  if(!$running){$gamePath=Join-Path $Root 'game';$p=Start-Process -FilePath $Godot -ArgumentList @('--path',('"'+$gamePath+'"')) -PassThru;@{id=$p.Id;started=$p.StartTime.ToUniversalTime().Ticks.ToString()} | ConvertTo-Json | Set-Content $f}
  $monitorFile=Join-Path $Local 'monitor-process.json';$monitorRunning=$false
  if(Test-Path $monitorFile){try{$saved=Get-Content -Raw $monitorFile | ConvertFrom-Json;$m=Get-Process -Id $saved.id -ErrorAction SilentlyContinue;if($m -and $m.StartTime.ToUniversalTime().Ticks.ToString() -eq $saved.started){$monitorRunning=$true}}catch{}}
+ if(!(Test-Path (Join-Path $Local 'running.txt'))){$monitorRunning=$false}
  if(!$monitorRunning){$generation=[guid]::NewGuid().ToString();Set-Content (Join-Path $Local 'running.txt') $generation;$monitorScript=Join-Path $PSScriptRoot 'supervise.ps1';$m=Start-Process powershell.exe -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$monitorScript+'"'),'-Godot',('"'+$Godot+'"'),'-Generation',$generation) -WindowStyle Hidden -PassThru;@{id=$m.Id;started=$m.StartTime.ToUniversalTime().Ticks.ToString()}|ConvertTo-Json|Set-Content $monitorFile}
  Start-Process 'http://127.0.0.1:3210' 
  Write-Host 'Pyramid Live started. Use Stop-Game.cmd to stop it.'

@@ -1,0 +1,44 @@
+name: Source checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  engine:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/engine.test.mjs
+      - run: node --check server/server.mjs
+      - run: node --check dashboard/app.js
+      - name: Parse Windows scripts
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          foreach ($file in Get-ChildItem scripts/*.ps1,tests/*.ps1) {
+            $tokens=$null; $errors=$null
+            [System.Management.Automation.Language.Parser]::ParseFile($file.FullName,[ref]$tokens,[ref]$errors) | Out-Null
+            if ($errors.Count) { $errors | Format-List; throw "PowerShell parse failed: $file" }
+          }
+  godot-blueprints:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download official pinned Godot into CI runner only
+        shell: pwsh
+        run: |
+          $url='https://github.com/godotengine/godot-builds/releases/download/4.6.3-stable/Godot_v4.6.3-stable_win64.exe.zip'
+          Invoke-WebRequest $url -OutFile "$env:RUNNER_TEMP/godot.zip"
+          $hash=(Get-FileHash "$env:RUNNER_TEMP/godot.zip" -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($hash -ne 'e39986a178d585ce7ac198fb8de6ea436366dc0cc00e594810c2e3e104c04b90') { throw 'Official Godot archive checksum mismatch' }
+          Expand-Archive "$env:RUNNER_TEMP/godot.zip" -DestinationPath "$env:RUNNER_TEMP/godot"
+      - name: Check six blueprints in Godot on Windows
+        shell: pwsh
+        run: |
+          & "$env:RUNNER_TEMP/godot/Godot_v4.6.3-stable_win64_console.exe" --headless --path game --script res://test_blueprints.gd
+          if ($LASTEXITCODE) { throw 'Blueprint check failed' }
