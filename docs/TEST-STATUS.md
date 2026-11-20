@@ -131,3 +131,10 @@ Executed locally: all three engine/library/connection test files passed. The Pow
 Normal Windows behavior now stops the session when the primary browser process exits instead of reopening it. The dashboard Exit button also requests cleanup of project processes. A monitor cleaning up itself skips killing its own process until its cleanup finishes. Recovery of an unresponsive but still-running game remains; an exited/crashed primary process ends the session. Stop-Game.cmd remains an optional fallback. Close-time checkpoints use a best-effort browser keepalive request within its size quota; abrupt termination uses the last regular durable checkpoint.
 
 Windows smoke coverage has been updated to check primary-process exit cleanup, no unwanted reopening, subsequent Start, dashboard Exit cleanup and persistent settings. This tests process exit under headless Edge; a physical click on the Windows title-bar X remains a check on the streaming PC.
+
+
+## Version 0.6.1 — viewer gift-action guide
+
+Executed: engine, gift library and connection tests passed. A real Chromium game connected to the PowerShell host passed the new overlay test: configured gift images/actions, automatic settings rendering, English/Hebrew labels, display-only capture link, two-card pagination, distinct same-name gift IDs, custom-name text safety, no-rules hiding, Minimal-layout hiding, and space between the HUD and lower panel. Browser page errors: none. English and Hebrew game screenshots were inspected.
+
+The live guide shows two configured rules per page and cycles every six seconds. It does not display or enable unassigned catalog gifts. Boost and quake labels describe the engine's existing configured actions. This is a simulator/browser rendering check, not a real gift delivery or LIVE Studio capture test.

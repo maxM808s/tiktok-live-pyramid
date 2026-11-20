@@ -147,3 +147,9 @@ Alternatively press **Copy link** and paste it into LIVE Studio's Link source. S
 Close the **main game window** with its X button, or press **Exit game** (**יציאה מהמשחק**) in the dashboard. The local service and supervisor stop within a few seconds. The main window stays closed; it is no longer automatically reopened. Double-click **Start-Game.cmd** when you want to play again. Closing a separate capture popup or the dashboard does not stop the main game. **Stop-Game.cmd** remains only an optional recovery shortcut.
 
 Settings remain saved. The game saves checkpoints during play and attempts a final checkpoint when the main page closes. If the browser is force-killed or a very large checkpoint cannot use the browser's close-time request, the last durable checkpoint is used. An exited/crashed primary browser process now ends the session; recovery of an unresponsive but still-running window remains enabled.
+
+## Show viewers what gifts do
+
+The **Full instructions, gift guide and leaderboard** overlay now includes a live gift guide above the like/comment instructions. It shows the saved gift name, bundled image when available, and its exact configured action: stones, a 15-second boost plus stones, or an earthquake removing stones. Two cards appear at a time; additional rules rotate every six seconds. Editing a saved rule in Gift manager updates the game automatically. English/Hebrew follows the dashboard language.
+
+This guide appears in the main game window and the display-only LIVE Studio link. It lists only saved rules; the rest of the gift library is not enabled automatically. Custom names without a catalog image use a diamond icon. With no saved gift rules the panel disappears. The Minimal overlay intentionally hides the lower instructions, gift guide and leaderboard; select Full in Visual settings to show them.

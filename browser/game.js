@@ -1,3 +1,4 @@
+import {renderGiftGuide} from './gift-guide.js';
 import {DesktopConnection} from '../server/connection.mjs';
 import {Engine,validateConfig} from '../server/engine.mjs';
 import {checkpoint,recover} from './checkpoint.js';
@@ -77,6 +78,8 @@ function hud(state){
  const board=state.phase==='celebrating'?state.roundLeaders:state.leaderboard;
  $('#leaderboard').replaceChildren(...board.slice(0,3).map(([name,value],index)=>{const row=document.createElement('div');row.className='leader';const rank=document.createElement('span'),who=document.createElement('bdi'),score=document.createElement('strong');rank.className='rank';rank.textContent=String(index+1).padStart(2,'0');who.textContent=name;score.textContent=value;row.append(rank,who,score);return row;}));
  if(!board.length){const empty=document.createElement('div');empty.className='instructions';empty.textContent=he?'המדבר מחכה לבונים הראשונים':'The desert awaits its first builders.';$('#leaderboard').append(empty);}
+ renderGiftGuide($('#giftGuide'),state.config.gifts,giftCatalog,state.config.language);
+ $('#giftGuide').setAttribute('aria-label',he?'פעולות מתנות':'Gift actions');
  $('#instructions').textContent=he?`${state.config.likesPerWorker} לייקים ← פועל • תגובה ← ${state.config.commentBlocks} אבנים\nמעקב ← ${state.config.followBlocks} אבנים • שיתוף ← ${state.config.shareBlocks} אבנים`:`${state.config.likesPerWorker} likes → worker · Comment → ${state.config.commentBlocks} stones\nFollow → ${state.config.followBlocks} stones · Share → ${state.config.shareBlocks} stones`;
  $('#gift').hidden=!state.lastGift||Date.now()-state.lastGift.at>20000;
  if(!$('#gift').hidden){
