@@ -98,3 +98,11 @@ function frame(now){
 }
 try{view=new DesertView($('#scene'));await claim();requestAnimationFrame(frame);setInterval(poll,350);}
 catch(error){$('#loadingText').textContent='Could not start: '+error.message+' Open the control room or restart Start-Game.cmd.';message('The game requires WebGL in your existing browser. Check Edge graphics acceleration; no Godot or Node installation is needed.');}
+
+// Best-effort final checkpoint on normal close/reload. Closing a capture view has no effect.
+addEventListener('pagehide',()=>{
+ if(!owned||!engine||!session||stopping)return;
+ const body=JSON.stringify({clientId,ownerToken,checkpoint:checkpoint(engine)});
+ if(new TextEncoder().encode(body).length>60000)return; // Browser keepalive quota; regular durable saves still apply.
+ fetch('/api/save-on-close',{method:'POST',headers:{'Content-Type':'application/json','X-Session':session},body,keepalive:true}).catch(()=>{});
+});

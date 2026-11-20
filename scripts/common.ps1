@@ -50,7 +50,7 @@ function Stop-Project {
     if ($service -and !$service.WaitForExit(3000)) { $service.Kill(); $service.WaitForExit(2000) | Out-Null }
     foreach ($name in @('game', 'monitor')) {
         $process = Get-OwnedProcess $name
-        if ($process) {
+        if ($process -and $process.Id -ne $PID) {
             if ($name -eq 'game') { $process.CloseMainWindow() | Out-Null }
             if (!$process.WaitForExit(1500)) { $process.Kill(); $process.WaitForExit(2000) | Out-Null }
         }

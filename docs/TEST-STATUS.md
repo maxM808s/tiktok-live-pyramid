@@ -122,3 +122,12 @@ Executed locally with the PowerShell host and a real headless Chromium game:
 - Existing full dashboard regression passed, including settings transfer, gifts, language layouts, simulator/LIVE checkpoint isolation and mobile layout, with no page errors.
 
 Actual LIVE Studio capture/localhost Link source support, Windows popup permission behavior, and real TikFinity Free delivery remain checks on the streaming PC. Window Capture remains the fallback when the local Link source cannot load. No new player dependencies were added.
+
+
+## Version 0.6 — close to stop
+
+Executed locally: all three engine/library/connection test files passed. The PowerShell-host browser exit test passed final checkpoint saving on page close, safe closing of display-only capture, owner reacquisition on reload, Hebrew Exit game text, confirmed dashboard exit stopping the HTTP service, and no browser page errors.
+
+Normal Windows behavior now stops the session when the primary browser process exits instead of reopening it. The dashboard Exit button also requests cleanup of project processes. A monitor cleaning up itself skips killing its own process until its cleanup finishes. Recovery of an unresponsive but still-running game remains; an exited/crashed primary process ends the session. Stop-Game.cmd remains an optional fallback. Close-time checkpoints use a best-effort browser keepalive request within its size quota; abrupt termination uses the last regular durable checkpoint.
+
+Windows smoke coverage has been updated to check primary-process exit cleanup, no unwanted reopening, subsequent Start, dashboard Exit cleanup and persistent settings. This tests process exit under headless Edge; a physical click on the Windows title-bar X remains a check on the streaming PC.

@@ -20,12 +20,14 @@ try {
     Run-Launcher 'Start'
     $gameAfter = Get-Content -Raw (Join-Path $root '.local/game-process.json') | ConvertFrom-Json
     if ($gameBefore.id -ne $gameAfter.id -or $gameBefore.started -ne $gameAfter.started) { throw 'Repeated Start created another game process' }
-    # Explicit crash simulation; never run this smoke test during a real broadcast.
+    # Exiting the primary process now ends the session; it must never reopen itself.
     Stop-Process -Id $gameAfter.id -Force
-    Start-Sleep -Seconds 5
-    $state = Wait-Game
-    $recoveredGame = Get-Content -Raw (Join-Path $root '.local/game-process.json') | ConvertFrom-Json
-    if ($recoveredGame.id -eq $gameAfter.id -and $recoveredGame.started -eq $gameAfter.started) { throw 'Monitor did not recover a crashed game' }
+    Start-Sleep -Seconds 12
+    if(Test-Path (Join-Path $root '.local/running.txt')){throw 'Closing the game left the supervisor running'}
+    try{Invoke-RestMethod http://127.0.0.1:3210/api/state -TimeoutSec 1 | Out-Null;throw 'Closing the game left the service running'}catch{if($_.Exception.Message -eq 'Closing the game left the service running'){throw}}
+    Run-Launcher 'Start'
+    $state=Wait-Game
+    $recoveredGame=Get-Content -Raw (Join-Path $root '.local/game-process.json') | ConvertFrom-Json
     $session = Invoke-RestMethod http://127.0.0.1:3210/api/session
     Invoke-RestMethod http://127.0.0.1:3210/api/config -Method Post -Headers @{ 'X-Session' = $session.token } -ContentType application/json -Body '{"language":"he","liveEnabled":false,"gifts":{"gift_5655":{"action":"blocks","value":17,"giftId":"5655","name":"Rose"}}}' | Out-Null
     $catalog = Invoke-RestMethod http://127.0.0.1:3210/catalog.json
@@ -48,5 +50,10 @@ try {
     if ($state.config.language -ne 'he') { throw 'Settings did not persist' }
     if ($state.config.liveEnabled -ne $false) { throw 'Explicit disconnect setting did not persist' }
     if ($state.config.gifts.gift_5655.giftId -ne '5655' -or $state.config.gifts.gift_5655.value -ne 17) { throw 'Gift ID mapping did not persist' }
-    Write-Host 'PASS: setup, repeated start without duplicates, crash recovery, engine connection, new-version restart, backups, clean stop and persistent settings.'
+    $session=Invoke-RestMethod http://127.0.0.1:3210/api/session
+    Invoke-RestMethod http://127.0.0.1:3210/api/exit -Method Post -Headers @{'X-Session'=$session.token} -ContentType application/json -Body '{}' | Out-Null
+    Start-Sleep -Seconds 12
+    if(Test-Path (Join-Path $root '.local/running.txt')){throw 'Exit game left the supervisor running'}
+    try{Invoke-RestMethod http://127.0.0.1:3210/api/state -TimeoutSec 1 | Out-Null;throw 'Exit game left the service running'}catch{if($_.Exception.Message -eq 'Exit game left the service running'){throw}}
+    Write-Host 'PASS: setup, repeated start without duplicates, close-to-stop, restart, dashboard exit, engine connection, new-version restart, backups, clean stop and persistent settings.'
 } finally { Run-Launcher 'Stop' }

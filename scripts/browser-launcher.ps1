@@ -25,6 +25,8 @@ try{
         Write-Host 'Ready: Windows PowerShell and your existing browser. No Node or Godot installation needed.'
         if($Action -eq 'Setup'){Write-Host 'Double-click Start-Game.cmd.'}
         else{
+            $exitRequest=Join-Path $Local 'exit-requested.txt'
+            if(Test-Path -LiteralPath $exitRequest){Stop-Project;Remove-Item -LiteralPath $exitRequest -ErrorAction SilentlyContinue}
             $fingerprint=Get-SourceFingerprint;$launch=Read-Record 'launch-version';$session=Get-ProjectSession
             if($session -and ($session.runtime -ne 'browser' -or !$launch -or $launch.fingerprint -ne $fingerprint)){
                 Write-Host 'Saving progress and launching the updated browser version...'
@@ -46,7 +48,7 @@ try{
             }
             Write-Record 'launch-version' @{fingerprint=$fingerprint;runtime='browser';started=(Get-Date -Format o)}
             if($env:PYRAMID_HEADLESS_TEST -ne '1'){Start-Process 'http://127.0.0.1:3210'}
-            Write-Host 'Game and dashboard started. Use Stop-Game.cmd when finished.'
+            Write-Host 'Game and dashboard started. Close the main game window or use Exit game in the dashboard to finish.'
         }
     }
 }catch{Write-Host $_.Exception.Message -ForegroundColor Red;$exitCode=1}

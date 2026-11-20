@@ -47,6 +47,7 @@ const server=http.createServer(async(req,res)=>{
  else if(u.pathname==='/api/sim'){if(!game.ingest(b,'simulator'))return json(res,400,{error:game.logs[0]?.message||'Ignored'});}
  else if(u.pathname==='/api/control'){if(b.action==='pause')game.paused=!game.paused;else if(b.action==='restart')game.reset(game.config.building);else if(b.action==='reconnect'){transport.disconnect();syncConnection();}else throw Error('Unknown control');}
  else if(u.pathname==='/api/perf'){game.perf={fps:Math.max(0,Math.min(1000,Number(b.fps)||0)),round:Number(b.round)||0,visualComplete:b.visualComplete===true,workers:Math.max(0,Math.min(32,Number(b.workers)||0)),memoryMB:Number(b.memoryMB)||0,at:Date.now()};}
+ else if(u.pathname==='/api/exit'){fs.writeFileSync(path.join(local,'exit-requested.txt'),'user');json(res,200,{ok:true});shutdown();return;}
  else if(u.pathname==='/api/shutdown'){json(res,200,{ok:true});shutdown();return;}
  else return json(res,404,{error:'Not found'});json(res,200,{ok:true});
  }catch(e){json(res,400,{error:e.message});}return;}

@@ -11,6 +11,7 @@ Object.assign(he,{
 });
 Object.assign(he,{giftLibrary:'ספריית מתנות',giftLibraryNote:'בחרו מתנה מהספרייה המשותפת, הגדירו פעולה ושמרו. התמונות כלולות מקומית.',searchGifts:'חיפוש מתנות לפי שם או מזהה',coinRange:'טווח מטבעות',allCoins:'כל ערכי המטבעות',giftStatus:'מצב',allGifts:'כל המתנות',assignedGifts:'משויכות',unassignedGifts:'ללא שיוך',sortGifts:'מיון',coinsLow:'מטבעות: מהנמוך לגבוה',coinsHigh:'מטבעות: מהגבוה לנמוך',giftNameSort:'שם',previous:'הקודם',next:'הבא',priceSnapshot:'ערכי המטבעות מיובאים מהספרייה ועשויים להשתנות ב-TikTok. רק כללים שנשמרו מפעילים פעולות.',configuredGifts:'פעולות מתנות שהוגדרו',customGift:'שימוש בשם מתנה מותאם',giftId:'מזהה מתנה',giftIdOptional:'מזהה מתנה (רשות)'});
 Object.assign(he,{windowSetup:'חלון המשחק וקישור',desktopApi:'אותו חיבור מקומי כמו במשחקים האחרים שלכם',desktopTitle:'TikFinity Desktop',desktopSteps:'פתחו את TikFinity Desktop וחברו שם את שידור ה-TikTok LIVE. לאחר מכן לחצו כאן על חיבור. אשרו גישה לרשת המקומית אם הדפדפן מבקש. אין צורך להזין סיסמת TikTok במשחק.',connectLive:'חיבור',reconnectLive:'חיבור מחדש',disconnectLive:'ניתוק',socketNote:'חיבור תקין מאשר רק שה-API המקומי זמין. בדקו אירוע אמיתי מצופה לפני השארת השידור ללא השגחה.',closeSetup:'סגירה',windowIntro:'פתחו חלון משחק אנכי נפרד לצילום ב-LIVE Studio. השאירו את חלון המשחק הראשי פועל בזמן השימוש בלוח הבקרה.',popupSize:'גודל חלון המשחק',openGamePopup:'פתיחת חלון משחק',directGameLink:'פתיחת המשחק בלשונית',studioLink:'מקור קישור ב-LIVE Studio',captureLink:'קישור מקומי לתצוגה בלבד',copyCaptureLink:'העתקת קישור',openCaptureLink:'תצוגה מקדימה של הקישור',captureStep1:'לצילום חלון בחרו ב-LIVE Studio את “⁦Pyramid Live — Game Capture⁩”.',captureStep2:'למקור קישור הדביקו את הקישור והגדירו גודל של ⁦1080 × 1920⁩ כאשר האפשרות זמינה.',captureStep3:'הקישור פועל במחשב הזה כל עוד ⁦Start-Game.cmd⁩ פועל. הוא אינו יוצר חיבור ניקוד נוסף. אם LIVE Studio אינו טוען קישור מקומי, השתמשו בצילום חלון.'});
+Object.assign(he,{exitGame:'יציאה מהמשחק'});
 const english=new Map([...document.querySelectorAll('[data-i]')].map(el=>[el,el.textContent]));
 for(const form of document.querySelectorAll('form'))for(const field of form.elements){
   if(!field.name)continue;if(!field.id)field.id=(form.id||'dialog')+'-'+field.name;
@@ -64,6 +65,8 @@ function download(name,value){
 }
 function element(tag,content,className){const el=document.createElement(tag);if(content!==undefined)el.textContent=content;if(className)el.className=className;return el;}
 for(const button of document.querySelectorAll('[data-page]'))button.onclick=()=>navigate(button.dataset.page);
+let sessionEnded=false;
+$('#exitGame').onclick=guarded(async()=>{if(!await confirmAction(text('Exit the game?','לצאת מהמשחק?'),text('Save progress and close the local game. Double-click Start-Game.cmd to play again.','שמירת ההתקדמות וסגירת המשחק המקומי. להפעלה מחדש לחצו פעמיים על Start-Game.cmd.'),text('Exit game','יציאה מהמשחק')))return;await api('/api/exit',{});sessionEnded=true;$('#connection').textContent=text('Session ended','המשחק הסתיים');feedback(text('Game stopped. Close this dashboard when ready.','המשחק נעצר. אפשר לסגור את לוח הבקרה.'));},false);
 $('#connectLive').onclick=guarded(()=>api('/api/config',{mode:'live',liveEnabled:true}),false);
 $('#disconnectLive').onclick=guarded(()=>api('/api/config',{liveEnabled:false}),false);
 $('#reconnectLive').onclick=guarded(async()=>{await api('/api/config',{mode:'live',liveEnabled:true});await api('/api/control',{action:'reconnect'});},false);
@@ -151,7 +154,7 @@ function renderLogs(){if(state){const query=$('#logSearch').value.toLowerCase();
 $('#logSearch').oninput=renderLogs;
 let refreshing=false;
 async function refresh(){
-  if(refreshing)return;refreshing=true;
+  if(refreshing||sessionEnded)return;refreshing=true;
   try{
     const response=await fetch('/api/state',{signal:AbortSignal.timeout(4000)});if(!response.ok)throw Error('Local service unavailable');state=await response.json();
     const s=state,percent=Math.min(100,Math.round(s.built/s.target*100)),lang=s.config.language;

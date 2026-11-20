@@ -182,6 +182,11 @@ function Handle($Stream) {
         Json-Reply $Stream 200 @{commands=@($script:Commands.ToArray());stopping=$script:Stopping};
         if($script:Stopping -and $null -ne $body.checkpoint){$script:StopAt=[datetime]::UtcNow};return
     }
+    if($path -eq '/api/save-on-close'){
+        if($body.clientId -cne $script:Owner -or !(Same-Key ([string]$body.ownerToken) $script:OwnerKey)){Json-Reply $Stream 403 @{error='Game ownership expired'};return}
+        Store-Checkpoint $body.checkpoint;Json-Reply $Stream 200 @{ok=$true};return
+    }
+    if($path -eq '/api/exit'){[IO.File]::WriteAllText((Join-Path $Local 'exit-requested.txt'),'user');$script:Stopping=$true;$script:StopAt=[datetime]::UtcNow.AddSeconds(3);Json-Reply $Stream 200 @{ok=$true};return}
     if($path -eq '/api/shutdown'){$script:Stopping=$true;$script:StopAt=[datetime]::UtcNow.AddSeconds(2);Json-Reply $Stream 200 @{ok=$true};return}
     if($script:Commands.Count -ge 200){Json-Reply $Stream 429 @{error='Game command queue full. Open the game window.'};return}
     if($path -eq '/api/config'){

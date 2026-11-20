@@ -26,7 +26,7 @@ Start detects a different source revision, saves progress, backs up settings and
 
 **Update-Game.cmd** is an optional helper: it checks that you are in the pyramid repository and have no code edits, stops the game, backs up settings, pulls fast-forward only, then starts the updated launcher. Git is detected from PATH or GitHub Desktop's bundled Git. If authentication fails, use Desktop's normal Pull button. No reset, clean or forced overwrite is performed.
 
-**Stop-Game.cmd** stops this game's browser window, localhost host and monitor. It does not close your dashboard, other personal browser windows, TikFinity or LIVE Studio.
+Close the **main game window** or click **Exit game** to stop normally. **Stop-Game.cmd** is an optional recovery shortcut that stops this game's browser window, localhost host and monitor. It does not close your dashboard, other personal browser windows, TikFinity or LIVE Studio.
 
 No repeated ZIP downloads or manual replacement of files. The separate battle and boxing repositories are not modified.
 
@@ -141,3 +141,9 @@ Choose **עברית** in the Language selector for Hebrew controls, right-to-lef
 Press **Game window & link** at the top of the dashboard. Choose a popup size and press **Open game popup**. Allow popups for the local site if blocked, or use **Open game in a tab**. In LIVE Studio, add a Window Capture source and select **Pyramid Live — Game Capture**. The normal Windows launcher still opens the dedicated game window automatically.
 
 Alternatively press **Copy link** and paste it into LIVE Studio's Link source. Set the source size to **1080 × 1920** where supported. The link is `http://127.0.0.1:3210/browser/game.html?view=1`. It works only on the same PC while the local game service is running; it is not a public hosted URL. Keep the primary game window running: the link only displays its state and never becomes a second scoring connection, even when the primary game closes. If your LIVE Studio version cannot load a localhost Link source, use Window Capture. No new installations are required.
+
+## Stop like a normal game
+
+Close the **main game window** with its X button, or press **Exit game** (**יציאה מהמשחק**) in the dashboard. The local service and supervisor stop within a few seconds. The main window stays closed; it is no longer automatically reopened. Double-click **Start-Game.cmd** when you want to play again. Closing a separate capture popup or the dashboard does not stop the main game. **Stop-Game.cmd** remains only an optional recovery shortcut.
+
+Settings remain saved. The game saves checkpoints during play and attempts a final checkpoint when the main page closes. If the browser is force-killed or a very large checkpoint cannot use the browser's close-time request, the last durable checkpoint is used. An exited/crashed primary browser process now ends the session; recovery of an unresponsive but still-running window remains enabled.
