@@ -10,7 +10,7 @@ Version 0.3 runs the 3D game in your existing Edge or Chrome browser. The local 
 2. Select **Repository → Show in Explorer**.
 3. Double-click **Start-Game.cmd**.
 4. A dedicated **Pyramid Live — Game** browser window and your separate dashboard open automatically.
-5. Test an event in **Live controls**, then connect TikFinity Free when you are ready.
+5. Test an event in **Connection & tests**, then connect TikFinity Free when you are ready.
 
 **Setup-Game.cmd** is optional: it checks the Windows/browser requirements without installing anything. Windows 11 normally includes Edge. If you prefer an already installed Chrome browser, advanced users can point `PYRAMID_BROWSER_EXE` to its executable.
 
@@ -34,9 +34,9 @@ No repeated ZIP downloads or manual replacement of files. The separate battle an
 
 The dashboard opens at **http://127.0.0.1:3210** and has:
 
-- Overview with construction progress, worker count, recent events, contributors, performance and connection readiness.
+- **Stream home**: a three-step start checklist, current round, progress, workers, recent viewer events and contributors.
 - Six building previews/cards and difficulty presets. Building/difficulty edits apply to the next round or **Restart round**.
-- Shared 314-gift library from your battle game, with bundled images, search, coin filters, configurable actions and simulator-only previews.
+- **Gift actions**: your active rules appear first. Press **+ Add gift action** to open the 314-gift library, choose an action and save. The popup supports local images, search and coin filters. **Test** sends a practice gift in simulator mode only.
 - Camera, day/night, particle quality, worker outfits and overlay layout.
 - Pause/resume, restart, filtered/downloadable logs, settings backup/import, and simulator/live selection.
 - English and Hebrew with RTL layout and translated controls.
@@ -47,7 +47,7 @@ The game runs in a **separate browser window**. Minimize or close the dashboard 
 
 1. Open your **TikFinity Desktop app on the same PC**. Browser-only TikFinity does not provide its local socket.
 2. Complete TikFinity's official setup and connect it to your livestream. The game itself never asks for your TikTok password.
-3. In the dashboard choose **Live controls → Event source → LIVE — TikFinity Free**.
+3. In the dashboard choose **Connection & tests → Connect**.
 4. The game connects to the documented local Event API at `ws://localhost:21213/`.
 5. Check the last-event time and ask a real viewer to comment. Test a small real gift streak before leaving the game unattended.
 
@@ -69,7 +69,7 @@ The official API documents gifts, likes, comments (`chat`), follows and shares. 
 | Galaxy | Fifty golden units and a 15-second boost |
 | `earthquake` | Remove ten units; replace this placeholder with a real gift name |
 
-Configure basic values in **Game settings**. In **Gift manager**, search the shared library, choose a gift, set its action/value, and save. Library rules match the gift ID, so same-name gifts can have different actions. Existing custom-name rules remain supported. Only saved rules award stones; importing the library does not enable every gift. Images are bundled locally, with no new runtime dependencies. Coin values are imported snapshots, not current live prices. See [library source and artwork notes](assets/gifts/README.md). Unknown gifts are logged without guessing their price. GiftType 1 streaks count once when the final boolean `repeatEnd` is true; `repeatCount` multiplies the configured value. Duplicate event IDs in the latest 10,000 IDs are suppressed. Missing IDs cannot guarantee duplicate protection.
+Configure basic values in **Rounds**. In **Gift actions**, search the shared library, choose a gift, set its action/value, and save. Library rules match the gift ID, so same-name gifts can have different actions. Existing custom-name rules remain supported. Only saved rules award stones; importing the library does not enable every gift. Images are bundled locally, with no new runtime dependencies. Coin values are imported snapshots, not current live prices. See [library source and artwork notes](assets/gifts/README.md). Unknown gifts are logged without guessing their price. GiftType 1 streaks count once when the final boolean `repeatEnd` is true; `repeatCount` multiplies the configured value. Duplicate event IDs in the latest 10,000 IDs are suppressed. Missing IDs cannot guarantee duplicate protection.
 
 The contribution queue caps at 5,000 units and records excess as dropped; a single gift also caps at 5,000 units. A separate bounded dashboard-command queue prevents unlimited pending controls when no game window is running.
 
@@ -134,7 +134,7 @@ The Windows CI no-install smoke test removes Node from PATH and launches the nor
 
 ## Connection controls, game popup and LIVE Studio link
 
-Open **Live controls** and use **Connect**, **Reconnect** or **Disconnect**. This uses the same official TikFinity Desktop local WebSocket as your battle game: `ws://localhost:21213/`. Connect your TikTok LIVE inside TikFinity Desktop first, then press **Connect** here. A browser request for local-network access must be allowed for this connection. No TikTok password is entered here. Disconnect stops retries and remains saved after a restart; reconnect enables them again. Connect switches from the isolated simulator checkpoint to LIVE.
+Open **Connection & tests** and use **Connect**, **Reconnect** or **Disconnect**. This uses the same official TikFinity Desktop local WebSocket as your battle game: `ws://localhost:21213/`. Connect your TikTok LIVE inside TikFinity Desktop first, then press **Connect** here. A browser request for local-network access must be allowed for this connection. No TikTok password is entered here. Disconnect stops retries and remains saved after a restart; reconnect enables them again. Connect switches from the isolated simulator checkpoint to LIVE.
 
 Choose **עברית** in the Language selector for Hebrew controls, right-to-left layout, game HUD and setup instructions.
 
@@ -153,3 +153,13 @@ Settings remain saved. The game saves checkpoints during play and attempts a fin
 The **Full instructions, gift guide and leaderboard** overlay now includes a live gift guide above the like/comment instructions. It shows the saved gift name, bundled image when available, and its exact configured action: stones, a 15-second boost plus stones, or an earthquake removing stones. Two cards appear at a time; additional rules rotate every six seconds. Editing a saved rule in Gift manager updates the game automatically. English/Hebrew follows the dashboard language.
 
 This guide appears in the main game window and the display-only LIVE Studio link. It lists only saved rules; the rest of the gift library is not enabled automatically. Custom names without a catalog image use a diamond icon. With no saved gift rules the panel disappears. The Minimal overlay intentionally hides the lower instructions, gift guide and leaderboard; select Full in Visual settings to show them.
+
+## Simpler dashboard (v0.7)
+
+1. Open **Stream home** and follow the three steps: open the game, connect TikFinity, choose gifts.
+2. Open **Gift actions** to see exactly what is active. Use **+ Add gift action** for the focused gift picker. Set **Add stones**, **Speed boost + stones**, or **Earthquake: remove stones**, then **Save action**. Closing the popup before saving leaves the current rule unchanged.
+3. Use **Rounds** to choose a building and difficulty. Extra likes/comment/follow values are under **Advanced**. Use **Appearance** for graphics, workers and the viewer overlay.
+4. **Connection & tests** contains TikFinity connection buttons and the practice event form. Diagnostics, event history and restore tools expand only when you need them.
+5. Use **More** for settings backup and **Exit game**. Closing the main game window still stops the session.
+
+The same workflow is available in Hebrew. On stream, the smaller HUD leaves more construction visible; the objective shows stones remaining, or a real 4× boost countdown while a gift boost is active. Earthquakes produce a brief camera shake, and completed buildings get a wider cinematic orbit. No viewer activity is generated automatically.

@@ -9,8 +9,9 @@ export class DesertView {
   this.renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   this.renderer.outputColorSpace=THREE.SRGBColorSpace;this.renderer.toneMapping=THREE.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.15;
   canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();this.healthy=false;});canvas.addEventListener('webglcontextrestored',()=>this.healthy=true);
+  this.daySky=new THREE.Color('#b8c3bc');this.nightSky=new THREE.Color('#182b43');
   this.scene=new THREE.Scene();this.scene.background=new THREE.Color('#a6b7b5');this.scene.fog=new THREE.Fog('#a6b7b5',38,120);
-  this.camera=new THREE.PerspectiveCamera(43,9/16,.1,180);this.camera.position.set(25,20,31);this.camera.lookAt(0,3,0);
+  this.camera=new THREE.PerspectiveCamera(48,9/16,.1,180);this.camera.position.set(25,20,31);this.camera.lookAt(0,3,0);
   this.ambient=new THREE.HemisphereLight('#dcebed','#9b7955',2);this.scene.add(this.ambient);
   this.sun=new THREE.DirectionalLight('#ffe4b2',3);this.sun.position.set(-20,35,20);this.sun.castShadow=true;
   Object.assign(this.sun.shadow.camera,{left:-18,right:18,top:18,bottom:-18,near:1,far:100});this.sun.shadow.mapSize.set(1024,1024);this.sun.shadow.bias=-.0005;this.scene.add(this.sun);
@@ -79,7 +80,8 @@ export class DesertView {
    if(this.cells){for(let i=0;i<this.scheduled;i++)if(!this.placed[i])this.place(i,this.goldFlags[i]);this.landed=this.scheduled;}
    for(let i=0;i<state.config.workers;i++)this.workers.push(this.makeWorker(i,state.config.skin));
   }
-  this.renderer.shadowMap.enabled=state.config.quality==='high';this.renderer.setPixelRatio(Math.min(devicePixelRatio,state.config.quality==='high'?1.5:1));
+  const pixelRatio=Math.min(devicePixelRatio,state.config.quality==='high'?1.5:1),qualityKey=state.config.quality+':'+pixelRatio;
+  if(this.qualityKey!==qualityKey){this.qualityKey=qualityKey;this.renderer.shadowMap.enabled=state.config.quality==='high';this.renderer.setPixelRatio(pixelRatio);}
  }
  place(index,gold){const cell=this.cells[index];matrix.compose(new THREE.Vector3(cell.x,cell.y+.5,cell.z),new THREE.Quaternion(),new THREE.Vector3(.96,.91,.96));this.stones.setMatrixAt(index,gold?zero:matrix);this.goldStones.setMatrixAt(index,gold?matrix:zero);this.placed[index]=1;this.goldFlags[index]=gold?1:0;this.stones.instanceMatrix.needsUpdate=this.goldStones.instanceMatrix.needsUpdate=true;}
  startJob(index,worker,state){
@@ -98,7 +100,7 @@ export class DesertView {
    const job=worker.job;
    if(job){
     if(!state.paused)job.elapsed+=delta;const t=job.elapsed;
-    if(t<.6){worker.group.position.lerpVectors(job.from,job.to,t/.6);const dir=job.to.clone().sub(job.from);worker.group.rotation.y=Math.atan2(dir.x,dir.z);worker.legs[0].rotation.x=Math.sin(t*18)*.6;worker.legs[1].rotation.x=-worker.legs[0].rotation.x;for(const arm of worker.arms)arm.rotation.x=-.9;}
+    if(t<.6){worker.group.position.lerpVectors(job.from,job.to,t/.6);worker.group.rotation.y=Math.atan2(job.to.x-job.from.x,job.to.z-job.from.z);worker.legs[0].rotation.x=Math.sin(t*18)*.6;worker.legs[1].rotation.x=-worker.legs[0].rotation.x;for(const arm of worker.arms)arm.rotation.x=-.9;}
     else if(t<1.1){worker.group.position.copy(job.to);worker.carry.visible=false;worker.flight.visible=true;const u=(t-.6)/.5;worker.flight.position.lerpVectors(job.to.clone().add(new THREE.Vector3(0,1.6,0)),job.target,u);worker.flight.position.y+=Math.sin(u*Math.PI)*(1.4+job.target.y*.12);for(const arm of worker.arms)arm.rotation.x=-1.6*(1-u);}
     else{
      if(!job.landed){this.place(job.index,job.gold);this.landed++;job.landed=true;worker.flight.visible=false;if(state.config.quality==='high')this.burst(job.target,8,1.2);}
@@ -111,10 +113,12 @@ export class DesertView {
   const complete=state.phase==='celebrating'&&this.landed===this.cells.length;this.crown.visible=complete;
   if(complete&&this.time-this.lastFirework>1.2){this.lastFirework=this.time;this.burst(new THREE.Vector3(Math.sin(this.time)*5,9+Math.random()*3,0),65,7);}
   this.sparks.forEach((p,i)=>{p.life-=delta;if(p.life>0){p.x+=p.vx*delta;p.y+=p.vy*delta;p.z+=p.vz*delta;p.vy-=4*delta;this.sparkPositions.set([p.x,p.y,p.z],i*3);const fade=Math.min(1,p.life);this.sparkColors.set([fade,.6*fade,.16*fade],i*3);}else this.sparkPositions.set([0,-1000,0],i*3);});this.sparkMesh.geometry.attributes.position.needsUpdate=this.sparkMesh.geometry.attributes.color.needsUpdate=true;
-  const angle=.61+(state.config.camera?Math.sin(this.time*.045)*.13:0),radius=Math.max(35,25+this.height*1.4);
-  this.camera.position.set(Math.sin(angle)*radius,Math.max(17,this.height+8),Math.cos(angle)*radius);this.camera.lookAt(0,Math.max(3,this.height*.35),0);
+  const angle=.33+(state.config.camera?Math.sin(this.time*(complete?.3:.045))*(complete?.18:.08):0),radius=Math.max(42,30+this.height*1.6);
+  this.camera.position.set(Math.sin(angle)*radius,Math.max(17,this.height+8),Math.cos(angle)*radius);this.camera.lookAt(0,Math.max(2,this.height*.25),2.5);
+  const quakeAge=(Date.now()-(state.quakeAt||0))/1000;if(quakeAge>=0&&quakeAge<.65){const shake=(1-quakeAge/.65)*.22;this.camera.position.x+=Math.sin(quakeAge*63)*shake;this.camera.position.y+=Math.cos(quakeAge*51)*shake*.5;}
+  this.sun.color.set(state.boostRemaining>0?'#ffce76':'#ffe4b2');
   const day=state.config.night?.55+.45*Math.sin(this.time*.01+.5):.9;this.sun.intensity=1+day*2.2;this.ambient.intensity=.65+day*1.3;this.stars.visible=day<.35;
-  this.scene.background.set('#182b43').lerp(new THREE.Color('#b8c3bc'),day);this.scene.fog.color.copy(this.scene.background);
+  this.scene.background.copy(this.nightSky).lerp(this.daySky,day);this.scene.fog.color.copy(this.scene.background);
   this.renderer.render(this.scene,this.camera);
   return {visualComplete:this.landed===this.cells.length,landed:this.landed,scheduled:this.scheduled,workers:this.workers.length,renderHealthy:this.healthy};
  }

@@ -81,6 +81,9 @@ function hud(state){
  renderGiftGuide($('#giftGuide'),state.config.gifts,giftCatalog,state.config.language);
  $('#giftGuide').setAttribute('aria-label',he?'פעולות מתנות':'Gift actions');
  $('#instructions').textContent=he?`${state.config.likesPerWorker} לייקים ← פועל • תגובה ← ${state.config.commentBlocks} אבנים\nמעקב ← ${state.config.followBlocks} אבנים • שיתוף ← ${state.config.shareBlocks} אבנים`:`${state.config.likesPerWorker} likes → worker · Comment → ${state.config.commentBlocks} stones\nFollow → ${state.config.followBlocks} stones · Share → ${state.config.shareBlocks} stones`;
+ $('#roundObjective').hidden=state.config.overlay==='minimal'||state.phase==='celebrating';
+ $('#roundObjective').classList.toggle('boost-active',state.boostRemaining>0);
+ $('#roundObjective span').textContent=state.boostRemaining>0?(he?`האצה פי 4 · ${state.boostRemaining} שניות`:`4× BUILD BOOST · ${state.boostRemaining}s`):he?`נותרו ${Math.max(0,state.target-state.built)} אבנים להשלמה`:`${Math.max(0,state.target-state.built)} stones to complete this round`;
  $('#gift').hidden=!state.lastGift||Date.now()-state.lastGift.at>20000;
  if(!$('#gift').hidden){
   const gift=state.lastGift,item=findGift(giftCatalog,gift.giftId,gift.name),key=gift.at+':'+(item?.id||'');

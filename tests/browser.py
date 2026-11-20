@@ -32,16 +32,21 @@ try:
   # Unsaved form edits must survive a state refresh.
   page.wait_for_timeout(1400);assert page.locator('#gameForm [name=target]').input_value()=='500'
   page.locator('[data-page=gifts]').click()
+  page.locator('#addGift').click();page.locator('#customGift').click()
   page.locator('#giftForm [name=name]').fill('Browser Test Gift');page.locator('#giftForm [name=value]').fill('17');page.locator('#giftForm button.primary').click()
   page.wait_for_timeout(1300);rule=page.locator('.gift-rule').filter(has_text='browser test gift');assert rule.count()==1
   rule.get_by_role('button',name='Edit',exact=True).click();assert page.locator('#giftForm [name=value]').input_value()=='17'
+  page.locator('#closeGiftEditor').click()
   rule.get_by_role('button',name='Remove',exact=True).click();page.locator('#confirmButton').click();page.wait_for_timeout(1300)
   assert 'browser test gift' not in get()['config']['gifts']
+  page.locator('.session-menu summary').click()
   with page.expect_download() as d:page.locator('#exportSettings').click()
   backup=out/'browser-settings-backup.json';d.value.save_as(backup);data=json.loads(backup.read_text());assert data['format']=='pyramid-live-settings';assert 'token' not in data
   page.locator('[data-page=controls]').click();page.locator('#importSettings').set_input_files(backup);page.locator('#confirmButton').click();page.wait_for_timeout(1300)
   page.locator('#simForm select[name=event]').select_option('gift');page.locator('#simForm button').click();page.wait_for_timeout(1300)
-  assert 'Test Builder' in page.locator('#logs').inner_text()
+  wait_state(lambda state:any('Test Builder' in row['message'] for row in state['logs']))
+  page.wait_for_function("()=>document.querySelector('#logs').textContent.includes('Test Builder')")
+  page.locator('summary[data-i=eventHistory]').click()
   page.locator('#logSearch').fill('unlikely-no-match-123');assert page.locator('#logs').inner_text()=='No matching events.';page.locator('#logSearch').fill('')
   # Put a unique simulator-only contributor on top so accidental carryover is observable.
   mode_test_name='Simulator Only UI Check'

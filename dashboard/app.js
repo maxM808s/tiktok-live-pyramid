@@ -4,7 +4,7 @@ const $ = selector => document.querySelector(selector);
 let token='', state, page='overview', editGift='', toastTimer;
 const dirty=new Set();
 let giftCatalog=[],catalogReady=false,catalogError='',giftPage=0,selectedGift=null,giftSaving=false;
-const giftsPerPage=24;
+const giftsPerPage=12;
 const he={likesPerWorker:'לייקים לכל פועל / אבן',commentBlocks:'אבנים לכל תגובה',followBlocks:'אבנים לכל עוקב',shareBlocks:'אבנים לכל שיתוף',skin:'מראה הפועלים',overlay:'פריסת שכבת השידור',workspace:'סביבת עבודה',overview:'סקירה',game:'הגדרות משחק',gifts:'ניהול מתנות',visual:'הגדרות תצוגה',controls:'שליטה בשידור',language:'שפה',broadcast:'השידור שלך, בשליטה מלאה',hero:'קהילה אחת. אלפי אבנים.\nבונים יחד משהו שיישאר.',progress:'התקדמות הבנייה',workers:'פועלים פעילים',performance:'ביצועי המשחק',activity:'פעילות אחרונה',leaders:'התורמים המובילים',roundSettings:'מכינים את הסיבוב הבא',building:'מבנה',blocks:'מספר האבנים הנדרש (רמת קושי)',timing:'ספירה לאחור לחגיגה (שניות)',automatic:'התחלה אוטומטית של הסיבוב הבא',save:'שמירת הגדרות',apply:'בחירת המבנה ורמת הקושי יחולו בסיבוב הבא. להתחלה מיידית השתמשו בהתחלה מחדש. ההצבעות קובעות את המבנה הבא; ללא הצבעות המבנים מתחלפים לפי הסדר.',giftRules:'כל מתנה בונה',giftNote:'בחרו מהספרייה לשיוך לפי מזהה המתנה, או הגדירו שם מותאם. מתנות ללא כלל יירשמו בלבד.',giftName:'שם המתנה',action:'פעולה',value:'אבנים לכל מתנה',saveRule:'שמירת כלל',visualTitle:'יוצרים אווירה',quality:'איכות גרפית',maxWorkers:'מספר פועלים מרבי',camera:'מצלמה קולנועית',night:'מעברי יום ולילה',mode:'מקור אירועים',modeNote:'במצב שידור חי כל אירועי הבדיקה חסומים. חיבור מקומי תקין אינו מאשר שהשידור ב-TikTok פעיל.',pause:'השהיה / המשך',restart:'התחלת סיבוב מחדש',health:'תקינות החיבור',simulator:'סימולטור אירועים מקומי',username:'שם הצופה',event:'אירוע',quantity:'כמות מתנות',comment:'תגובה / הצבעה למבנה',test:'שליחת אירוע בדיקה',logs:'יומן אירועים'};
 Object.assign(he,{
   sessionControls:'שליטה בסיבוב',connectionSetup:'הגדרת חיבור',backupSettings:'גיבוי הגדרות',gameWindow:'חלון המשחק',eventSource:'מקור אירועים',roundFlow:'רצף סיבובים',connectTitle:'ממתינים ל-TikFinity Desktop',connectHelp:'פתחו את TikFinity במחשב הזה וחברו אותו לשידור. המשחק מתחבר מחדש באופן אוטומטי. בדקו אירוע אמיתי לפני השארת המשחק ללא השגחה.',nextWonder:'הפלא הבא מתחיל כאן',blueprintPreview:'תצוגת תוכנית בנייה · אינה צילום של המשחק',difficulty:'רמת קושי',quickRound:'מהיר · 100',standardRound:'רגיל · 200',epicRound:'גדול · 500',manage:'ניהול',downloadLogs:'הורדת יומן',filterLogs:'סינון אירועים',restoreSettings:'שחזור הגדרות',restoreNote:'ייבוא קובץ הגדרות של המשחק. ההגדרות הנוכחיות נשמרות כעותק שחזור לפני שינוי.',chooseBackup:'בחירת גיבוי JSON',footer:'שליטה מקומית. יצירה משותפת.',cancel:'ביטול'
@@ -12,13 +12,16 @@ Object.assign(he,{
 Object.assign(he,{giftLibrary:'ספריית מתנות',giftLibraryNote:'בחרו מתנה מהספרייה המשותפת, הגדירו פעולה ושמרו. התמונות כלולות מקומית.',searchGifts:'חיפוש מתנות לפי שם או מזהה',coinRange:'טווח מטבעות',allCoins:'כל ערכי המטבעות',giftStatus:'מצב',allGifts:'כל המתנות',assignedGifts:'משויכות',unassignedGifts:'ללא שיוך',sortGifts:'מיון',coinsLow:'מטבעות: מהנמוך לגבוה',coinsHigh:'מטבעות: מהגבוה לנמוך',giftNameSort:'שם',previous:'הקודם',next:'הבא',priceSnapshot:'ערכי המטבעות מיובאים מהספרייה ועשויים להשתנות ב-TikTok. רק כללים שנשמרו מפעילים פעולות.',configuredGifts:'פעולות מתנות שהוגדרו',customGift:'שימוש בשם מתנה מותאם',giftId:'מזהה מתנה',giftIdOptional:'מזהה מתנה (רשות)'});
 Object.assign(he,{windowSetup:'חלון המשחק וקישור',desktopApi:'אותו חיבור מקומי כמו במשחקים האחרים שלכם',desktopTitle:'TikFinity Desktop',desktopSteps:'פתחו את TikFinity Desktop וחברו שם את שידור ה-TikTok LIVE. לאחר מכן לחצו כאן על חיבור. אשרו גישה לרשת המקומית אם הדפדפן מבקש. אין צורך להזין סיסמת TikTok במשחק.',connectLive:'חיבור',reconnectLive:'חיבור מחדש',disconnectLive:'ניתוק',socketNote:'חיבור תקין מאשר רק שה-API המקומי זמין. בדקו אירוע אמיתי מצופה לפני השארת השידור ללא השגחה.',closeSetup:'סגירה',windowIntro:'פתחו חלון משחק אנכי נפרד לצילום ב-LIVE Studio. השאירו את חלון המשחק הראשי פועל בזמן השימוש בלוח הבקרה.',popupSize:'גודל חלון המשחק',openGamePopup:'פתיחת חלון משחק',directGameLink:'פתיחת המשחק בלשונית',studioLink:'מקור קישור ב-LIVE Studio',captureLink:'קישור מקומי לתצוגה בלבד',copyCaptureLink:'העתקת קישור',openCaptureLink:'תצוגה מקדימה של הקישור',captureStep1:'לצילום חלון בחרו ב-LIVE Studio את “⁦Pyramid Live — Game Capture⁩”.',captureStep2:'למקור קישור הדביקו את הקישור והגדירו גודל של ⁦1080 × 1920⁩ כאשר האפשרות זמינה.',captureStep3:'הקישור פועל במחשב הזה כל עוד ⁦Start-Game.cmd⁩ פועל. הוא אינו יוצר חיבור ניקוד נוסף. אם LIVE Studio אינו טוען קישור מקומי, השתמשו בצילום חלון.'});
 Object.assign(he,{exitGame:'יציאה מהמשחק'});
+Object.assign(he,{overview:'בית השידור',game:'סיבובים',gifts:'פעולות מתנות',visual:'מראה המשחק',controls:'חיבור ובדיקות',moreActions:'עוד',startHere:'מתחילים כאן',readyInThree:'השידור שלכם בשלושה צעדים',localOnly:'במחשב הזה',stepWindow:'פתיחת המשחק',stepWindowHelp:'פתחו חלון משחק או העתיקו קישור ל-LIVE Studio.',stepConnect:'חיבור TikFinity',stepConnectHelp:'חברו את השידור ב-TikFinity ולחצו כאן על חיבור.',stepGifts:'בחירת פעולות מתנות',stepGiftsHelp:'קבעו מה כל מתנה עושה. הפעולות מופיעות גם במשחק.',nextWonder:'הסיבוב הנוכחי',giftRules:'מה המתנות עושות במשחק שלכם',giftNote:'אלה פעולות המתנות הפעילות שלכם. הן מוצגות גם בשידור. אפשר להוסיף מתנה או לערוך פעולה.',addGift:'+ הוספת פעולת מתנה',giftEditorEyebrow:'פעולת מתנה',giftEditorTitle:'בוחרים מתנה. קובעים מה יקרה.',setAction:'הגדרת הפעולה',setActionHelp:'בחרו מתנה מהספרייה, הגדירו מספר אבנים ושמרו. השינוי יופיע במשחק.',advancedActions:'מתקדם: לייקים, תגובות ומעקבים',diagnostics:'אבחון החיבור',eventHistory:'היסטוריית אירועים',technicalDetails:'פרטי החיבור הטכניים',broadcast:'PYRAMID LIVE · לוח הבקרה',workspace:'השידור שלכם',roundSettings:'בחירת הסיבוב הבא',visualTitle:'איך המשחק נראה',giftLibrary:'בחירת מתנה',giftLibraryNote:'1. חפשו או בחרו מתנה מהספרייה.',desktopSteps:'1. פתחו את TikFinity Desktop וחברו את שידור ה-TikTok LIVE. 2. לחצו על חיבור. 3. בדקו שאירוע מצופה אמיתי מגיע למשחק.',modeNote:'מצב תרגול משתמש באירועי בדיקה. מצב שידור חי משתמש בצופים אמיתיים וחוסם בדיקות. לכל מצב נשמרת התקדמות נפרדת.',simulator:'בדיקת אירוע',saveRule:'שמירת פעולה'});
+const descriptions={en:{overview:'Everything you need to prepare and watch your stream.',gifts:'Choose which gifts add stones, boost construction, or cause an earthquake.',game:'Pick a building and how much work completes a round.',visual:'Adjust graphics, workers and what viewers see on screen.',controls:'Connect real viewer events or practice safely with test events.'},he:{overview:'כל מה שצריך להכנת השידור ולמעקב אחר המשחק.',gifts:'בחרו אילו מתנות מוסיפות אבנים, מאיצות בנייה או יוצרות רעידת אדמה.',game:'בחרו מבנה ואת כמות העבודה הדרושה להשלמת סיבוב.',visual:'הגדירו גרפיקה, פועלים ומה הצופים רואים בשידור.',controls:'חברו אירועי צופים אמיתיים או תרגלו עם אירועי בדיקה.'}};
+function pageDescription(){$('#pageDescription').textContent=descriptions[document.documentElement.lang==='he'?'he':'en'][page];}
 const english=new Map([...document.querySelectorAll('[data-i]')].map(el=>[el,el.textContent]));
 for(const form of document.querySelectorAll('form'))for(const field of form.elements){
   if(!field.name)continue;if(!field.id)field.id=(form.id||'dialog')+'-'+field.name;
   const label=field.previousElementSibling;if(label?.tagName==='LABEL')label.htmlFor=field.id;
 }
 const englishOptions=new Map([...document.querySelectorAll('select:not(#language):not(#giftPrice):not(#giftAssigned):not(#giftSort) option')].map(option=>{option.setAttribute('value',option.value);return [option,option.textContent];}));
-const optionHebrew={high:'גבוהה · צללים ואבק',low:'נמוכה · ללא צללים ואבק',mixed:'תלבושות מעורבות',worker:'פועל',mummy:'מומיה',ninja:'נינג׳ה',pharaoh:'פרעה',full:'מלאה · הוראות, מתנות ומובילים',minimal:'מצומצמת · סצנה והתקדמות',simulator:'סימולטור — בדיקות בלבד',live:'שידור חי — TikFinity Free',blocks:'אבנים מוזהבות',boost:'האצה ל-15 שניות ואבנים',quake:'רעידת אדמה — הסרת אבנים',like:'לייקים',chat:'תגובה / הצבעה',follow:'מעקב',share:'שיתוף',gift:'מתנה'};
+const optionHebrew={high:'גבוהה · צללים ואבק',low:'נמוכה · ללא צללים ואבק',mixed:'תלבושות מעורבות',worker:'פועל',mummy:'מומיה',ninja:'נינג׳ה',pharaoh:'פרעה',full:'מלאה · הוראות, מתנות ומובילים',minimal:'מצומצמת · סצנה והתקדמות',simulator:'סימולטור — בדיקות בלבד',live:'שידור חי — TikFinity Free',blocks:'הוספת אבנים',boost:'האצת בנייה + אבנים',quake:'רעידת אדמה: הסרת אבנים',like:'לייקים',chat:'תגובה / הצבעה',follow:'מעקב',share:'שיתוף',gift:'מתנה'};
 const titles={en:{pyramid:'Egyptian Pyramid',temple:'Ancient Temple',castle:'Medieval Castle',lighthouse:'Lighthouse',obelisk:'Obelisk',ziggurat:'Ziggurat'},he:{pyramid:'הפירמידה המצרית',temple:'המקדש העתיק',castle:'טירת ימי הביניים',lighthouse:'המגדלור',obelisk:'האובליסק',ziggurat:'הזיגוראת'}};
 const icons={pyramid:'△',temple:'Π',castle:'♜',lighthouse:'♟',obelisk:'▴',ziggurat:'▰'};
 const text=(en,heb)=>document.documentElement.lang==='he'?heb:en;
@@ -27,13 +30,13 @@ function language(lang){
   for(const[el,value]of english)el.textContent=lang==='he'?(he[el.dataset.i]||value):value;
   for(const[option,value]of englishOptions)option.textContent=lang==='he'?(titles.he[option.value]||optionHebrew[option.value]||value):(titles.en[option.value]||value);
   $('#giftForm [name=giftId]').placeholder=text('Choose from the library','בחירה מהספרייה');
-  $('#pageTitle').textContent=$(`[data-page="${page}"]`).textContent;
+  $('#pageTitle').textContent=$(`[data-page="${page}"]`).textContent;pageDescription();
 }
 function navigate(next){
   page=next;
   for(const section of document.querySelectorAll('.page'))section.hidden=section.id!==next;
   for(const button of document.querySelectorAll('[data-page]')){button.classList.toggle('active',button.dataset.page===next);button.setAttribute('aria-current',button.dataset.page===next?'page':'false');}
-  $('#pageTitle').textContent=$(`[data-page="${next}"]`).textContent;
+  $('#pageTitle').textContent=$(`[data-page="${next}"]`).textContent;pageDescription();
 }
 async function api(route,data){
   if(!token)token=(await(await fetch('/api/session')).json()).token;
@@ -65,6 +68,9 @@ function download(name,value){
 }
 function element(tag,content,className){const el=document.createElement(tag);if(content!==undefined)el.textContent=content;if(className)el.className=className;return el;}
 for(const button of document.querySelectorAll('[data-page]'))button.onclick=()=>navigate(button.dataset.page);
+for(const button of document.querySelectorAll('[data-go]'))button.onclick=()=>{if(button.dataset.go==='window')$('#openGameSetup').click();else navigate(button.dataset.go);};
+$('#addGift').onclick=()=>{editGift='';selectedGift=null;$('#giftForm').reset();$('#selectedGift').dataset.key='';renderSelectedGift();$('#giftEditorDialog').showModal();$('#giftSearch').focus();};
+$('#closeGiftEditor').onclick=()=>$('#giftEditorDialog').close();
 let sessionEnded=false;
 $('#exitGame').onclick=guarded(async()=>{if(!await confirmAction(text('Exit the game?','לצאת מהמשחק?'),text('Save progress and close the local game. Double-click Start-Game.cmd to play again.','שמירת ההתקדמות וסגירת המשחק המקומי. להפעלה מחדש לחצו פעמיים על Start-Game.cmd.'),text('Exit game','יציאה מהמשחק')))return;await api('/api/exit',{});sessionEnded=true;$('#connection').textContent=text('Session ended','המשחק הסתיים');feedback(text('Game stopped. Close this dashboard when ready.','המשחק נעצר. אפשר לסגור את לוח הבקרה.'));},false);
 $('#connectLive').onclick=guarded(()=>api('/api/config',{mode:'live',liveEnabled:true}),false);
@@ -94,13 +100,15 @@ for(const id of ['pause','quickPause'])$('#'+id).onclick=guarded(()=>api('/api/c
 $('#restart').onclick=guarded(async()=>{
   if(await confirmAction(text('Restart this round?','להתחיל את הסיבוב מחדש?'),text('Current construction and queued stones will be cleared. Your settings and session leaderboard will stay saved.','התקדמות הבנייה והאבנים שבתור יימחקו. ההגדרות וטבלת המובילים נשמרות.'),text('Restart round','התחלת סיבוב מחדש')))await api('/api/control',{action:'restart'});
 },false);
+function updateActionHelp(){const action=$('#giftForm [name=action]').value;$('#giftActionHelp').textContent=action==='boost'?text('Builds 4× faster for 15 seconds and adds these stones.','בנייה מהירה פי 4 למשך 15 שניות והוספת האבנים שהוגדרו.'):action==='quake'?text('Removes built stones, up to 100 per event. Does not delete queued work.','מסיר אבנים שכבר נבנו, עד 100 לאירוע. העבודה שבתור אינה נמחקת.'):text('Adds this many stones for every gift in the completed quantity.','מוסיף את מספר האבנים שהוגדר לכל מתנה בכמות שהושלמה.');}
+$('#giftForm [name=action]').addEventListener('change',updateActionHelp);
 $('#giftForm').onsubmit=guarded(async()=>{
   const values=Object.fromEntries(new FormData($('#giftForm'))),gifts={...state.config.gifts};
   if(editGift)delete gifts[editGift];
   const id=values.giftId.trim(),key=id?'gift_'+id:values.name.trim().toLowerCase();
   gifts[key]={action:values.action,value:Number(values.value),...(id?{giftId:id,name:values.name.trim()}:{})};
   giftSaving=true;renderGiftLibrary();$('#customGift').disabled=true;
-  try{await api('/api/config',{gifts});editGift='';selectedGift=null;dirty.delete('giftForm');$('#giftForm').reset();renderSelectedGift();await refresh();}
+  try{await api('/api/config',{gifts});editGift='';selectedGift=null;dirty.delete('giftForm');$('#giftForm').reset();renderSelectedGift();$('#giftEditorDialog').close();await refresh();}
   finally{giftSaving=false;$('#customGift').disabled=false;renderGiftLibrary();}
 });
 $('#simForm').onsubmit=guarded(async()=>{
@@ -140,11 +148,12 @@ function renderGiftRules(s){
     const gift=findGift(giftCatalog,rule.giftId,rule.name||name);
     const displayName=rule.name||gift?.name||name;
     const row=element('div',undefined,'gift-rule'),title=element('div',undefined,'gift-name');title.append(gift?giftImage(gift):element('span','◇','avatar-initial'),element('bdi',displayName));if(rule.giftId)title.append(element('small','ID '+rule.giftId,'gift-rule-id'));
-    const value=element('div',rule.value+' '+text('stones / gift','אבנים / מתנה'),'gift-action-value');
+    const amount=rule.action==='quake'?Math.min(100,rule.value):rule.value;
+    const value=element('div',(rule.action==='quake'?'−':'+')+amount+' '+text('stones / gift','אבנים / מתנה'),'gift-action-value');
     value.append(element('small',({blocks:text('Golden construction','בנייה מוזהבת'),boost:text('15 second boost','האצה ל-15 שניות'),quake:text('Earthquake','רעידת אדמה')})[rule.action]));
     const actions=element('div',undefined,'gift-actions');
-    const preview=element('button',text('Preview','תצוגה'));preview.disabled=s.config.mode==='live';preview.onclick=guarded(()=>api('/api/sim',{event:'gift',data:{uniqueId:'Gift Preview',giftName:displayName,giftId:rule.giftId||gift?.id||'',repeatCount:1,giftType:1,repeatEnd:true,msgId:crypto.randomUUID()}}),false);
-    const edit=element('button',text('Edit','עריכה'));edit.onclick=()=>{editGift=name;selectedGift=gift||null;renderSelectedGift();for(const[k,v]of Object.entries({name:displayName,giftId:rule.giftId||'',action:rule.action,value:rule.value}))$('#giftForm [name='+k+']').value=v;dirty.add('giftForm');$('#giftForm input').focus();};
+    const preview=element('button',text('Test','בדיקה'));preview.disabled=s.config.mode==='live';preview.title=text('Sends a practice gift. Available in simulator mode only.','שולח מתנת בדיקה. זמין במצב סימולטור בלבד.');preview.onclick=guarded(()=>api('/api/sim',{event:'gift',data:{uniqueId:'Gift Preview',giftName:displayName,giftId:rule.giftId||gift?.id||'',repeatCount:1,giftType:1,repeatEnd:true,msgId:crypto.randomUUID()}}),false);
+    const edit=element('button',text('Edit','עריכה'));edit.onclick=()=>{$('#giftEditorDialog').showModal();editGift=name;selectedGift=gift||null;renderSelectedGift();for(const[k,v]of Object.entries({name:displayName,giftId:rule.giftId||'',action:rule.action,value:rule.value}))$('#giftForm [name='+k+']').value=v;dirty.add('giftForm');$('#giftForm [name=value]').focus();};
     const remove=element('button',text('Remove','הסרה'),'remove-rule');remove.onclick=guarded(async()=>{if(await confirmAction(text('Remove gift rule?','להסיר כלל מתנה?'),displayName,text('Remove','הסרה'))){const gifts={...state.config.gifts};delete gifts[name];await api('/api/config',{gifts});}},false);
     actions.append(preview,edit,remove);row.append(title,value,actions);return row;
   }));
@@ -158,7 +167,7 @@ async function refresh(){
   try{
     const response=await fetch('/api/state',{signal:AbortSignal.timeout(4000)});if(!response.ok)throw Error('Local service unavailable');state=await response.json();
     const s=state,percent=Math.min(100,Math.round(s.built/s.target*100)),lang=s.config.language;
-    language(lang);$('#language').value=lang;
+    language(lang);updateActionHelp();$('#language').value=lang;
     const enabled=s.config.liveEnabled!==false,live=s.config.mode==='live',connected=s.connection.socket;
     $('#desktopStatus').textContent=!live?text('Simulator — press Connect to switch to LIVE.','סימולטור — לחצו על חיבור למעבר לשידור חי.'):!enabled?text('Disconnected by you. Automatic reconnection is stopped.','מנותק לפי בחירתכם. החיבור האוטומטי הופסק.'):connected?text('Local API connected · waiting for viewer events','ה-API המקומי מחובר · ממתינים לאירועי צופים'):text('Connecting to TikFinity Desktop · automatic retries enabled','מתחברים ל-TikFinity Desktop · ניסיונות חוזרים אוטומטיים');
     $('#disconnectLive').disabled=!enabled;$('#connectLive').disabled=live&&enabled;$('#reconnectLive').disabled=!s.gameOnline;
@@ -176,9 +185,10 @@ async function refresh(){
     $('#progress').textContent=percent+'%';$('#progressBar').value=percent;$('#stones').textContent=`\u2066${s.built} / ${s.target}\u2069 `+text('stones','אבנים');
     $('#workers').textContent=s.gameOnline?s.perf.workers:'—';$('#queue').textContent=s.queue+' '+text('stones queued','אבנים בתור');$('#fps').textContent=s.gameOnline?s.perf.fps+' FPS':text('Game offline','המשחק מנותק');
     $('#memory').textContent=text(`Service ${s.memoryMB} MB · Game ${Math.round(s.perf.memoryMB||0)} MB`,`שירות ${s.memoryMB} MB · משחק ${Math.round(s.perf.memoryMB||0)} MB`);
-    $('#events').replaceChildren(...s.logs.slice(0,6).map(log=>{const row=element('div',undefined,'events-row');row.append(element('span',log.message),element('strong',log.source));return row;}));
-    if(!s.logs.length)$('#events').append(element('div',text('Your audience writes the story. Events will appear here as viewers join in.','הקהל כותב את הסיפור. אירועים יופיעו כאן כשהצופים יצטרפו.'),'empty-state'));
-    $('#leaders').replaceChildren(...s.leaderboard.slice(0,6).map(([name,score],i)=>{const row=element('div',undefined,'rank'),label=element('span',undefined,'rank-name'),meter=element('div',undefined,'rank-meter'),fill=element('span');fill.style.width=Math.max(4,score/s.leaderboard[0][1]*100)+'%';meter.append(fill);label.append(element('span',String(i+1).padStart(2,'0'),'avatar-initial'),element('bdi',name));row.append(label,meter,element('strong',score));return row;}));
+    const recent=s.logs.filter(log=>log.source==='live'||log.source==='simulator').slice(0,4);
+    $('#events').replaceChildren(...recent.map(log=>{const row=element('div',undefined,'events-row');row.append(element('span',log.message),element('strong',log.source));return row;}));
+    if(!recent.length)$('#events').append(element('div',text('Your audience writes the story. Events will appear here as viewers join in.','הקהל כותב את הסיפור. אירועים יופיעו כאן כשהצופים יצטרפו.'),'empty-state'));
+    $('#leaders').replaceChildren(...s.leaderboard.slice(0,4).map(([name,score],i)=>{const row=element('div',undefined,'rank'),label=element('span',undefined,'rank-name'),meter=element('div',undefined,'rank-meter'),fill=element('span');fill.style.width=Math.max(4,score/s.leaderboard[0][1]*100)+'%';meter.append(fill);label.append(element('span',String(i+1).padStart(2,'0'),'avatar-initial'),element('bdi',name));row.append(label,meter,element('strong',score));return row;}));
     if(!s.leaderboard.length)$('#leaders').append(element('div',text('A place for your first builder. Contributions stay saved across restarts.','מקום לבונה הראשון. התרומות נשמרות גם לאחר הפעלה מחדש.'),'empty-state'));
     $('#idle').textContent=s.idle?text('A quiet desert. No artificial viewer events are generated.','מדבר שקט. אין יצירת אירועי צופים מלאכותיים.'):text('Your community is building right now.','הקהילה בונה עכשיו.');
     $('#health').textContent=JSON.stringify({socket:s.connection.socket,lastEvent:s.connection.lastEvent?new Date(s.connection.lastEvent).toLocaleTimeString():text('None','אין'),attempts:s.connection.attempts,gameOnline:s.gameOnline,...s.metrics},null,2);
@@ -191,14 +201,14 @@ async function refresh(){
 }
 function renderSelectedGift(){
   const box=$('#selectedGift');box.hidden=!selectedGift;
-  if(!selectedGift){box.replaceChildren();return;}
+  if(!selectedGift){box.replaceChildren();delete box.dataset.key;return;}
   const key=selectedGift.id+':'+document.documentElement.lang;if(box.dataset.key===key)return;box.dataset.key=key;
   const info=element('div');info.append(element('strong',selectedGift.name),element('p',selectedGift.coins.toLocaleString()+' '+text('coins','מטבעות')+' · ID '+selectedGift.id));box.replaceChildren(giftImage(selectedGift),info);
 }
 function chooseGift(gift){
   if(giftSaving)return;selectedGift=gift;const existing=configuredGift(gift,state.config.gifts);editGift=existing?.key||'';
   for(const[k,v]of Object.entries({name:gift.name,giftId:gift.id,action:existing?.rule.action||'blocks',value:existing?.rule.value||10}))$('#giftForm [name='+k+']').value=v;
-  dirty.add('giftForm');$('#selectedGift').dataset.key='';renderSelectedGift();renderGiftLibrary();
+  dirty.add('giftForm');updateActionHelp();$('#selectedGift').dataset.key='';renderSelectedGift();renderGiftLibrary();
   $('#giftForm').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'});
 }
 $('#customGift').onclick=()=>{selectedGift=null;editGift='';$('#giftForm').reset();$('#selectedGift').dataset.key='';renderSelectedGift();renderGiftLibrary();$('#giftForm [name=name]').focus();};

@@ -138,3 +138,20 @@ Windows smoke coverage has been updated to check primary-process exit cleanup, n
 Executed: engine, gift library and connection tests passed. A real Chromium game connected to the PowerShell host passed the new overlay test: configured gift images/actions, automatic settings rendering, English/Hebrew labels, display-only capture link, two-card pagination, distinct same-name gift IDs, custom-name text safety, no-rules hiding, Minimal-layout hiding, and space between the HUD and lower panel. Browser page errors: none. English and Hebrew game screenshots were inspected.
 
 The live guide shows two configured rules per page and cycles every six seconds. It does not display or enable unassigned catalog gifts. Boost and quake labels describe the engine's existing configured actions. This is a simulator/browser rendering check, not a real gift delivery or LIVE Studio capture test.
+
+
+## Version 0.7 — clearer stream studio and game feedback
+
+Implemented: three-step Stream home; active gift rules before the catalog; a focused gift picker/editor dialog; 12-card catalog pages; simpler page descriptions; Advanced event values; collapsed diagnostics/history/restore sections; More menu for backup and exit; English and Hebrew RTL throughout. Replaced accumulated dashboard CSS overrides with one responsive stylesheet. Fixed an empty selected-gift preview when reopening the same gift after a save.
+
+On stream: smaller HUD panels, stones-remaining objective, actual 4× boost countdown, warm boost lighting, brief earthquake camera shake, wider construction framing and a completion orbit. Renderer quality/pixel-ratio changes now update only when needed, instead of resizing on every frame; recurring sky colors and worker direction calculations avoid temporary object allocations. No native-GPU speed or 60 FPS claim is inferred from these changes.
+
+Executed and passed:
+
+- All 24 engine/library/connection tests, including the new real-gift boost countdown/expiry case and existing 100,000-event bounded-queue stress test.
+- New studio browser regression: three step buttons, active-gifts-first layout, modal add/save/edit, nonempty selected-gift preview on reopen, unsaved round edits, hidden Advanced fields, collapsed diagnostics/history, English/Hebrew page descriptions, mobile overflow checks, game objective and actual simulator-gift boost HUD. No page errors.
+- Existing full dashboard regression: pause, six building previews, unsaved edits, custom gift add/edit/remove, settings export/import, simulator events/log filtering, LIVE test blocking, separate mode checkpoints, languages and mobile layout. No page errors.
+- Shared-library regression: all 314 gifts, local image loading, search/filters/sorting, saved metadata, quantities, separate same-name gift IDs, recent-gift image, reload persistence and Hebrew/mobile. No page errors.
+- Live gift-guide browser regression: actions/images, languages, capture link, rotating pages, custom names and hidden empty/minimal states. No page errors.
+
+Screenshots of Stream home, active gifts, gift editor, Hebrew mobile and the game/boost HUD were inspected. Two test timing assumptions were updated: simulator checks now wait for acknowledged logs, and consecutive gift saves wait for the editor to finish closing. These were test timing fixes; do not count failed intermediate attempts as passed tests. Real TikFinity Free delivery, physical Windows window capture and native GPU performance remain acceptance checks on the streaming PC.

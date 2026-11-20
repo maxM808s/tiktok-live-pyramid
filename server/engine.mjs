@@ -41,7 +41,7 @@ export class Engine{
  this.credit=Math.min(this.credit,1);
  if(this.built>=this.roundTarget){this.phase='celebrating';this.countdown=this.config.celebration;this.log('Round complete');}
  }
- state(){return {lastGift:this.lastGift||null,placements:this.placements,quakeAt:this.quakeAt||0,building:this.building,built:this.built,target:this.roundTarget,round:this.round,phase:this.phase,countdown:this.countdown,paused:this.paused,queue:this.queue.reduce((s,j)=>s+j.remaining,0),builder:this.builder||'',gold:this.gold||false,leaderboard:[...this.people].sort((a,b)=>b[1]-a[1]).slice(0,8),roundLeaders:[...this.contributors].sort((a,b)=>b[1]-a[1]).slice(0,5),logs:this.logs,metrics:this.metrics,config:this.config,perf:this.perf||{},idle:Date.now()-this.lastEvent>30000};}
+ state(){return {boostRemaining:Math.max(0,Math.ceil(((this.boostUntil||0)-Date.now())/1000)),lastGift:this.lastGift||null,placements:this.placements,quakeAt:this.quakeAt||0,building:this.building,built:this.built,target:this.roundTarget,round:this.round,phase:this.phase,countdown:this.countdown,paused:this.paused,queue:this.queue.reduce((s,j)=>s+j.remaining,0),builder:this.builder||'',gold:this.gold||false,leaderboard:[...this.people].sort((a,b)=>b[1]-a[1]).slice(0,8),roundLeaders:[...this.contributors].sort((a,b)=>b[1]-a[1]).slice(0,5),logs:this.logs,metrics:this.metrics,config:this.config,perf:this.perf||{},idle:Date.now()-this.lastEvent>30000};}
 }
 export function validateConfig(c){
  if(!c||typeof c!=='object'||Array.isArray(c))throw Error('Invalid settings');const out={};

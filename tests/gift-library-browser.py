@@ -28,8 +28,8 @@ with sync_playwright() as p:
  for tab in [game,page]:tab.on('pageerror',lambda error:errors.append(str(error)))
  try:
   game.goto(base+'/browser/game.html');wait(lambda s:s['gameOnline'],25)
-  page.goto(base);page.locator('[data-page=gifts]').click();page.wait_for_function("document.querySelector('#giftCatalogCount').textContent.includes('314')")
-  assert page.locator('.gift-card').count()==24
+  page.goto(base);page.locator('[data-page=gifts]').click();page.locator('#addGift').click();page.wait_for_function("document.querySelector('#giftCatalogCount').textContent.includes('314')")
+  assert page.locator('.gift-card').count()==12
   page.locator('#giftSearch').fill('Rose');rose=page.locator('.gift-card[data-gift-id="5655"]');rose.wait_for();rose.locator('img').wait_for()
   page.wait_for_function("document.querySelector('[data-gift-id=\"5655\"] img').naturalWidth>0")
   rose.click();assert page.locator('#giftForm [name=giftId]').input_value()=='5655'
@@ -44,20 +44,21 @@ with sync_playwright() as p:
   game.wait_for_function("()=>document.querySelector('#gift img')?.naturalWidth>0")
   assert '/assets/gifts/5655.webp' in game.locator('#gift img').get_attribute('src')
   # Same gift names stay separately configurable by ID.
-  page.locator('#giftSearch').fill('TikTok Universe');assert page.locator('.gift-card').count()==2
+  page.locator('#addGift').click();page.locator('#giftSearch').fill('TikTok Universe');assert page.locator('.gift-card').count()==2
   for gift_id,value in [('9101',25),('9072',75)]:
-   page.locator('.gift-card[data-gift-id="'+gift_id+'"]').click();page.locator('#giftForm [name=value]').fill(str(value));page.locator('#giftForm button.primary').click();wait(lambda s:s['config']['gifts'].get('gift_'+gift_id,{}).get('value')==value)
+   if not page.locator('#giftEditorDialog').is_visible():page.locator('#addGift').click()
+   page.locator('.gift-card[data-gift-id="'+gift_id+'"]').click();page.locator('#giftForm [name=value]').fill(str(value));page.locator('#giftForm button.primary').click();wait(lambda s:s['config']['gifts'].get('gift_'+gift_id,{}).get('value')==value);page.locator('#giftEditorDialog').wait_for(state='hidden')
   post('/api/control',{'action':'restart'})
   for gift_id in ['9101','9072']:post('/api/sim',{'event':'gift','data':{'uniqueId':'Same Name Gift Test','giftId':gift_id,'giftName':'TikTok Universe','repeatCount':1,'msgId':str(uuid.uuid4())}})
   assert get()['built']+get()['queue']==100
   # Filtering, image cards, and Hebrew/mobile layouts.
-  page.locator('#giftSearch').fill('');page.locator('#giftPrice').select_option('large');page.locator('#giftSort').select_option('coins-desc')
+  page.locator('#addGift').click();page.locator('#giftSearch').fill('');page.locator('#giftPrice').select_option('large');page.locator('#giftSort').select_option('coins-desc')
   coins={g['id']:g['coins'] for g in json.loads((root/'catalog.json').read_text())}
   visible=page.locator('.gift-card').evaluate_all('(els)=>els.map(el=>el.dataset.giftId)');assert all(coins[i]>=1000 for i in visible)
   page.locator('#giftPrice').select_option('all');page.locator('#giftAssigned').select_option('yes');assert page.locator('.gift-card[data-gift-id="5655"]').count()==1
   page.screenshot(path=str(root/'.local/gift-library-en.png'),full_page=True)
-  page.locator('#language').select_option('he');wait(lambda s:s['config']['language']=='he');page.locator('html[dir=rtl]').wait_for()
-  page.set_viewport_size({'width':390,'height':844});page.screenshot(path=str(root/'.local/gift-library-he-mobile.png'),full_page=True)
+  page.locator('#closeGiftEditor').click();page.locator('#language').select_option('he');wait(lambda s:s['config']['language']=='he');page.locator('html[dir=rtl]').wait_for()
+  page.locator('#addGift').click();page.set_viewport_size({'width':390,'height':844});page.screenshot(path=str(root/'.local/gift-library-he-mobile.png'),full_page=True)
   assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth')
   page.reload();page.wait_for_timeout(800);assert get()['config']['gifts']['gift_5655']['value']==17
   assert not errors,errors
