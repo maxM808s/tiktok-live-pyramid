@@ -35,6 +35,7 @@ with sync_playwright() as p:
   game=browser.new_page();game.goto(base+'/browser/game.html');wait(lambda s:s['gameOnline'],25)
   page.goto(base);page.locator('html[dir=rtl]').wait_for();assert page.locator('#exitGame').text_content()=='יציאה מהמשחק'
   post('/api/config',original)
+  page.locator('html[lang="'+original['language']+'"]').wait_for()
   page.locator('.session-menu summary').click();page.locator('#exitGame').click();page.locator('#confirmDialog[open]').wait_for();page.locator('#confirmButton').click()
   page.locator('#connection').filter(has_text='ended').wait_for() if original['language']=='en' else page.locator('#connection').filter(has_text='הסתיים').wait_for()
   end=time.time()+10;stopped=False

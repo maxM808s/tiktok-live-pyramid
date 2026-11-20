@@ -157,7 +157,7 @@ function renderGiftRules(s){
     const remove=element('button',text('Remove','הסרה'),'remove-rule');remove.onclick=guarded(async()=>{if(await confirmAction(text('Remove gift rule?','להסיר כלל מתנה?'),displayName,text('Remove','הסרה'))){const gifts={...state.config.gifts};delete gifts[name];await api('/api/config',{gifts});}},false);
     actions.append(preview,edit,remove);row.append(title,value,actions);return row;
   }));
-  if(!Object.keys(s.config.gifts).length)$('#giftRules').append(element('div',text('No gift rules yet. Create your first one below.','עדיין אין כללי מתנות. הוסיפו כלל ראשון למטה.'),'empty-state'));
+  if(!Object.keys(s.config.gifts).length)$('#giftRules').append(element('div',text('No gift actions yet. Press Add gift action to choose one.','עדיין אין פעולות מתנות. לחצו על הוספת פעולת מתנה כדי לבחור מתנה.'),'empty-state'));
 }
 function renderLogs(){if(state){const query=$('#logSearch').value.toLowerCase();$('#logs').textContent=state.logs.filter(log=>(log.message+' '+log.source).toLowerCase().includes(query)).map(log=>new Date(log.at).toLocaleTimeString()+` [${log.source}] ${log.message}`).join('\n')||text('No matching events.','לא נמצאו אירועים.');}}
 $('#logSearch').oninput=renderLogs;
